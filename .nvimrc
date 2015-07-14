@@ -13,6 +13,11 @@
 "===============================================================================
 " General Settings
 
+" redirect runtime path to .vim, so that vim and neovim can share directories.
+if has('nvim')
+    set rtp+=~/.vim/
+endif
+
 " Inform that the script is written in UTF-8 (including special characters)
 scriptencoding utf-8
 
@@ -34,9 +39,6 @@ let g:mapleader = ","
 
 " Show line number
 set nu
-
-" Fast editing or sourcing vimrc file
-nmap <silent> <leader>ee :tabnew<cr>:edit ~/.nvimrc<cr>
 
 "----------------------------------------------------------------------
 " VIM user interface
@@ -288,17 +290,10 @@ vnoremap <C-J> <C-E>j
 nnoremap <C-K> <C-Y>k
 vnoremap <C-K> <C-Y>k
 
-" integrate with nvim terminal
-if has('nvim')
-    tnoremap <A-h> <C-\><C-n><C-w>h
-    tnoremap <A-j> <C-\><C-n><C-w>j
-    tnoremap <A-k> <C-\><C-n><C-w>k
-    tnoremap <A-l> <C-\><C-n><C-w>l
-    nnoremap <A-h> <C-w>h
-    nnoremap <A-j> <C-w>j
-    nnoremap <A-k> <C-w>k
-    nnoremap <A-l> <C-w>l
-endif
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
 
 "----------------------------------------------------------------------
 " Show tabs (indent lines)
@@ -390,10 +385,10 @@ if use_vundle == 1
     if has("win32")
         set rtp+=~/vimfiles/vundle.git
     else
-        set rtp+=~/.nvim/Vundle.vim
+        set rtp+=~/.vim/Vundle.vim
     endif
 
-    call vundle#begin("~/.nvim/bundle")
+    call vundle#begin()
 
     " let Vundle manage Vundle, required
     "Plugin 'gmarik/Vundle.vim'
@@ -574,3 +569,40 @@ autocmd FileType c,cpp setlocal colorcolumn=80
 "----------------------------------------------------------------------
 " python
 let g:enable_my_python_config = 1
+
+"===============================================================================
+" client specified settings
+
+if has('nvim')
+    "--------------------------------------------------
+    " neovim specified settings
+
+    "- - - - - - - - - - - - - - - - - - - - - - - - -
+    " mappings
+
+    " Fast editing or sourcing vimrc file
+    nmap <silent> <leader>ee :tabnew<cr>:edit ~/.nvimrc<cr>
+
+    " integrate with nvim terminal
+    tnoremap <A-h> <C-\><C-n><C-w>h
+    tnoremap <A-j> <C-\><C-n><C-w>j
+    tnoremap <A-k> <C-\><C-n><C-w>k
+    tnoremap <A-l> <C-\><C-n><C-w>l
+
+else
+    "--------------------------------------------------
+    " vim specified settings
+
+    "- - - - - - - - - - - - - - - - - - - - - - - - -
+    " default settings
+
+    " use blowfish as default crypt method
+    set cryptmethod=blowfish
+
+    "- - - - - - - - - - - - - - - - - - - - - - - - -
+    " mappings
+
+    " Fast editing or sourcing vimrc file
+    nmap <silent> <leader>ee :tabnew<cr>:edit ~/.vimrc<cr>
+
+endif
