@@ -83,7 +83,7 @@ set cursorline
 set laststatus=2
 "set stl=%F%y%m\ [%l,%c,%p%%]\ [%n/%{len(filter(range(1,bufnr('$')),'buflisted(v:val)'))}]
 
-set showtabline=2
+" set showtabline=2
 set completeopt=longest,menuone,preview
 
 "----------------------------------------------------------------------
@@ -420,6 +420,7 @@ if use_vundle == 1
     Bundle 'abolish.vim'
 
     "Bundle 'Valloric/YouCompleteMe'
+    Plugin 'bling/vim-airline'
 
     "------------------------------------------------------------------
     " Integration with Linux environment
@@ -427,7 +428,7 @@ if use_vundle == 1
     "Bundle 'epeli/slimux'
     Bundle 'lotabout/slimux'
     Bundle 'fakeclip'
-    "Bundle 'ctrlp.vim'
+    Bundle 'ctrlp.vim'
 
     " work with git
     Bundle 'fugitive.vim'
@@ -459,6 +460,8 @@ if use_vundle == 1
     " for javascript
     Plugin 'marijnh/tern_for_vim'
 
+
+    Plugin 'tpope/vim-fireplace'
 
     "------------------------------------------------------------------
     " Others
@@ -548,6 +551,10 @@ let wiki_1.ext = '.md'
 
 let g:vimwiki_list = [wiki_1]
 map <F4> :VimwikiAll2HTML<cr> :exec '!cd '.VimwikiGet('path_html').'; ./sync.sh'<cr>
+
+"---------------------------------------------------------------------
+" vim-airline
+let g:airline#extensions#tabline#enabled = 1
 
 "===============================================================================
 " self-added plugins && settigns
