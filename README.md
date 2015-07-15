@@ -22,4 +22,6 @@ cd ~
 ln -s .nvimrc .vimrc
 ln -s .nvim .vim
 ```
-Done!
+
+The majority of vim plugins are maintained via Vundle.vim, so you need to
+execute `:PluginInstall` inside vim or neovim after the above step.
