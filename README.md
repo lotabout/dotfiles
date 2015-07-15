@@ -25,3 +25,7 @@ ln -s .nvim .vim
 
 The majority of vim plugins are maintained via Vundle.vim, so you need to
 execute `:PluginInstall` inside vim or neovim after the above step.
+
+Note that my airline settings uses unicode characters, and you should install
+patched fonts for powerline. You can find it
+[here](https://github.com/powerline/fonts).

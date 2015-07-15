@@ -549,7 +549,16 @@ map <F4> :VimwikiAll2HTML<cr> :exec '!cd '.VimwikiGet('path_html').'; ./sync.sh'
 
 "---------------------------------------------------------------------
 " vim-airline
+let g:airline_theme='zenburn'
 let g:airline#extensions#tabline#enabled = 1
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols = {}
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
 
 "===============================================================================
 " self-added plugins && settigns
