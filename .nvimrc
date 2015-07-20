@@ -417,6 +417,8 @@ if use_vundle == 1
     "Bundle 'Valloric/YouCompleteMe'
     Plugin 'bling/vim-airline'
 
+    Plugin 'Chiel92/vim-autoformat'
+
     "------------------------------------------------------------------
     " Integration with Linux environment
     "------------------------------------------------------------------
@@ -578,6 +580,20 @@ autocmd FileType c,cpp setlocal colorcolumn=80
 "----------------------------------------------------------------------
 " python
 let g:enable_my_python_config = 1
+
+"----------------------------------------------------------------------
+" javascript
+
+" Simple re-format for minified Javascript
+command! UnMinify call UnMinify()
+function! UnMinify()
+    %s/{\ze[^\r\n]/{\r/g
+    %s/){/) {/g
+    %s/};\?\ze[^\r\n]/\0\r/g
+    %s/;\ze[^\r\n]/;\r/g
+    %s/[^\s]\zs[=&|]\+\ze[^\s]/ \0 /g
+    normal ggVG=
+endfunction
 
 "===============================================================================
 " client specified settings

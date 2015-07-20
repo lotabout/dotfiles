@@ -23,9 +23,18 @@ ln -s .nvimrc .vimrc
 ln -s .nvim .vim
 ```
 
+### Plugin Settings
 The majority of vim plugins are maintained via Vundle.vim, so you need to
 execute `:PluginInstall` inside vim or neovim after the above step.
 
 Note that my airline settings uses unicode characters, and you should install
 patched fonts for powerline. You can find it
 [here](https://github.com/powerline/fonts).
+
+#### Javascript
+I use [vim-autoformat](https://github.com/Chiel92/vim-autoformat) for
+formating javascript code, it uses
+[js-beautify](https://github.com/einars/js-beautify). You should first install
+`node.js` and then execute `npm install -g js-beautify` to install it.
+
+After that, use `:Autoformat` when needed.
