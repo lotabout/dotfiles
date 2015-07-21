@@ -125,7 +125,7 @@ endif
 
 " Set possible file encodings
 "set fileencodings=ucs-bom,utf-8,cp936,gb18030,utf-16,big5,euc-jp,euc-kr,latin1
-set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
+set fileencodings=ucs-bom,utf-8,cp932,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
@@ -444,7 +444,12 @@ if use_vundle == 1
     " Bundle 'jcf/vim-latex.git'
     " Bundle 'rosenfeld/conque-term'
     "Bundle 'slimv.vim'
-    Bundle 'paredit.vim'
+    " Bundle 'paredit.vim'
+
+    " in replace of paredit.vim
+    Bundle 'vim-sexp'
+    Bundle 'tpope/vim-sexp-mappings-for-regular-people.git'
+
     " Bundle 'ivanov/vim-ipython.git'
     "Bundle 'Yggdroot/indentLine'
     Bundle 'https://github.com/davidhalter/jedi-vim.git'
@@ -551,8 +556,8 @@ map <F4> :VimwikiAll2HTML<cr> :exec '!cd '.VimwikiGet('path_html').'; ./sync.sh'
 
 "---------------------------------------------------------------------
 " vim-airline
-let g:airline_theme='zenburn'
-let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='wombat'
+" let g:airline#extensions#tabline#enabled = 1
 let g:airline_left_sep = ''
 let g:airline_left_alt_sep = ''
 let g:airline_right_sep = ''
