@@ -419,7 +419,7 @@ if use_vundle == 1
     Bundle 'abolish.vim'
 
     " for kill ring like in emacs
-    Bundle "yankstack"
+    " Bundle 'yankstack'  " not work well with other part of my configuration
 
     " powerline alternative; for better status line
     Plugin 'bling/vim-airline'
@@ -633,7 +633,6 @@ if has('nvim')
     tnoremap <A-j> <C-\><C-n><C-w>j
     tnoremap <A-k> <C-\><C-n><C-w>k
     tnoremap <A-l> <C-\><C-n><C-w>l
-
 else
     "--------------------------------------------------
     " vim specified settings
