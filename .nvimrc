@@ -98,7 +98,7 @@ syntax enable
 if has("gui_running")
     "colorscheme zenburn
     colorscheme obsidian
-    set guifont=Dejavu\ Sans\ Mono\ 11
+    set guifont=Dejavu\ Sans\ Mono\ for\ Powerline\ 11,Dejavu\ Sans\ Mono\ 11
 elseif &t_Co == 256
     "colorscheme zenburn
     colorscheme obsidian
@@ -409,14 +409,22 @@ if use_vundle == 1
     Bundle "Align"
     " Bundle 'matchit.zip'
     Bundle "ervandew/supertab"
+
+    " for word wraps for japanese and chinese
     Bundle 'autofmt'
 
     "Bundle 'mru.vim'
+
+    " bettern substitution support
     Bundle 'abolish.vim'
 
-    "Bundle 'Valloric/YouCompleteMe'
+    " for kill ring like in emacs
+    Bundle "yankstack"
+
+    " powerline alternative; for better status line
     Plugin 'bling/vim-airline'
 
+    " enhance the format function (press '=' key)
     Plugin 'Chiel92/vim-autoformat'
 
     "------------------------------------------------------------------
@@ -425,10 +433,13 @@ if use_vundle == 1
     "Bundle 'epeli/slimux'
     Bundle 'lotabout/slimux'
     Bundle 'fakeclip'
+
+    " search files/MRUs easily (by press 'Ctrl-p' in normal mode)
     Bundle 'ctrlp.vim'
 
     " work with git
     Bundle 'fugitive.vim'
+
     " Bundle 'https://github.com/oplatek/Conque-Shell'
 
     "------------------------------------------------------------------
@@ -458,6 +469,7 @@ if use_vundle == 1
     Bundle "mattn/emmet-vim"
 
     "Bundle 'Rip-Rip/clang_complete'
+    "Bundle 'Valloric/YouCompleteMe'
 
     " for javascript
     Plugin 'marijnh/tern_for_vim'
@@ -525,10 +537,13 @@ let g:slimux_racket_keybindings=1
 let g:slimux_racket_leader=';'
 let g:slimux_racket_xrepl=1
 
-
 "---------------------------------------------------------------------
 " fakeclip
 let g:fakeclip_terminal_multiplexer_type = "tmux"
+
+"---------------------------------------------------------------------
+" ctrlp
+let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files']
 
 "---------------------------------------------------------------------
 " autofmt
