@@ -436,6 +436,7 @@ if use_vundle == 1
 
     " search files/MRUs easily (by press 'Ctrl-p' in normal mode)
     Bundle 'ctrlp.vim'
+    Plugin 'JazzCore/ctrlp-cmatcher'
 
     " work with git
     Bundle 'fugitive.vim'
@@ -446,7 +447,7 @@ if use_vundle == 1
     " Support more filetype specific feature
     "------------------------------------------------------------------
     Bundle 'The-NERD-Commenter'
-    "Plugin 'UltiSnips'
+    Plugin 'UltiSnips'
     Bundle "honza/vim-snippets"
 
     Plugin 'Syntastic' " syntax checker
@@ -544,6 +545,10 @@ let g:fakeclip_terminal_multiplexer_type = "tmux"
 "---------------------------------------------------------------------
 " ctrlp
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files']
+
+" use ctrlp-cmatcher for mathing items.
+" if you do not use it, disable the following line.
+let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
 
 "---------------------------------------------------------------------
 " autofmt
