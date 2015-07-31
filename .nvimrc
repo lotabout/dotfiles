@@ -19,7 +19,7 @@ if has('nvim')
 endif
 
 " use FZF(https://github.com/junegunn/fzf) if it exists
-if isdirectory($HOME . "/.fzf")
+if executable('fzf')
     set rtp+=~/.fzf
 endif
 
@@ -227,6 +227,12 @@ runtime macros/matchit.vim
 
 " grep, ignore some directories.
 set grepprg=grep\ -nrI\ --exclude-dir=target\ --exclude-dir=tmp\ --exclude=\"*.min.js\"\ --exclude=\"tags\"\ $*\ /dev/null
+
+" The Silver Searcher
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+endif
 
 "----------------------------------------------------------------------
 " Extra Mappings
@@ -440,9 +446,11 @@ if use_vundle == 1
     Bundle 'lotabout/slimux'
     Bundle 'fakeclip'
 
+    Bundle 'rking/ag.vim'
+
     " search files/MRUs easily (by press 'Ctrl-p' in normal mode)
     " use ctrlp only when FZF do not exist
-    if !isdirectory($HOME . "/.fzf")
+    if !executable('fzf')
         Bundle 'ctrlp.vim'
         Plugin 'JazzCore/ctrlp-cmatcher'
     endif
@@ -559,7 +567,7 @@ let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files']
 " if you do not use it, disable the following line.
 let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
 
-if isdirectory($HOME . "/.fzf")
+if executable('fzf')
     nmap <C-p> :FZF<CR>
 endif
 
