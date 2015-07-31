@@ -62,3 +62,9 @@ formating javascript code, it uses
 
 After that, use `:Autoformat` when needed.
 
+### quicksearch
+Normally I use grep for search, but
+[ag](https://github.com/ggreer/the_silver_searcher) would be faster. The
+configuration will auto-detect the installation and use it as the default
+search command for `:grep`
+
