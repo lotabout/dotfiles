@@ -18,6 +18,11 @@ if has('nvim')
     set rtp+=~/.vim/
 endif
 
+" use FZF(https://github.com/junegunn/fzf) if it exists
+if isdirectory($HOME . "/.fzf")
+    set rtp+=~/.fzf
+endif
+
 " Inform that the script is written in UTF-8 (including special characters)
 scriptencoding utf-8
 
@@ -398,6 +403,7 @@ if use_vundle == 1
     "------------------------------------------------------------------
     " Enhance Basic functionality
     "------------------------------------------------------------------
+    Plugin 'justinmk/vim-sneak'
     Bundle 'https://github.com/xolox/vim-misc.git'
     Bundle 'https://github.com/xolox/vim-session.git'
     Bundle 'https://github.com/kshenoy/vim-signature'
@@ -435,8 +441,11 @@ if use_vundle == 1
     Bundle 'fakeclip'
 
     " search files/MRUs easily (by press 'Ctrl-p' in normal mode)
-    Bundle 'ctrlp.vim'
-    Plugin 'JazzCore/ctrlp-cmatcher'
+    " use ctrlp only when FZF do not exist
+    if !isdirectory($HOME . "/.fzf")
+        Bundle 'ctrlp.vim'
+        Plugin 'JazzCore/ctrlp-cmatcher'
+    endif
 
     " work with git
     Bundle 'fugitive.vim'
@@ -549,6 +558,10 @@ let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files']
 " use ctrlp-cmatcher for mathing items.
 " if you do not use it, disable the following line.
 let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
+
+if isdirectory($HOME . "/.fzf")
+    nmap <C-p> :FZF<CR>
+endif
 
 "---------------------------------------------------------------------
 " autofmt

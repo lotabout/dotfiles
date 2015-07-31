@@ -47,6 +47,13 @@ cd ~/.vim/bundle/ctrlp-cmatcher
 ./install.sh
 ```
 
+Recently I found that [FZF](https://github.com/junegunn/fzf) is a better
+alternative to ctrlp, so the following is the installation process:
+```
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+```
+
 #### Javascript
 I use [vim-autoformat](https://github.com/Chiel92/vim-autoformat) for
 formating javascript code, it uses
