@@ -230,8 +230,8 @@ set grepprg=grep\ -nrI\ --exclude-dir=target\ --exclude-dir=tmp\ --exclude=\"*.m
 
 " The Silver Searcher
 if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
+    " Use ag over grep
+    set grepprg=ag\ --nogroup\ --nocolor\ --ignore-dir\ target\ --ignore-dir\ tmp\ --ignore\ \"*.min.js\"\ --ignore\ \"tags\"
 endif
 
 "----------------------------------------------------------------------
