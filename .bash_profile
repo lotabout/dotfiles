@@ -98,19 +98,18 @@ fi
 # less command with color
 export LESS="-MRg"
 
-if $(which gvim > /dev/null ) ;then
+if hash gvim 2> /dev/null;then
     alias vim='gvim -v'
     alias vi='gvim -v'
 fi
 
-if $(which nvim > /dev/null ) ;then
-    alias vim='gvim -v'
+if hash nvim 2> /dev/null ;then
     alias vi='nvim'
 fi
 
 if [ "$(uname)" == "Darwin" ]; then
     # Do something under Mac OS X platform
-    alias ls="ls -G"
+    alias ls="ls -Gw"
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
