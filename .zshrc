@@ -1,6 +1,8 @@
 # turn off bell
 # set bell-style none
 
+#==============================================================================
+# zsh settings
 function color_my_prompt {
     local __num_of_jobs="%j"
     local __user_and_host="%F{154}%n@%m%f"
@@ -14,6 +16,46 @@ function color_my_prompt {
 # so that PS1 is replaced
 setopt prompt_subst
 color_my_prompt
+
+#------------------------------------------------------------
+# zsh options
+
+export HISTFILE=~/.zsh_history
+export HISTSIZE=50000
+export SAVEHIST=50000
+setopt inc_append_history
+
+#/v/c/p/p => /var/cache/pacman/pkg
+setopt complete_in_word
+
+autoload -U compinit
+compinit
+
+# == copied from archwiki ==
+# allow approximate
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
+
+# tab completion for PID :D
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*' force-list always
+
+# cd not select parent dir
+zstyle ':completion:*:cd:*' ignore-parents parent pwd
+
+# useful for path editing Ñ backward-delete-word, but with / as additional delimiter
+backward-delete-to-slash () {
+  local WORDCHARS=${WORDCHARS//\//}
+  zle .backward-delete-word
+}
+zle -N backward-delete-to-slash
+
+# zsh keybindings
+bindkey '\ep' insert-last-word # bind to Alt-p
+
+#==============================================================================
+# settings
 
 ## source profile
 if [ -r $HOME/.profile ]; then
