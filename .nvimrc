@@ -39,8 +39,10 @@ filetype plugin indent on
 set autoread
 
 " Set map leader
-let mapleader = ","
-let g:mapleader = ","
+"let mapleader = ","
+"let g:mapleader = ","
+let mapleader = "\<Space>"
+let g:mapleader = "\<Space>"
 
 " Show line number
 set nu
@@ -208,13 +210,24 @@ autocmd BufReadPost *
 noremap <Leader>mm mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 " Toggle paste mode on and off
-nmap <leader>p :setlocal paste!<cr>
+" nmap <leader>p :setlocal paste!<cr>
 
 " strip the spaces at the end of line
 nmap <leader><Space> :%s/\s\+$//<cr>
 
 " merge multiple continuous lines into one.
 nmap <leader><cr> :%s/\(^[[:blank:]]*\n\)\{2,}/\r/<cr>
+
+" quick access to system's clipboard
+vmap <leader>y "+y
+vmap <leader>Y "+Y
+vmap <leader>p "+p
+vmap <leader>P "+P
+nmap <leader>p "+p
+nmap <leader>P "+P
+
+" quick save
+nmap <leader>w :w<CR>
 
 "===============================================================================
 " Settings for Programming
@@ -305,6 +318,9 @@ nnoremap <A-h> <C-w>h
 nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
+
+" diable command window
+nnoremap q: :q
 
 "----------------------------------------------------------------------
 " Show tabs (indent lines)
@@ -418,7 +434,7 @@ if use_vundle == 1
     Bundle 'repeat.vim'
     Bundle 'Gundo'
     Bundle 'yueyoum/vim-alignment'
-    Bundle "Align"
+    " Bundle "Align"
     " Bundle 'matchit.zip'
     Bundle "ervandew/supertab"
 
@@ -435,6 +451,8 @@ if use_vundle == 1
 
     " powerline alternative; for better status line
     Plugin 'bling/vim-airline'
+
+    Plugin 'terryma/vim-expand-region'
 
     " enhance the format function (press '=' key)
     Plugin 'Chiel92/vim-autoformat'
@@ -594,6 +612,17 @@ let wiki_1.ext = '.md'
 
 let g:vimwiki_list = [wiki_1]
 map <F4> :VimwikiAll2HTML<cr> :exec '!cd '.VimwikiGet('path_html').'; ./sync.sh'<cr>
+
+" Disable vimwiki mappings (to remove bindings begins with <leader>w)
+nmap <Plug>NoVimwikiINdex <Plug>VimwikiIndex
+nmap <Plug>NoVimwikiTabIndex <Plug>VimwikiTabIndex
+nmap <Plug>NoVimwikiUISelect <Plug>VimwikiUISelect
+nmap <Plug>NoVimwikiDiaryIndex <Plug>VimwikiDiaryIndex
+nmap <Plug>NoVimwikiMakeDiaryNote <Plug>VimwikiMakeDiaryNote
+nmap <Plug>NoVimwikiTabMakeDiaryNote <Plug>VimwikiTabMakeDiaryNote
+nmap <Plug>NoVimwikiDiaryGenerateLinks <Plug>VimwikiDiaryGenerateLinks
+
+nmap <leader>` <Plug>VimwikiIndex
 
 "---------------------------------------------------------------------
 " vim-airline
