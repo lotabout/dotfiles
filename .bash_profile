@@ -74,6 +74,13 @@ if [ -f /usr/doc/git-*/contrib/completion/git-completion.bash ]; then
     source /usr/doc/git-*/contrib/completion/git-completion.bash
 fi
 
+# load completion for homebrew installed software
+if [ -d /usr/local/etc/bash_completion.d ]; then
+    source /usr/local/etc/bash_completion.d/git-completion.bash &> /dev/null
+    source /usr/local/etc/bash_completion.d/ag.bashcomp.sh &> /dev/null
+    source /usr/local/etc/bash_completion.d/npm &> /dev/null
+fi
+
 # ubuntu completion
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
