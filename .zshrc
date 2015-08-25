@@ -6,7 +6,7 @@
 function color_my_prompt {
     local __num_of_jobs="%j"
     local __user_and_host="%F{154}%n@%m%f"
-    local __cur_location="%F{012}%1d%f"
+    local __cur_location="%F{012}%1~%f"
     local __git_branch='%F{009}$(git symbolic-ref HEAD 2> /dev/null | cut -d/ -f3 | awk "{print \" (\"\$0\") \"}")%f'
     local __prompt_tail="%F{013}$%f"
     local __last_color="$reset_color"

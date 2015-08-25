@@ -10,3 +10,7 @@
 # ignore .emacs.d/* except emacs.d/elisp
 .emacs.d/*
 !.emacs.d/elisp
+
+# eclim related
+.nvim/eclim
+.nvim/plugin/eclim*
