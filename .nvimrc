@@ -213,7 +213,7 @@ noremap <Leader>mm mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 " nmap <leader>p :setlocal paste!<cr>
 
 " strip the spaces at the end of line
-nmap <leader><Space> :%s/\s\+$//<cr>
+nmap <leader><Space><Space> :%s/\s\+$//<cr>
 
 " merge multiple continuous lines into one.
 nmap <leader><cr> :%s/\(^[[:blank:]]*\n\)\{2,}/\r/<cr>
@@ -319,9 +319,6 @@ nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
 
-" diable command window
-nnoremap q: :q
-
 "----------------------------------------------------------------------
 " Show tabs (indent lines)
 
@@ -343,6 +340,15 @@ let g:indentLine_char = "│"
 
 "===============================================================================
 " settings for manually installed plugins
+
+"----------------------------------------------------------------------
+" BufExplorer
+
+" disable default keybinding
+noremap <Plug>NoBufExplorerHorizontalSplit :BufExplorerHorizontalSplit<CR>
+noremap <Plug>NoBufExplorerVerticalSplit :BufExplorerVerticalSplit<CR>
+
+noremap <silent> <C-e> :BufExplorer<CR>
 
 "----------------------------------------------------------------------
 " Tagbar
@@ -426,9 +432,9 @@ if use_vundle == 1
     " Enhance Basic functionality
     "------------------------------------------------------------------
     Plugin 'justinmk/vim-sneak'
-    Bundle 'https://github.com/xolox/vim-misc.git'
-    Bundle 'https://github.com/xolox/vim-session.git'
-    Bundle 'https://github.com/kshenoy/vim-signature'
+    "Bundle 'https://github.com/xolox/vim-misc.git'
+    "Bundle 'https://github.com/xolox/vim-session.git'
+    "Bundle 'https://github.com/kshenoy/vim-signature'
     Bundle 'moll/vim-bbye'
     Bundle 'surround.vim'
     Bundle 'repeat.vim'
@@ -501,7 +507,7 @@ if use_vundle == 1
     "Bundle 'Yggdroot/indentLine'
     Bundle 'https://github.com/davidhalter/jedi-vim.git'
 
-    "Bundle 'https://github.com/wlangstroth/vim-racket'
+    Bundle 'https://github.com/wlangstroth/vim-racket'
     Bundle "mattn/emmet-vim"
 
     "Bundle 'Rip-Rip/clang_complete'
@@ -562,10 +568,10 @@ let g:SuperTabCrMapping = 1
 "----------------------------------------------------------------------
 " slimux
 let g:slimux_select_from_current_window = 1
-map <Leader>ss :SlimuxREPLSendLine<CR>
-vmap <Leader>ss :SlimuxREPLSendSelection<CR>
-map <Leader>sl :SlimuxShellLast<CR>
-map <leader>bl :SlimuxREPLSendBuffer<CR>
+map <Leader>s :SlimuxREPLSendLine<CR>
+vmap <Leader>s :SlimuxREPLSendSelection<CR>
+"map <Leader>sl :SlimuxShellLast<CR>
+"map <leader>bl :SlimuxREPLSendBuffer<CR>
 
 let g:slimux_scheme_keybindings=1
 let g:slimux_scheme_leader=';'
