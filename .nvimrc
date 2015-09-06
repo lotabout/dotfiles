@@ -13,6 +13,10 @@
 "===============================================================================
 " General Settings
 
+" Inform that the script is written in UTF-8 (including special characters)
+set encoding=utf-8
+scriptencoding utf-8
+
 " redirect runtime path to .vim, so that vim and neovim can share directories.
 if has('nvim')
     set rtp+=~/.vim/
@@ -22,9 +26,6 @@ endif
 if executable('fzf')
     set rtp+=~/.fzf
 endif
-
-" Inform that the script is written in UTF-8 (including special characters)
-scriptencoding utf-8
 
 " Use Vim settings instead of vi settings.
 set nocompatible
@@ -396,7 +397,6 @@ endfunction
 "----------------------------------------------------------------------
 " vimim
 
-set encoding=utf-8
 "let fileencodings=ucs-bom,utf8,chinese,taiwan,ansi
 if has ("win32")
     set guifont=Courier_New:h12:w7
