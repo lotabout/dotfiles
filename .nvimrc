@@ -175,9 +175,9 @@ noremap gk k
 
 " Close current buffer
 " map <leader>q :bdelete<cr>
-map <leader>k :call MyBufferDelete()<cr>
+" nmap <leader>k :call MyBufferDelete()<cr>
 " need vim-bbye
-map <leader>q :Bdelete<cr>
+nmap <leader>q :Bdelete<cr>
 
 function! MyBufferDelete ()
     let s:totalnumber = len(filter(range(1,bufnr('$')),'buflisted(v:val)'))
