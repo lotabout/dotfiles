@@ -10,7 +10,7 @@ function color_my_prompt {
     local __git_branch='%F{009}$(git symbolic-ref HEAD 2> /dev/null | cut -d/ -f3 | awk "{print \" (\"\$0\") \"}")%f'
     local __prompt_tail="%F{013}$%f"
     local __last_color="$reset_color"
-    export PROMPT="[$__num_of_jobs][$__user_and_host $__cur_location]$__git_branch$__prompt_tail$__last_color "
+    export PROMPT="[$__num_of_jobs][$__user_and_host $__cur_location]$__git_branch"$'\n'"$__prompt_tail$__last_color "
 }
 
 # so that PS1 is replaced
