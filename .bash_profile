@@ -105,6 +105,8 @@ fi
 # enable some bash options
 shopt -s histverify
 shopt -s histappend
+HISTSIZE=10000
+HISTFILESIZE=10000
 PROMPT_COMMAND='history -a'
 
 # udisk_functions
