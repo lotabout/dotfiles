@@ -44,7 +44,13 @@ let s:path=expand("<sfile>:p:h")."/"
 "let g:save_completefunc = &completefunc
 "let &completefunc = 'VimIM_Wubi'
  
-inoremap<silent><expr> <C-L> <SID>Toggle()
+if !hasmapto('<SID>Toggle()')
+    if has('gui_running')
+        inoremap<silent><expr> <C-/> <SID>Toggle()
+    else
+        inoremap<silent><expr> <C-_> <SID>Toggle()
+    endif
+endif
 
 function VimIM_Wubi(findstart, keyboard)
     "补全函数
