@@ -514,10 +514,15 @@ if use_vundle == 1
     "Bundle 'Valloric/YouCompleteMe'
 
     " for javascript
-    Plugin 'marijnh/tern_for_vim'
+    "Plugin 'marijnh/tern_for_vim'
 
 
-    Plugin 'tpope/vim-fireplace'
+    "Plugin 'tpope/vim-fireplace'
+    "Plugin 'VimClojure'
+
+    " for rust
+    Plugin 'rust-lang/rust.vim'
+    Plugin 'racer-rust/vim-racer'
 
     "------------------------------------------------------------------
     " Others
@@ -675,6 +680,13 @@ function! UnMinify()
     %s/[^\s]\zs[=&|]\+\ze[^\s]/ \0 /g
     normal ggVG=
 endfunction
+
+"----------------------------------------------------------------------
+" rust
+
+" racer : rust auto completion
+let g:racer_cmd = "~/bin/racer/target/release/racer"
+let $RUST_SRC_PATH = "/usr/local/src/rust/src/"
 
 "===============================================================================
 " client specified settings
