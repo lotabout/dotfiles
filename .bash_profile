@@ -207,6 +207,7 @@ function pac() {
         source $localenv/bin/activate
     fi
 }
+
 function pdc() {
     # short for python deactivate
     deactivate
@@ -226,6 +227,19 @@ alias m8='alias g8="cd `pwd`"; mdump'
 alias m9='alias g9="cd `pwd`"; mdump'
 touch ~/.bookmarks
 source ~/.bookmarks
+
+# use polipo for proxy
+# you'll have to start polipo first
+function ppp() {
+    export http_proxy=http://localhost:8123
+    export https_proxy=https://localhost:8123
+    export socks_proxy=socks://localhost:8123
+    echo "exporting proxy settings for polipo done."
+}
+
+function polipo_shadowsocks(){
+    polipo socksParentProxy=localhost:1080
+}
 
 if [ "$(uname)" == "Darwin" ]; then
     if [ -f $HOME/.profile ]; then
