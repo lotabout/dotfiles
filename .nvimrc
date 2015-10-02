@@ -517,7 +517,7 @@ if use_vundle == 1
     "Plugin 'marijnh/tern_for_vim'
 
 
-    "Plugin 'tpope/vim-fireplace'
+    Plugin 'tpope/vim-fireplace'
     "Plugin 'VimClojure'
 
     " for rust
