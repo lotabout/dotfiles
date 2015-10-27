@@ -431,7 +431,7 @@ if use_vundle == 1
     "------------------------------------------------------------------
     " Enhance Basic functionality
     "------------------------------------------------------------------
-    Plugin 'justinmk/vim-sneak'
+    "Plugin 'justinmk/vim-sneak'
     "Bundle 'https://github.com/xolox/vim-misc.git'
     "Bundle 'https://github.com/xolox/vim-session.git'
     "Bundle 'https://github.com/kshenoy/vim-signature'
@@ -450,7 +450,7 @@ if use_vundle == 1
     "Bundle 'mru.vim'
 
     " bettern substitution support
-    Bundle 'abolish.vim'
+    "Bundle 'abolish.vim'
 
     " for kill ring like in emacs
     " Bundle 'yankstack'  " not work well with other part of my configuration
@@ -462,6 +462,8 @@ if use_vundle == 1
 
     " enhance the format function (press '=' key)
     Plugin 'Chiel92/vim-autoformat'
+
+    Plugin 'MattesGroeger/vim-bookmarks'
 
     "------------------------------------------------------------------
     " Integration with Linux environment
@@ -483,6 +485,9 @@ if use_vundle == 1
     Bundle 'fugitive.vim'
 
     " Bundle 'https://github.com/oplatek/Conque-Shell'
+
+    Plugin 'DirDiff.vim'
+    "Plugin 'szw/vim-tags'
 
     "------------------------------------------------------------------
     " Support more filetype specific feature
@@ -518,11 +523,10 @@ if use_vundle == 1
 
 
     Plugin 'tpope/vim-fireplace'
-    "Plugin 'VimClojure'
 
     " for rust
-    Plugin 'rust-lang/rust.vim'
-    Plugin 'racer-rust/vim-racer'
+    "Plugin 'rust-lang/rust.vim'
+    "Plugin 'racer-rust/vim-racer'
 
     "------------------------------------------------------------------
     " Others
@@ -599,6 +603,16 @@ let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
 if executable('fzf')
     nmap <C-p> :FZF<CR>
 endif
+
+"---------------------------------------------------------------------
+" vim-bookmarks
+nmap <leader>i <Plug>BookmarkAnnotate
+nmap <leader>j <Plug>BookmarkNext
+nmap <leader>k <Plug>BookmarkPrev
+nmap <leader>l <Plug>BookmarkShowAll
+nmap <F2> <Plug>BookmarkNext
+
+let g:bookmark_auto_save = 1
 
 "---------------------------------------------------------------------
 " autofmt
