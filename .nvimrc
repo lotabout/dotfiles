@@ -57,7 +57,7 @@ set wildmode=longest,list,full
 
 " Ignore compiled files
 set wildignore+=*.o,*~,*.pyc
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*
+"set wildignore+=*/.git/*,*/.hg/*,*/.svn/*
 
 " Always show current position
 set ruler
@@ -408,10 +408,97 @@ endif
 
 
 "===============================================================================
-" vundle settings
-let use_vundle = 1 " 0 = not use vundle
+" package manager settings
+let package_manager = "vim-plug"
 
-if use_vundle == 1
+if package_manager == "vim-plug"
+    call plug#begin('~/.vim/plugged')
+
+    "------------------------------------------------------------------
+    " Enhance Basic functionality
+    "------------------------------------------------------------------
+    Plug 'moll/vim-bbye'
+    Plug 'surround.vim'
+    Plug 'repeat.vim'
+    Plug 'yueyoum/vim-alignment'
+    Plug 'ervandew/supertab'
+
+    " for word wraps for japanese and chinese
+    Plug 'autofmt'
+
+    " powerline alternative; for better status line
+    Plug 'bling/vim-airline'
+
+    Plug 'terryma/vim-expand-region'
+
+    " enhance the format function (press '=' key)
+    Plug 'Chiel92/vim-autoformat'
+
+    Plug 'MattesGroeger/vim-bookmarks'
+
+    "------------------------------------------------------------------
+    " Integration with Linux environment
+    "------------------------------------------------------------------
+    Plug 'lotabout/slimux'
+    Plug 'fakeclip'
+
+    Plug 'rking/ag.vim'
+
+    " search files/MRUs easily (by press 'Ctrl-p' in normal mode)
+    " use ctrlp only when FZF do not exist
+    if !executable('fzf')
+        Plug 'ctrlp.vim'
+        Plug 'JazzCore/ctrlp-cmatcher'
+    endif
+
+    " work with git
+    Plug 'fugitive.vim'
+
+    Plug 'DirDiff.vim'
+
+    "------------------------------------------------------------------
+    " Support more filetype specific feature
+    "------------------------------------------------------------------
+    Plug 'The-NERD-Commenter'
+    Plug 'UltiSnips'
+    Plug 'honza/vim-snippets'
+
+    Plug 'Syntastic' " syntax checker
+
+    " Plug 'LaTeX-Suite-aka-Vim-LaTeX'
+    " Plug 'jcf/vim-latex.git'
+    " Plug 'rosenfeld/conque-term'
+    "Plug 'slimv.vim'
+    " Plug 'paredit.vim'
+
+    " in replace of paredit.vim
+    Plug 'vim-sexp', {'for': ['clojure', 'scheme']}
+    Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': ['clojure', 'scheme']}
+
+    " Plug 'ivanov/vim-ipython.git'
+    "Plug 'Yggdroot/indentLine'
+    Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
+    Plug 'https://github.com/wlangstroth/vim-racket', {'for': 'racket'}
+
+    Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml']}
+
+    "Plug 'Rip-Rip/clang_complete'
+    "Plug 'Valloric/YouCompleteMe'
+
+    " for javascript
+    "Plug 'marijnh/tern_for_vim'
+
+    Plug 'tpope/vim-fireplace', {'for': 'clojure'}
+
+    "------------------------------------------------------------------
+    " Others
+    "------------------------------------------------------------------
+    "Plug 'christoomey/vim-tmux-navigator'
+    "Plug 'https://github.com/mattn/calendar-vim'
+    Plug 'vimwiki'
+
+    call plug#end()
+elseif package_manager == 'vundle'
     set nocompatible               " be iMproved
     filetype off                   " required!
 
@@ -554,7 +641,7 @@ if use_vundle == 1
     "
     " see :h vundle for more details or wiki for FAQ
     " Put your non-Plugin stuff after this line
-else
+elseif package_manager == "pathogen"
     execute pathogen#infect()
 endif
 

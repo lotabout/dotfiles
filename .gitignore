@@ -6,6 +6,8 @@
 # ignore bundle directory of vim/neovim
 .vim/bundle
 .nvim/bundle
+.vim/plugged
+.nvim/plugged
 
 # ignore .emacs.d/* except emacs.d/elisp
 .emacs.d/*
