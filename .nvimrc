@@ -352,49 +352,6 @@ noremap <Plug>NoBufExplorerVerticalSplit :BufExplorerVerticalSplit<CR>
 noremap <silent> <C-e> :BufExplorer<CR>
 
 "----------------------------------------------------------------------
-" Tagbar
-
-" nmap <silent> <leader>tl :TlistToggle<cr>
-nmap <silent> <leader>tl :TagbarToggle<cr>
-nmap <silent> <leader>ne :NERDTreeToggle<cr>
-nmap <silent> <F8> :call  ToggleNERDTreeAndTagbar()<cr>
-
-function! ToggleNERDTreeAndTagbar()
-    let w:jumpbacktohere = 1
-
-    " Detect which plugins are open
-    if exists('t:NERDTreeBufName')
-        let nerdtree_open = bufwinnr(t:NERDTreeBufName) != -1
-    else
-        let nerdtree_open = 0
-    endif
-    let tagbar_open = bufwinnr('__Tagbar__') != -1
-
-    " Perform the appropriate action
-    if nerdtree_open && tagbar_open
-        NERDTreeClose
-        TagbarClose
-    elseif nerdtree_open
-        TagbarOpen
-    elseif tagbar_open
-        NERDTree
-    else
-        NERDTree
-        TagbarOpen
-    endif
-
-    " Jump back to the original window
-    for window in range(1, winnr('$'))
-        execute window . 'wincmd w'
-        if exists('w:jumpbacktohere')
-            unlet w:jumpbacktohere
-            break
-        endif
-    endfor
-endfunction
-
-
-"----------------------------------------------------------------------
 " vimim
 
 "let fileencodings=ucs-bom,utf8,chinese,taiwan,ansi
@@ -422,6 +379,9 @@ if package_manager == "vim-plug"
     Plug 'repeat.vim'
     Plug 'yueyoum/vim-alignment'
     Plug 'ervandew/supertab'
+    "Plug 'EasyMotion'
+    Plug 'Tagbar'
+    Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
     " for word wraps for japanese and chinese
     Plug 'autofmt'
@@ -499,6 +459,8 @@ if package_manager == "vim-plug"
 
     call plug#end()
 elseif package_manager == 'vundle'
+    "------------------------------------------------------------------
+    " Vundle Settings
     set nocompatible               " be iMproved
     filetype off                   " required!
 
@@ -674,6 +636,48 @@ let g:slimux_scheme_leader=';'
 let g:slimux_racket_keybindings=1
 let g:slimux_racket_leader=';'
 let g:slimux_racket_xrepl=1
+
+"----------------------------------------------------------------------
+" Tagbar
+
+" nmap <silent> <leader>tl :TlistToggle<cr>
+nmap <silent> <leader>tl :TagbarToggle<cr>
+nmap <silent> <leader>ne :NERDTreeToggle<cr>
+nmap <silent> <F8> :call  ToggleNERDTreeAndTagbar()<cr>
+
+function! ToggleNERDTreeAndTagbar()
+    let w:jumpbacktohere = 1
+
+    " Detect which plugins are open
+    if exists('t:NERDTreeBufName')
+        let nerdtree_open = bufwinnr(t:NERDTreeBufName) != -1
+    else
+        let nerdtree_open = 0
+    endif
+    let tagbar_open = bufwinnr('__Tagbar__') != -1
+
+    " Perform the appropriate action
+    if nerdtree_open && tagbar_open
+        NERDTreeClose
+        TagbarClose
+    elseif nerdtree_open
+        TagbarOpen
+    elseif tagbar_open
+        NERDTree
+    else
+        NERDTree
+        TagbarOpen
+    endif
+
+    " Jump back to the original window
+    for window in range(1, winnr('$'))
+        execute window . 'wincmd w'
+        if exists('w:jumpbacktohere')
+            unlet w:jumpbacktohere
+            break
+        endif
+    endfor
+endfunction
 
 "---------------------------------------------------------------------
 " fakeclip
