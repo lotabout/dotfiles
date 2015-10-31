@@ -402,7 +402,10 @@ if package_manager == "vim-plug"
     Plug 'lotabout/slimux'
     Plug 'fakeclip'
 
-    Plug 'rking/ag.vim'
+    "Plug 'rking/ag.vim'
+
+    Plug 'Shougo/Vimproc.vim', {'do': 'make'}
+    Plug 'Shougo/Unite.vim'
 
     " search files/MRUs easily (by press 'Ctrl-p' in normal mode)
     " use ctrlp only when FZF do not exist
@@ -684,6 +687,25 @@ endfunction
 let g:fakeclip_terminal_multiplexer_type = "tmux"
 
 "---------------------------------------------------------------------
+" Unite.vim
+let g:unite_prompt='» '
+"let g:unite_enable_start_insert=1
+let g:unite_data_directory='~/.vim/.cache/unite'
+
+if executable('ag')
+    let g:unite_source_grep_command = 'ag'
+    let g:unite_source_grep_default_opts =
+          \ '--line-numbers --nocolor --nogroup --hidden --ignore ' .
+          \  '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'''
+    let g:unite_source_grep_recursive_opt = ''
+endif
+
+nnoremap <leader>/ :Unite grep:.<cr>
+"nnoremap <C-p> :Unite -start-insert file_rec/async:!<cr>
+nnoremap <leader>b :Unite buffer<cr>
+nnoremap <leader>. :UniteResume<cr>
+
+"---------------------------------------------------------------------
 " ctrlp
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files']
 
@@ -697,10 +719,10 @@ endif
 
 "---------------------------------------------------------------------
 " vim-bookmarks
-nmap <leader>i <Plug>BookmarkAnnotate
+"nmap <leader>i <Plug>BookmarkAnnotate
 nmap <leader>j <Plug>BookmarkNext
 nmap <leader>k <Plug>BookmarkPrev
-nmap <leader>l <Plug>BookmarkShowAll
+"nmap <leader>l <Plug>BookmarkShowAll
 nmap <F2> <Plug>BookmarkNext
 
 let g:bookmark_auto_save = 1
