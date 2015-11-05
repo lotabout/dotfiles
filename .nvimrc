@@ -379,7 +379,7 @@ if package_manager == "vim-plug"
     Plug 'repeat.vim'
     Plug 'yueyoum/vim-alignment'
     Plug 'ervandew/supertab'
-    "Plug 'EasyMotion'
+    Plug 'EasyMotion'
     Plug 'Tagbar'
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
@@ -455,12 +455,16 @@ if package_manager == "vim-plug"
 
     Plug 'tpope/vim-fireplace', {'for': 'clojure'}
 
+    " for markdown
+    Plug 'godlygeek/tabular'
+    Plug 'plasticboy/vim-markdown'
+
     "------------------------------------------------------------------
     " Others
     "------------------------------------------------------------------
     "Plug 'christoomey/vim-tmux-navigator'
     "Plug 'https://github.com/mattn/calendar-vim'
-    Plug 'vimwiki'
+    "Plug 'vimwiki'
 
     call plug#end()
 elseif package_manager == 'vundle'
@@ -586,8 +590,8 @@ elseif package_manager == 'vundle'
     " Others
     "------------------------------------------------------------------
     "Bundle 'christoomey/vim-tmux-navigator'
-    "Bundle 'https://github.com/mattn/calendar-vim'
-    Bundle 'vimwiki'
+    Bundle 'https://github.com/mattn/calendar-vim'
+    "Bundle 'vimwiki'
     "Plugin 'vim-orgmode'
 
     " non github repos
@@ -796,14 +800,14 @@ nnoremap <F5> :GundoToggle<CR>
 "---------------------------------------------------------------------
 " vimwiki
 let wiki_1 = {}
-let wiki_1.path = '~/Dropbox/vimwiki'
+let wiki_1.path = '~/Dropbox/wiki/vimwiki'
 "let wiki_1.path_html = '~/Dropbox/vimwiki_html'
 let wiki_1.path_html = '~/repos/vimwiki_html'
 let wiki_1.template_path= wiki_1.path_html . '/template'
 let wiki_1.template_default = 'default'
 let wiki_1.template_ext = '.htm'
-let wiki_1.syntax = 'markdown'
-let wiki_1.ext = '.md'
+"let wiki_1.syntax = 'markdown'
+"let wiki_1.ext = '.md'
 
 let g:vimwiki_list = [wiki_1]
 map <F4> :VimwikiAll2HTML<cr> :exec '!cd '.VimwikiGet('path_html').'; ./sync.sh'<cr>
@@ -871,6 +875,10 @@ endfunction
 " racer : rust auto completion
 let g:racer_cmd = "~/bin/racer/target/release/racer"
 let $RUST_SRC_PATH = "/usr/local/src/rust/src/"
+
+"----------------------------------------------------------------------
+" rust
+let g:vim_markdown_folding_disabled = 1
 
 "===============================================================================
 " client specified settings
