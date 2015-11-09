@@ -463,8 +463,10 @@ if package_manager == "vim-plug"
     " Others
     "------------------------------------------------------------------
     "Plug 'christoomey/vim-tmux-navigator'
-    "Plug 'https://github.com/mattn/calendar-vim'
+    Plug 'https://github.com/mattn/calendar-vim'
     "Plug 'vimwiki'
+    Plug 'https://github.com/xolox/vim-misc.git'
+    Plug 'xolox/vim-notes'
 
     call plug#end()
 elseif package_manager == 'vundle'
@@ -822,6 +824,18 @@ nmap <Plug>NoVimwikiTabMakeDiaryNote <Plug>VimwikiTabMakeDiaryNote
 nmap <Plug>NoVimwikiDiaryGenerateLinks <Plug>VimwikiDiaryGenerateLinks
 
 nmap <leader>` <Plug>VimwikiIndex
+
+"---------------------------------------------------------------------
+" Calendar.vim
+let g:calendar_diary=$HOME.'/Dropbox/wiki/diary'
+
+"---------------------------------------------------------------------
+" vim-notes
+let g:notes_directories = ['~/Dropbox/wiki/vimnotes']
+let g:notes_suffix = '.md'
+
+autocmd FileType notes vmap <buffer> <CR> :NoteFromSelectedText<CR>
+autocmd FileType notes nmap <buffer> <CR> gf
 
 "---------------------------------------------------------------------
 " vim-airline
