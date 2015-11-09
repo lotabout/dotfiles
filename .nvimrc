@@ -141,6 +141,36 @@ set ffs=unix,dos,mac
 " Turn backup off.
 " set nobackup
 
+" Change backup directory to a less annoying place under linux.
+if has("unix")
+    if isdirectory($HOME.'/.vim-backup') == 0
+        :silent !mkdir -p ~/.vim-backup > /dev/null 2>&1
+    endif
+    set backupdir-=.
+    set backupdir+=.
+    set backupdir-=~/
+    set backupdir^=~/.vim-backup
+    set backupdir^=./.vim-backup
+
+    if isdirectory($HOME.'/.vim-swap') == 0
+        :silent !mkdir -p ~/.vim-swap > /dev/null 2>&1
+    endif
+    set directory=./.vim-swap//
+    set directory+=~/.vim-swap//
+    set directory+=~/tmp//
+    set directory+=.
+
+    if exists('+undofile')
+        if isdirectory($HOME.'/.vim-undo') == 0
+            :silent !mkdir -p ~/.vim-undo > /dev/null 2>&1
+        endif
+
+        set undodir=./.vim-undo//
+        set undodir+=~/.vim-undo//
+        set undofile
+    endif
+endif
+
 "----------------------------------------------------------------------
 " Text, tab and indent related
 
