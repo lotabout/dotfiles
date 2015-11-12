@@ -1,0 +1,221 @@
+!============================
+! Xft setting
+!===============================
+Xft.antialias:  true
+!Xft.autohint:   true
+Xft.hinting:    true
+Xft.hintstyle:  hintmedium
+!Xft.hintstyle:  hintfull
+!Xft.dpi:        96
+
+! Mouse cursor
+Xcursor.theme: ComixCursors-LH-Opaque-White-Regular-Slim
+!
+!===============================
+! - Setting for xterm
+! --------------------
+*customization: -color
+XTerm*termName: xterm-256color
+XTerm*locale: true
+XTerm*utf8Title: true
+XTerm*fontMenu*fontdefault*Label: Default
+XTerm*faceName: DejaVu Sans Mono:pixelsize=13:antialias=true,xft:WenQuanYi Micro Hei Mono:pixelsize=17
+!XTerm*faceNameDoublesize:   DejaVu Sans Mono:pixelsize=11.5:antialias=true:Bold,xft:WenQuanYi Micro Hei Mono:pixelsize=14:Bold
+XTerm*faceNameDoublesize: xft:WenQuanYi Micro Hei:antialias=True
+XTerm*faceSize:  11
+XTerm*faceSize1: 11
+XTerm*faceSize2: 11
+XTerm*faceSize3: 11
+XTerm*faceSize4: 11
+XTerm*faceSize5: 11
+XTerm*faceSize6: 11
+!XTerm*cjkWidth:true
+XTerm*scrollBar: false
+XTerm*rightScrollBar: false
+XTerm*jumpScroll:  false
+XTerm*SaveLines: 1000
+!XTerm*background:  #0c0d0e
+!XTerm*foreground:  #7f8f9f
+XTerm*background:  #333333
+XTerm*foreground:  #e0e0b5
+XTerm*color0:      #101010
+XTerm*color1:      #705050
+! green + yellow
+XTerm*color2:      #60b48a
+XTerm*color3:      #f0dfaf
+! blue + pURple
+XTerm*color4:      #506070
+XTerm*color5:      #dc8cc3
+! cyan + white
+XTerm*color6:      #8cd0d3
+XTerm*color7:      #dcdccc
+! bright-black + bright-red
+XTerm*color8:      #000000
+XTerm*color9:      #dca3a3
+! bright-green + bright-yellow
+!XTerm*color10:     #c3bf9f
+XTerm*color10:     #f1cd6e
+XTerm*color11:     #f0dfaf
+! bright-blue + bright-pURple
+XTerm*color12:     #94bff3
+XTerm*color13:     #ec93d3
+! bright-cyan + bright-white
+XTerm*color14:     #93e0e3
+XTerm*color15:     #ffffff
+
+! fix some problems with emacs <backspace> 
+! XTerm.ttyModes:         erase ^?
+! XTerm.VT100.Translations: \
+!         #override <Key>BackSpace: string(0x7f)\n\
+! 		  <Key>Delete:    string(0x1b) string("[3~")
+! fix <Alt> key
+XTerm.VT100.EightBitInput: false
+XTerm.VT100.EightBitControl : false
+XTerm.VT100.EightBitOutput : true
+XTerm.metaSendsEscape: true
+! Disable Alt+Enter=maximize
+XTerm.fullscreen: never
+XTerm.*.backarrowKey: false
+
+
+!===============================
+! for Uxterm
+!===============================
+UXTerm*termName: xterm-256color
+UXTerm*locale: true
+UXTerm*utf8Title: true
+UXTerm*fontMenu*fontdefault*Label: Default
+UXTerm*faceName: DejaVu Sans Mono:pixelsize=13:antialias=true,xft:WenQuanYi Micro Hei Mono:pixelsize=17
+!UXTerm*faceNameDoublesize:   DejaVu Sans Mono:pixelsize=11.5:antialias=true:Bold,xft:WenQuanYi Micro Hei Mono:pixelsize=14:Bold
+UXTerm*faceNameDoublesize: WenQuanYi Micro Hei:antialias=True
+UXTerm*faceSize:  11
+UXTerm*faceSize1: 11
+UXTerm*faceSize2: 11
+UXTerm*faceSize3: 11
+UXTerm*faceSize4: 11
+UXTerm*faceSize5: 11
+UXTerm*faceSize6: 11
+!UXTerm*cjkWidth:true
+UXTerm*scrollBar: false
+UXTerm*rightScrollBar: false
+UXTerm*jumpScroll:  false
+UXTerm*SaveLines: 1000
+!UXTerm*background:  #0c0d0e
+!UXTerm*foreground:  #7f8f9f
+UXTerm*background:  #333333
+UXTerm*foreground:  #e0e0b5
+UXTerm*color0:      #101010
+UXTerm*color1:      #705050
+! green + yellow
+UXTerm*color2:      #60b48a
+UXTerm*color3:      #f0dfaf
+! blue + pURple
+UXTerm*color4:      #506070
+UXTerm*color5:      #dc8cc3
+! cyan + white
+UXTerm*color6:      #8cd0d3
+UXTerm*color7:      #dcdccc
+! bright-black + bright-red
+UXTerm*color8:      #000000
+UXTerm*color9:      #dca3a3
+! bright-green + bright-yellow
+!UXTerm*color10:     #c3bf9f
+UXTerm*color10:     #f1cd6e
+UXTerm*color11:     #f0dfaf
+! bright-blue + bright-pURple
+UXTerm*color12:     #94bff3
+UXTerm*color13:     #ec93d3
+! bright-cyan + bright-white
+UXTerm*color14:     #93e0e3
+UXTerm*color15:     #ffffff
+
+! fix some problems with emacs <backspace> 
+! UXTerm.ttyModes:         erase ^?
+! UXTerm.VT100.Translations: \
+!         #override <Key>BackSpace: string(0x7f)\n\
+! 		  <Key>Delete:    string(0x1b) string("[3~")
+! fix <Alt> key
+UXTerm.VT100.EightBitInput: false
+UXTerm.metaSendsEscape: true
+! Disable Alt+Enter=maximize
+UXTerm.fullscreen: never
+UXTerm.*.backarrowKey: false
+
+!===============================
+Emacs.menuBar:off
+Emacs.toolBar:off
+Emacs.verticalScrollBars:off
+Emacs.useXIM:off
+XEmacs.font:xft:DejaVu Sans Mono:pixelsize=11.5:antialias=true,xft:WenQuanYi Micro Hei Mono:pixelsize=14
+XEmacs.Fontset-0:-*-fixed-medium-r-*-*-14-*-*-*-c-*-fontset-chinese, chinese-gb2312:-*-wenquanyi bitmap song-*-*-normal--*-*-*-*-*-*-iso10646-1, chinese-big5-1:-*-wenquanyi bitmap song-*-*-normal--*-*-*-*-*-*-iso10646-1, chinese-big5-2:-*-wenquanyi bitmap song-*-*-normal--*-*-*-*-*-*-iso10646-1
+
+!===============================
+! URxvT
+!===============================
+URxvt.preeditType:Root
+
+!URxvt.background:  #0c0d0e
+!URxvt.foreground:  #7f8f9f
+URxvt.background:  #333333
+URxvt.foreground:  #e0e0b5
+URxvt.color0:      #101010
+URxvt.color1:      #705050
+! green + yellow
+URxvt.color2:      #60b48a
+URxvt.color3:      #f0dfaf
+! blue + pURple
+URxvt.color4:      #506070
+URxvt.color5:      #dc8cc3
+! cyan + white
+URxvt.color6:      #8cd0d3
+URxvt.color7:      #dcdccc
+! bright-black + bright-red
+URxvt.color8:      #000000
+URxvt.color9:      #dca3a3
+! bright-green + bright-yellow
+!URxvt.color10:     #c3bf9f
+URxvt.color10:     #f1cd6e
+URxvt.color11:     #f0dfaf
+! bright-blue + bright-pURple
+URxvt.color12:     #94bff3
+URxvt.color13:     #ec93d3
+! bright-cyan + bright-white
+URxvt.color14:     #93e0e3
+URxvt.color15:     #ffffff
+
+! scroll set
+URxvt.scrollBar:false
+URxvt.scrollBar_right:True
+URxvt.scrollBar_floating:True
+URxvt.scrollstyle:plain
+URxvt.scrollWithBuffer:false
+URxvt.saveLines:5000
+
+! font set
+URxvt.font: xft:DejaVu Sans Mono:pixelsize=13:antialias=true,xft:WenQuanYi Micro Hei:size=16:antialias=true
+!URxvt.font: xft:DejaVu Sans Mono:pixelsize=13:antialias=true,xft:WenQuanYi Micro Hei Mono:pixelsize=25:antialias=true
+!URxvt.boldFont:xft:DejaVu Sans Mono:pixelsize=11.5:antialias=true:Bold,xft:WenQuanYi Micro Hei Mono:pixelsize=14:Bold
+!URxvt.faceNameDoublesize: WenQuanYi Micro Hei:antialias=True
+
+! window geometry set
+!URxvt.geometry: 80x30
+!URxvt.title:Prongs-Rxvt
+
+!! Tab set
+!URxvt.perl-ext-common: default,tabbed,matcher
+!URxvt.tabbed.tab-fg: 12
+!URxvt.tabbed.tab-bg: 0
+!URxvt.tabbed.tabbar-fg: 4
+
+Rxvt.menu:/etc/X11/rxvt.menu
+!Rxvt.preeditType:Root
+!Rxvt.transparent:true
+!Rxvt.shading:50
+
+URxvt.urlLauncher: firefox
+URxvt.matcher.button: 1
+!URxvt.perl-ext-common: matcher
+
+! disable perl extension
+URxvt.perl-ext:
+URxvt.perl-ext-common:
