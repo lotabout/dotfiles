@@ -510,7 +510,7 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     " Others
     "------------------------------------------------------------------
-    "Plug 'christoomey/vim-tmux-navigator'
+    Plug 'christoomey/vim-tmux-navigator'
     Plug 'https://github.com/mattn/calendar-vim'
     "Plug 'vimwiki'
     Plug 'https://github.com/xolox/vim-misc.git'
@@ -639,7 +639,7 @@ elseif package_manager == 'vundle'
     "------------------------------------------------------------------
     " Others
     "------------------------------------------------------------------
-    "Bundle 'christoomey/vim-tmux-navigator'
+    Bundle 'christoomey/vim-tmux-navigator'
     Bundle 'https://github.com/mattn/calendar-vim'
     "Bundle 'vimwiki'
     "Plugin 'vim-orgmode'
@@ -898,6 +898,11 @@ let g:airline_symbols.branch = ''
 let g:airline_symbols.readonly = ''
 let g:airline_symbols.linenr = ''
 
+"---------------------------------------------------------------------
+" vim-tmux-navigator
+let g:tmux_navigator_no_mappings = 1
+
+
 "===============================================================================
 " self-added plugins && settigns
 
@@ -956,10 +961,23 @@ if has('nvim')
     nmap <silent> <leader>ee :tabnew<cr>:edit ~/.nvimrc<cr>
 
     " integrate with nvim terminal
-    tnoremap <A-h> <C-\><C-n><C-w>h
-    tnoremap <A-j> <C-\><C-n><C-w>j
-    tnoremap <A-k> <C-\><C-n><C-w>k
-    tnoremap <A-l> <C-\><C-n><C-w>l
+    "tnoremap <A-h> <C-\><C-n><C-w>h
+    "tnoremap <A-j> <C-\><C-n><C-w>j
+    "tnoremap <A-k> <C-\><C-n><C-w>k
+    "tnoremap <A-l> <C-\><C-n><C-w>l
+
+    nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
+    nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
+    nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
+    nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
+    nnoremap <silent> <A-\> :TmuxNavigatePrevious<cr>
+
+    tnoremap <A-h> <C-\><C-n>:TmuxNavigateLeft<cr>
+    tnoremap <A-j> <C-\><C-n>:TmuxNavigateDown<cr>
+    tnoremap <A-k> <C-\><C-n>:TmuxNavigateUp<cr>
+    tnoremap <A-l> <C-\><C-n>:TmuxNavigateRight<cr>
+    tnoremap <A-\> <C-\><C-n>:TmuxNavigatePrevious<cr>
+
 else
     "--------------------------------------------------
     " vim specified settings
@@ -975,5 +993,7 @@ else
 
     " Fast editing or sourcing vimrc file
     nmap <silent> <leader>ee :tabnew<cr>:edit ~/.vimrc<cr>
+
+    map <m-a> ggVG
 
 endif
