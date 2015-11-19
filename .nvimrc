@@ -264,11 +264,11 @@ function! Zoom ()
     " check if is the zoomed state (tabnumber > 1 && window == 1)
     if tabpagenr('$') > 1 && tabpagewinnr(tabpagenr(), '$') == 1
         let l:cur_winview = winsaveview()
-        let l:cur_bufname = bufname('.')
+        let l:cur_bufname = bufname('')
         tabclose
 
         " restore the view
-        if l:cur_bufname == bufname('.')
+        if l:cur_bufname == bufname('')
             call winrestview(cur_winview)
         endif
     else
@@ -988,12 +988,12 @@ else
     " use blowfish as default crypt method
     set cryptmethod=blowfish
 
+    " enable mouse support
+    set mouse=a
+
     "- - - - - - - - - - - - - - - - - - - - - - - - -
     " mappings
 
     " Fast editing or sourcing vimrc file
     nmap <silent> <leader>ee :tabnew<cr>:edit ~/.vimrc<cr>
-
-    map <m-a> ggVG
-
 endif
