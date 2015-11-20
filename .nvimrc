@@ -128,6 +128,18 @@ if has("gui_running")
     set guitablabel=%M\ %t
 endif
 
+if !has("gui_running")
+    " fix Alt key problem
+    let c='a'
+    while c <= 'z'
+        exec "set <A-".c.">=\e".c
+        exec "imap \e".c." <A-".c.">"
+        let c = nr2char(1+char2nr(c))
+    endw
+    "set timeout ttimeoutlen=50
+    set ttimeoutlen=20
+endif
+
 "----------------------------------------------------------------------
 " Files, backups and undo
 
@@ -996,4 +1008,10 @@ else
 
     " Fast editing or sourcing vimrc file
     nmap <silent> <leader>ee :tabnew<cr>:edit ~/.vimrc<cr>
+
+    nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
+    nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
+    nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
+    nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
+    nnoremap <silent> <A-\> :TmuxNavigatePrevious<cr>
 endif
