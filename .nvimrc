@@ -499,7 +499,7 @@ if package_manager == "vim-plug"
     "Plug 'Valloric/YouCompleteMe'
 
     " for javascript
-    "Plug 'marijnh/tern_for_vim'
+    Plug 'ternjs/tern_for_vim', {'for': 'javascript', 'do' : 'npm install'}
 
     Plug 'tpope/vim-fireplace', {'for': 'clojure'}
 
