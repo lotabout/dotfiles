@@ -105,7 +105,8 @@ syntax enable
 " Colorscheme
 if has("gui_running")
     "colorscheme zenburn
-    colorscheme obsidian
+    "colorscheme obsidian
+    colorscheme molokai
     set guifont=Dejavu\ Sans\ Mono\ for\ Powerline\ 11,Dejavu\ Sans\ Mono\ 11
 elseif &t_Co == 256
     "colorscheme zenburn
