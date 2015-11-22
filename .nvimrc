@@ -107,7 +107,7 @@ if has("gui_running")
     "colorscheme zenburn
     "colorscheme obsidian
     colorscheme molokai
-    set guifont=Dejavu\ Sans\ Mono\ for\ Powerline\ 11,Dejavu\ Sans\ Mono\ 11
+    set guifont=Monaco\ for\ Powerline:h12,Dejavu\ Sans\ Mono\ for\ Powerline\ 11,Dejavu\ Sans\ Mono\ 11
 elseif &t_Co == 256
     "colorscheme zenburn
     colorscheme obsidian
@@ -127,18 +127,6 @@ if has("gui_running")
     set guioptions+=e
     set t_Co=256
     set guitablabel=%M\ %t
-endif
-
-if !has("gui_running")
-    " fix Alt key problem
-    let c='a'
-    while c <= 'z'
-        exec "set <A-".c.">=\e".c
-        exec "imap \e".c." <A-".c.">"
-        let c = nr2char(1+char2nr(c))
-    endw
-    "set timeout ttimeoutlen=50
-    set ttimeoutlen=20
 endif
 
 "----------------------------------------------------------------------
@@ -1016,4 +1004,16 @@ else
     nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
     nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
     nnoremap <silent> <A-\> :TmuxNavigatePrevious<cr>
+
+    if !has("gui_running")
+        " fix Alt key problem
+        let c='a'
+        while c <= 'z'
+            exec "set <A-".c.">=\e".c
+            exec "imap \e".c." <A-".c.">"
+            let c = nr2char(1+char2nr(c))
+        endw
+        "set timeout ttimeoutlen=50
+        set ttimeoutlen=20
+    endif
 endif
