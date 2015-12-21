@@ -107,7 +107,7 @@ if has("gui_running")
     "colorscheme zenburn
     "colorscheme obsidian
     colorscheme molokai
-    set guifont=Monaco\ for\ Powerline:h12,Dejavu\ Sans\ Mono\ for\ Powerline\ 11,Dejavu\ Sans\ Mono\ 11
+    set guifont=Dejavu\ Sans\ Mono\ for\ Powerline\ 11,Dejavu\ Sans\ Mono\ 11
 elseif &t_Co == 256
     "colorscheme zenburn
     colorscheme obsidian
@@ -236,7 +236,7 @@ autocmd BufReadPost *
      \ endif
 
 "----------------------------------------------------------------------
-" Misc Maps (for convenience)
+" Misc Maps & Functions(for convenience)
 
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>mm mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
@@ -278,6 +278,35 @@ function! Zoom ()
 endfunction
 
 nmap <leader>z :call Zoom()<CR>
+
+" Interleave lines, do not support overlapping
+" Usage: 90, 100call Interleave(1)
+function! Interleave(where) range
+    let l:where = a:where
+
+    let l:pos = getpos(l:where)
+    if l:where =~ "^'" && !empty(l:pos)
+        let l:where = l:pos[1]
+    endif
+
+    let l:start = a:firstline
+    let l:end = a:lastline
+
+    if l:start < a:where
+        for i in range(0, l:end - l:start)
+            execute l:start . 'm' . (l:where + i)
+        endfor
+    else
+        for i in range(l:end - l:start, 0, -1)
+            execute l:end . 'm' . (l:where + i)
+        endfor
+    endif
+endfunction
+
+" Usage: 90,100Interleave 10
+" or     '<,'>Interleave 'a  " will use mark 'a as the target
+command! -nargs=1 -range Interleave <line1>,<line2>call Interleave("<args>")
+vmap <leader>j :Interleave<space>
 
 "===============================================================================
 " Settings for Programming
