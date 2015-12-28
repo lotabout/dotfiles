@@ -393,10 +393,10 @@ vnoremap <C-J> <C-E>j
 nnoremap <C-K> <C-Y>k
 vnoremap <C-K> <C-Y>k
 
-nnoremap <A-h> <C-w>h
-nnoremap <A-j> <C-w>j
-nnoremap <A-k> <C-w>k
-nnoremap <A-l> <C-w>l
+"nnoremap <A-h> <C-w>h
+"nnoremap <A-j> <C-w>j
+"nnoremap <A-k> <C-w>k
+"nnoremap <A-l> <C-w>l
 
 "----------------------------------------------------------------------
 " Show tabs (indent lines)
@@ -541,7 +541,7 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     " Others
     "------------------------------------------------------------------
-    Plug 'christoomey/vim-tmux-navigator'
+    "Plug 'christoomey/vim-tmux-navigator'
     Plug 'https://github.com/mattn/calendar-vim'
     "Plug 'vimwiki'
     Plug 'https://github.com/xolox/vim-misc.git'
@@ -916,6 +916,9 @@ let g:notes_suffix = '.md'
 autocmd FileType notes vmap <buffer> <CR> :NoteFromSelectedText<CR>
 autocmd FileType notes nmap <buffer> <CR> gf
 
+" disable smart quotes
+let g:notes_smart_quotes = 0
+
 "---------------------------------------------------------------------
 " vim-airline
 let g:airline_theme='wombat'
@@ -933,6 +936,11 @@ let g:airline_symbols.linenr = ''
 " vim-tmux-navigator
 let g:tmux_navigator_no_mappings = 1
 
+"nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
+"nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
+"nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+"nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
+"nnoremap <silent> <A-\> :TmuxNavigatePrevious<cr>
 
 "===============================================================================
 " self-added plugins && settigns
@@ -991,18 +999,6 @@ if has('nvim')
     " Fast editing or sourcing vimrc file
     nmap <silent> <leader>ee :tabnew<cr>:edit ~/.nvimrc<cr>
 
-    " integrate with nvim terminal
-    "tnoremap <A-h> <C-\><C-n><C-w>h
-    "tnoremap <A-j> <C-\><C-n><C-w>j
-    "tnoremap <A-k> <C-\><C-n><C-w>k
-    "tnoremap <A-l> <C-\><C-n><C-w>l
-
-    nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
-    nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
-    nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
-    nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
-    nnoremap <silent> <A-\> :TmuxNavigatePrevious<cr>
-
     tnoremap <A-h> <C-\><C-n>:TmuxNavigateLeft<cr>
     tnoremap <A-j> <C-\><C-n>:TmuxNavigateDown<cr>
     tnoremap <A-k> <C-\><C-n>:TmuxNavigateUp<cr>
@@ -1028,21 +1024,15 @@ else
     " Fast editing or sourcing vimrc file
     nmap <silent> <leader>ee :tabnew<cr>:edit ~/.vimrc<cr>
 
-    nnoremap <silent> <A-h> :TmuxNavigateLeft<cr>
-    nnoremap <silent> <A-j> :TmuxNavigateDown<cr>
-    nnoremap <silent> <A-k> :TmuxNavigateUp<cr>
-    nnoremap <silent> <A-l> :TmuxNavigateRight<cr>
-    nnoremap <silent> <A-\> :TmuxNavigatePrevious<cr>
-
-    if !has("gui_running")
-        " fix Alt key problem
-        let c='a'
-        while c <= 'z'
-            exec "set <A-".c.">=\e".c
-            exec "imap \e".c." <A-".c.">"
-            let c = nr2char(1+char2nr(c))
-        endw
-        "set timeout ttimeoutlen=50
-        set ttimeoutlen=20
-    endif
+    "if !has("gui_running")
+        "" fix Alt key problem
+        "let c='a'
+        "while c <= 'z'
+            "exec "set <A-".c.">=\e".c
+            "exec "imap \e".c." <A-".c.">"
+            "let c = nr2char(1+char2nr(c))
+        "endw
+        ""set timeout ttimeoutlen=50
+        "set ttimeoutlen=20
+    "endif
 endif
