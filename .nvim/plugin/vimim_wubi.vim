@@ -547,24 +547,25 @@ function s:MapChinesePunc()
     inoremap<buffer> ; <C-R>=<SID>PuncIn()<CR>；
     inoremap<buffer> : <C-R>=<SID>PuncIn()<CR>：
     inoremap<buffer> ? <C-R>=<SID>PuncIn()<CR>？
-    inoremap<buffer> \ <C-R>=<SID>PuncIn()<CR><C-R>=<SID>Toggle()<CR>\
-    inoremap<buffer> / <C-R>=<SID>PuncIn()<CR>、
+    "inoremap<buffer> \ <C-R>=<SID>PuncIn()<CR><C-R>=<SID>Toggle()<CR>\
+    inoremap<buffer> \ <C-R>=<SID>PuncIn()<CR>、
+    "inoremap<buffer> / <C-R>=<SID>PuncIn()<CR>、
     inoremap<buffer> ! <C-R>=<SID>PuncIn()<CR>！
-    inoremap<buffer> @ <C-R>=<SID>PuncIn()<CR>・
+    "inoremap<buffer> @ <C-R>=<SID>PuncIn()<CR>・
     inoremap<buffer> ^ <C-R>=<SID>PuncIn()<CR>……
     inoremap<buffer> _ <C-R>=<SID>PuncIn()<CR>——
-    inoremap<buffer> # <C-R>=<SID>PuncIn()<CR>＃
-    inoremap<buffer> % <C-R>=<SID>PuncIn()<CR>％
+    "inoremap<buffer> # <C-R>=<SID>PuncIn()<CR>＃
+    "inoremap<buffer> % <C-R>=<SID>PuncIn()<CR>％
     inoremap<buffer> $ <C-R>=<SID>PuncIn()<CR>￥
     inoremap<buffer> ` <C-R>=<SID>PuncIn()<CR>`
     inoremap<buffer> ~ <C-R>=<SID>PuncIn()<CR>～
-    inoremap<buffer> < <C-R>=<SID>PuncIn()<CR>《》<++><Left><Left><Left><Left><Left>
+    inoremap<buffer> < <C-R>=<SID>PuncIn()<CR>《》<Left>
     "inoremap<buffer> > <C-R>=<SID>PuncIn()<CR>》
-    inoremap<buffer> ( <C-R>=<SID>PuncIn()<CR>（）<++><Left><Left><Left><Left><Left>
+    inoremap<buffer> ( <C-R>=<SID>PuncIn()<CR>（）<Left>
     "inoremap<buffer> ) <C-R>=<SID>PuncIn()<CR>）
-    inoremap<buffer> { <C-R>=<SID>PuncIn()<CR>『』<++><Left><Left><Left><Left><Left>
-    inoremap<buffer> ' <C-R>=<SID>PuncIn()<CR>‘’<++><Left><Left><Left><Left><Left>
-    inoremap<buffer> " <C-R>=<SID>PuncIn()<CR>“”<++><Left><Left><Left><Left><Left>
+    inoremap<buffer> { <C-R>=<SID>PuncIn()<CR>『』<Left>
+    inoremap<buffer> ' <C-R>=<SID>PuncIn()<CR>‘’<Left>
+    inoremap<buffer> " <C-R>=<SID>PuncIn()<CR>“”<Left>
 endfunction
 
 function s:UnMapChinesePunc()
