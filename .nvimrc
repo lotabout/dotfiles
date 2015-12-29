@@ -200,9 +200,18 @@ set dictionary+=/usr/share/dict/words
 
 " Treat long lines as break lines(like emacs)
 noremap j gj
-noremap k gk
 noremap gj j
+noremap k gk
 noremap gk k
+noremap 0 g0
+noremap g0 0
+noremap $ g$
+noremap g$ $
+
+" swap these too because ' is easier to type and ` is what I want
+noremap ' `
+noremap ` '
+
 
 " Close current buffer
 " map <leader>q :bdelete<cr>
