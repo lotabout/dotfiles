@@ -6,8 +6,8 @@
 "   Project: http://code.google.com/p/vimim-wubi/
 "      Need: vimim_wubi.txt
 " -----------------------------------------------------------
-"    Readme: The VimIM_Wubi can let you input chinese with 
-"            Wubi Input Method in Vim. It's function comes 
+"    Readme: The VimIM_Wubi can let you input chinese with
+"            Wubi Input Method in Vim. It's function comes
 "            from the `completefunc`. And VimIM is his Daddy :)
 "            More information about VimIM can found here:
 "            http://maxiangjiang.googlepages.com/vimim.html
@@ -19,7 +19,7 @@
 "
 "你也不能用数字键去选择备选的匹配,  <C-N> <C-P> 大好.
 "
-"主要功能函数是补全函数 VimIm_Wubi() 
+"主要功能函数是补全函数 VimIm_Wubi()
 "读取码表及匹配码表由 GetTable() 和 GetMatchFrom 完成
 "然后还有设置 <BS> <Space> <Enter> 行为的 Smart 函数
 "Input English 函数是用来实现 z 快捷输入英文的
@@ -28,7 +28,7 @@
 "标点上字的功能, 涉及 map 及 unmap ,要动三个地方
 "第一个是 MapChinesePunc() 设置中文标点上字.
 "第二个是 UnMapChinesePunc() 设置英文标点上字.
-"第三个是 Exit() unmap 所有的标点要映射. 
+"第三个是 Exit() unmap 所有的标点要映射.
 "
 "码表中存在没有 ljf 但有 ljfd 的情况, 但使用正则的 ^ 是可以
 "正确匹配到的.
@@ -43,7 +43,7 @@ let s:path=expand("<sfile>:p:h")."/"
 
 "let g:save_completefunc = &completefunc
 "let &completefunc = 'VimIM_Wubi'
- 
+
 if !hasmapto('<SID>Toggle()')
     if has('gui_running')
         inoremap<silent><expr> <C-/> <SID>Toggle()
@@ -72,7 +72,7 @@ if a:findstart
 else
     "读取码表的操作在 Init() 函数中,
     "匹配码表的操作在 AnyKey() 函数中.
-    
+
     if s:matchFrom < 0
         return ''
     else
@@ -90,7 +90,7 @@ else
                 let res = extend(res, split(g:table[s:matchFrom + i])[1:])
             endfor
         elseif s:typeLen < 4
-            "3码的情况复杂一点, 最多往后多匹配6条, 
+            "3码的情况复杂一点, 最多往后多匹配6条,
             "如果6条内同前3码的匹配不足, 则直接返回.
             for i in range(6)
                 let nowLine = g:table[s:matchFrom + i]
@@ -155,7 +155,7 @@ endfunction
 
 function s:MapAnyKeys()
     "ValidKeys = [a-y]
-    
+
     inoremap<buffer><silent> a a<C-R>=<SID>AnyKey('a')<CR>
     inoremap<buffer><silent> b b<C-R>=<SID>AnyKey('b')<CR>
     inoremap<buffer><silent> c c<C-R>=<SID>AnyKey('c')<CR>
@@ -269,7 +269,7 @@ function s:Init()
         let g:charFirst = [1, 3477, 5016, 6371, 9569, 11098, 14620, 18428, 19911, 23828, 26116, 28500, 30475, 32402, 34864, 36276, 38711, 42226, 46442, 49453, 53687, 57072, 58912, 62805, 65013]
         "a=97 y=121
     endif
-    
+
     if !exists('b:chinesePunc')
         "标点的状态要在中英文间保持
         "let b:chinesePunc = 1
@@ -297,7 +297,7 @@ function s:Init()
 
     "设置弹出菜单的彩色
     highlight! link PmenuSel MatchParen
-    highlight! link Pmenu StatusLine   
+    highlight! link Pmenu StatusLine
     "highlight! PmenuSbar	  NONE
     highlight! link PmenuThumb DiffAdd
 
@@ -332,10 +332,10 @@ function s:Exit()
     "let b:chinesePunc = 0
     let b:chineseMode = 0
 
-    "还原 [a-y] 的 map 
+    "还原 [a-y] 的 map
     call s:UnMapAnyKeys()
-    
-    "还原特殊键的 map 
+
+    "还原特殊键的 map
     iunmap<buffer> <Space>
     iunmap<buffer> <BS>
     iunmap<buffer> <CR>
@@ -344,20 +344,20 @@ function s:Exit()
     iunmap<buffer> <ESC>
     iunmap<buffer> <C-W>
 
-    "还原标点的 map 
+    "还原标点的 map
     iunmap<buffer> ,
     iunmap<buffer> .
     iunmap<buffer> ;
     iunmap<buffer> :
     iunmap<buffer> ?
     iunmap<buffer> \
-    iunmap<buffer> /
+    "iunmap<buffer> /
     iunmap<buffer> !
-    iunmap<buffer> @
+    "iunmap<buffer> @
     iunmap<buffer> ^
     iunmap<buffer> _
-    iunmap<buffer> #
-    iunmap<buffer> %
+    "iunmap<buffer> #
+    "iunmap<buffer> %
     iunmap<buffer> $
     iunmap<buffer> `
     iunmap<buffer> ~
@@ -370,7 +370,7 @@ function s:Exit()
     iunmap<buffer> "
 
     return ''
-    
+
 endfunction
 
 function <SID>AnyKey(key)
@@ -389,13 +389,13 @@ function <SID>AnyKey(key)
             call s:RefreshMatch()
             let temp = "\<C-Y>\<C-X>\<C-U>\<C-P>\<Down>"
         endif
-        sil!exe 'sil!return "' . temp . '"' 
+        sil!exe 'sil!return "' . temp . '"'
     endif
 
     if s:typeLen == 5
         "限制4码输入在这里实现.
         "要考虑前4码是否有匹配两种情况.
-        
+
         let p = getpos('.')
         call setpos('.', [p[0], p[1], p[2] - 1, p[3]])
         let s:typeLen -= 1
@@ -409,9 +409,9 @@ function <SID>AnyKey(key)
         let s:matchFrom = s:GetMatchFrom(a:key)
 
         let s:typeLen = 1
-        sil!exe 'sil!return "' . temp . '"' 
+        sil!exe 'sil!return "' . temp . '"'
     endif
-    
+
     call s:RefreshMatch()
 
     if s:matchFrom < 0
@@ -428,7 +428,7 @@ function <SID>AnyKey(key)
         let temp = "\<C-X>\<C-U>\<C-P>\<Down>"
     endif
 
-    sil!exe 'sil!return "' . temp . '"' 
+    sil!exe 'sil!return "' . temp . '"'
 endfunction
 
 function s:RefreshMatch()
@@ -472,7 +472,7 @@ function <SID>SmartBack()
     let bs = "\<BS>"
     if s:typeLen > 1
         "只有1码时, 不要 <BS> '自作聪明'
-        
+
         let s:typeLen -= 1
         "s:typeLen 变了, 要重新定位光标并刷新匹配结果
         let p = getpos('.')
@@ -492,7 +492,7 @@ function <SID>SmartBack()
     else
         "只可能是 s:typeLen == 0 || s:typeLen == 1
         "不管是哪种, 按了 <BS> 匹配列表都应该清空
-        
+
         let s:typeLen = 0
         let s:matchFrom = -1
     endif
@@ -508,7 +508,7 @@ function <SID>SmartEnter()
 
         "如果没有匹配列表, 则删除已经输入的废码
         "现在不可能出现没有匹配的情况了
-    else 
+    else
         "完全没事干了, 再换行吧
         let enter = "\<CR>"
     endif
