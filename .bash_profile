@@ -122,9 +122,9 @@ if hash gvim 2> /dev/null;then
     alias vi='gvim -v'
 fi
 
-if hash nvim 2> /dev/null ;then
-    alias vi='nvim'
-fi
+#if hash nvim 2> /dev/null ;then
+    #alias vi='nvim'
+#fi
 
 if [ "$(uname)" == "Darwin" ]; then
     # Do something under Mac OS X platform
@@ -161,6 +161,17 @@ alias l='ls -CF'
 
 alias emacs="emacs -nw"
 alias ec='emacsclient -t -a ""'
+
+alias cd..="cd .."
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
+alias .......="cd ../../../../../.."
+alias ........="cd ../../../../../../.."
+alias .........="cd ../../../../../../../.."
+alias ..........="cd ../../../../../../../../.."
 
 # turn off touchpad
 # synclient touchpadoff=1
@@ -208,10 +219,20 @@ function pac() {
     fi
 }
 
+function pac3() {
+    # short for python activate
+    localenv=$HOME/localenv-py3
+    if [ -f $localenv/bin/activate ]; then
+        source $localenv/bin/activate
+    fi
+}
+
 function pdc() {
     # short for python deactivate
     deactivate
 }
+
+
 
 # quick bookmark
 alias mdump='alias|grep -e "alias g[0-9]"|grep -v "alias m" > ~/.bookmarks'
