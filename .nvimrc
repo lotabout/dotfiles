@@ -550,7 +550,7 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     " Others
     "------------------------------------------------------------------
-    "Plug 'christoomey/vim-tmux-navigator'
+    Plug 'christoomey/vim-tmux-navigator'
     Plug 'https://github.com/mattn/calendar-vim'
     "Plug 'vimwiki'
     Plug 'https://github.com/xolox/vim-misc.git'
@@ -945,10 +945,12 @@ let g:airline_symbols.linenr = ''
 " vim-tmux-navigator
 let g:tmux_navigator_no_mappings = 1
 
-"nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
-"nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
-"nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
-"nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
+nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
+" originally binded to C-l, now change to C-d
+nnoremap <silent> <C-d> :<C-u>nohlsearch<CR><C-l>
 "nnoremap <silent> <A-\> :TmuxNavigatePrevious<cr>
 
 "===============================================================================
