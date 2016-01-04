@@ -951,7 +951,9 @@ nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
 nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
 " originally binded to C-l, now change to C-d
 nnoremap <silent> <C-d> :<C-u>nohlsearch<CR><C-l>
-"nnoremap <silent> <A-\> :TmuxNavigatePrevious<cr>
+nnoremap <silent> <C-\> :TmuxNavigatePrevious<cr>
+
+
 
 "===============================================================================
 " self-added plugins && settigns
