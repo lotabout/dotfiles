@@ -901,8 +901,9 @@ nnoremap <F5> :GundoToggle<CR>
 
 " turn off insert mode mappings
 let g:vimwiki_table_mappings = 0
-
-let g:vimwiki_toc_header = '[TOC]'
+let g:vimwiki_ext2syntax = {'.md': 'markdown',
+                \ '.mkd': 'markdown',
+                \ '.wiki': 'media'}
 
 let wiki_1 = {}
 let wiki_1.path = '~/wiki/vimwiki'
@@ -910,7 +911,13 @@ let wiki_1.path = '~/wiki/vimwiki'
 "let wiki_1.template_path= wiki_1.path_html . '/template'
 "let wiki_1.template_default = 'default'
 "let wiki_1.template_ext = '.htm'
-let wiki_1.nested_syntaxes = {'python': 'python', 'javascript': 'javascript', 'c': 'c'}
+let wiki_1.nested_syntaxes = {'python': 'python', 
+    \ 'javascript': 'javascript',
+    \ 'c': 'c',
+    \ 'sql': 'sql',
+    \ 'rust': 'rust',
+    \ 'scheme': 'scheme',
+    \ 'racket': 'racket'}
 let wiki_1.syntax = 'markdown'
 let wiki_1.ext = '.md'
 
