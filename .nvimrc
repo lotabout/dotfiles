@@ -268,7 +268,7 @@ nmap <leader>p "+p
 nmap <leader>P "+P
 
 " quick save
-nmap <leader>w :w<CR>
+nmap <C-w> :w<CR>
 
 function! Zoom ()
     " check if is the zoomed state (tabnumber > 1 && window == 1)
@@ -515,6 +515,9 @@ if package_manager == "vim-plug"
     Plug 'UltiSnips'
     Plug 'honza/vim-snippets'
 
+    " private snippets
+    Plug 'lotabout/vim-ultisnippet-private'
+
     Plug 'Syntastic' " syntax checker
 
     " Plug 'LaTeX-Suite-aka-Vim-LaTeX'
@@ -542,6 +545,8 @@ if package_manager == "vim-plug"
     Plug 'ternjs/tern_for_vim', {'do' : 'npm install'}
 
     Plug 'tpope/vim-fireplace', {'for': 'clojure'}
+    Plug 'rust-lang/rust.vim'
+    Plug 'racer-rust/vim-racer'
 
     " for markdown
     Plug 'godlygeek/tabular'
@@ -552,9 +557,9 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'https://github.com/mattn/calendar-vim'
-    "Plug 'vimwiki'
-    Plug 'https://github.com/xolox/vim-misc.git'
-    Plug 'xolox/vim-notes'
+    Plug 'lotabout/vimwiki-1'
+    "Plug 'https://github.com/xolox/vim-misc.git'
+    "Plug 'xolox/vim-notes'
 
     call plug#end()
 elseif package_manager == 'vundle'
@@ -715,7 +720,6 @@ let g:session_directory="~/.tmp/vim/sessions"
 let g:session_autosave = 'no'
 let g:session_autoload = 'no'
 
-
 "----------------------------------------------------------------------
 " supertab
 let g:SuperTabLongestEnhanced = 1
@@ -781,6 +785,11 @@ endfunction
 "---------------------------------------------------------------------
 " fakeclip
 let g:fakeclip_terminal_multiplexer_type = "tmux"
+
+"---------------------------------------------------------------------
+" UltiSnips
+
+let g:UltiSnipsSnippetsDir = "~/.vim/plugged/vim-ultisnippet-private/UltiSnips"
 
 "---------------------------------------------------------------------
 " Unite.vim
@@ -889,29 +898,40 @@ nnoremap <F5> :GundoToggle<CR>
 
 "---------------------------------------------------------------------
 " vimwiki
-let wiki_1 = {}
-let wiki_1.path = '~/Dropbox/wiki/vimwiki'
-"let wiki_1.path_html = '~/Dropbox/vimwiki_html'
-let wiki_1.path_html = '~/repos/vimwiki_html'
-let wiki_1.template_path= wiki_1.path_html . '/template'
-let wiki_1.template_default = 'default'
-let wiki_1.template_ext = '.htm'
-"let wiki_1.syntax = 'markdown'
-"let wiki_1.ext = '.md'
 
-let g:vimwiki_list = [wiki_1]
-map <F4> :VimwikiAll2HTML<cr> :exec '!cd '.VimwikiGet('path_html').'; ./sync.sh'<cr>
+" turn off insert mode mappings
+let g:vimwiki_table_mappings = 0
+
+let g:vimwiki_toc_header = '[TOC]'
+
+let wiki_1 = {}
+let wiki_1.path = '~/wiki/vimwiki'
+"let wiki_1.path_html = '~/repos/vimwiki_html'
+"let wiki_1.template_path= wiki_1.path_html . '/template'
+"let wiki_1.template_default = 'default'
+"let wiki_1.template_ext = '.htm'
+let wiki_1.nested_syntaxes = {'python': 'python', 'javascript': 'javascript', 'c': 'c'}
+let wiki_1.syntax = 'markdown'
+let wiki_1.ext = '.md'
+
+let wiki_2 = {}
+let wiki_2.path = '~/wiki/vimwiki-private'
+let wiki_2.nested_syntaxes = wiki_1.nested_syntaxes
+let wiki_2.syntax = 'markdown'
+let wiki_2.ext = '.md'
+let g:vimwiki_list = [wiki_1, wiki_2]
+"map <F4> :VimwikiAll2HTML<cr> :exec '!cd '.VimwikiGet('path_html').'; ./sync.sh'<cr>
 
 " Disable vimwiki mappings (to remove bindings begins with <leader>w)
-nmap <Plug>NoVimwikiINdex <Plug>VimwikiIndex
-nmap <Plug>NoVimwikiTabIndex <Plug>VimwikiTabIndex
-nmap <Plug>NoVimwikiUISelect <Plug>VimwikiUISelect
-nmap <Plug>NoVimwikiDiaryIndex <Plug>VimwikiDiaryIndex
-nmap <Plug>NoVimwikiMakeDiaryNote <Plug>VimwikiMakeDiaryNote
-nmap <Plug>NoVimwikiTabMakeDiaryNote <Plug>VimwikiTabMakeDiaryNote
-nmap <Plug>NoVimwikiDiaryGenerateLinks <Plug>VimwikiDiaryGenerateLinks
+"nmap <Plug>NoVimwikiIndex <Plug>VimwikiIndex
+"nmap <Plug>NoVimwikiTabIndex <Plug>VimwikiTabIndex
+"nmap <Plug>NoVimwikiUISelect <Plug>VimwikiUISelect
+"nmap <Plug>NoVimwikiDiaryIndex <Plug>VimwikiDiaryIndex
+"nmap <Plug>NoVimwikiMakeDiaryNote <Plug>VimwikiMakeDiaryNote
+"nmap <Plug>NoVimwikiTabMakeDiaryNote <Plug>VimwikiTabMakeDiaryNote
+"nmap <Plug>NoVimwikiDiaryGenerateLinks <Plug>VimwikiDiaryGenerateLinks
 
-nmap <leader>` <Plug>VimwikiIndex
+"nmap <leader>` <Plug>VimwikiIndex
 
 "---------------------------------------------------------------------
 " Calendar.vim
