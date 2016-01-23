@@ -8,6 +8,7 @@
 .nvim/bundle
 .vim/plugged
 .nvim/plugged
+.nvim/.netrwhist
 
 # ignore .emacs.d/* except emacs.d/elisp
 .emacs.d/*

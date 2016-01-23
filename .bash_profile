@@ -197,7 +197,12 @@ function move_to_trash() {
     if [ ! -d $HOME/.trash ]; then
         mkdir $HOME/.trash
     fi
-    mv "$@" $HOME/.trash
+    if [ -d "$@" ]; then
+        mv "$@" $HOME/.trash/"$@$(date '+%Y-%m-%d %T')"
+    else
+        mv "$@" $HOME/.trash/
+    fi
+
 }
 function trash_empty() {
     /bin/rm -rI $HOME/.trash && mkdir $HOME/.trash && sync
