@@ -20,4 +20,5 @@ set formatoptions-=c formatoptions-=o formatoptions-=r
 set modeline
 
 " hightlight column 80
-set colorcolumn=80
+set colorcolumn=100
+set textwidth=100
