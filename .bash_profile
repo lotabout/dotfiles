@@ -198,7 +198,11 @@ function move_to_trash() {
         mkdir $HOME/.trash
     fi
     if [ -d "$@" ]; then
-        mv "$@" $HOME/.trash/"$@$(date '+%Y-%m-%d %T')"
+        # remove trailing slash
+        local mindtrailingslash=${@%/}
+        # remove preceding directory path
+        local dst=${mindtrailingslash##*/}
+        mv "$@" $HOME/.trash/"${dst}-$(date '+%Y-%m-%d-%T')"
     else
         mv "$@" $HOME/.trash/
     fi
