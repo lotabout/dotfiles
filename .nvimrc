@@ -469,6 +469,7 @@ if package_manager == "vim-plug"
     Plug 'ervandew/supertab'
     "Plug 'EasyMotion'
     Plug 'easymotion/vim-easymotion'
+    Plug 'haya14busa/incsearch.vim'
     Plug 'Tagbar'
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
@@ -582,6 +583,30 @@ let g:session_autoload = 'no'
 let g:SuperTabLongestEnhanced = 1
 let g:SuperTabDefaultCompletionType = "context"
 let g:SuperTabCrMapping = 1
+
+"----------------------------------------------------------------------
+" easymotion
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+let g:EasyMotion_enter_jump_first = 1
+
+" Turn on case insensitive feature
+"let g:EasyMotion_smartcase = 1
+
+nmap f <Plug>(easymotion-s)
+vmap f <Plug>(easymotion-s)
+nmap F <Plug>(easymotion-F)
+vmap F <Plug>(easymotion-F)
+nmap ; <Plug>(easymotion-next)
+vmap ; <Plug>(easymotion-next)
+nmap , <Plug>(easymotion-prev)
+vmap , <Plug>(easymotion-prev)
+nmap <Space>. <Plug>(easymotion-repeat)
+
+"----------------------------------------------------------------------
+" incsearch.vim
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
 
 "----------------------------------------------------------------------
 " slimux
