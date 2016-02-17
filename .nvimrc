@@ -467,7 +467,8 @@ if package_manager == "vim-plug"
     Plug 'repeat.vim'
     Plug 'yueyoum/vim-alignment'
     Plug 'ervandew/supertab'
-    Plug 'EasyMotion'
+    "Plug 'EasyMotion'
+    Plug 'easymotion/vim-easymotion'
     Plug 'Tagbar'
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
