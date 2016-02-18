@@ -318,6 +318,15 @@ endfunction
 command! -nargs=1 -range Interleave <line1>,<line2>call Interleave("<args>")
 vmap <leader>j :Interleave<space>
 
+
+" execute macro on every selected/visual lines
+xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
+
+function! ExecuteMacroOverVisualRange()
+  echo "@".getcmdline()
+  execute ":'<,'>normal @".nr2char(getchar())
+endfunction
+
 "===============================================================================
 " Settings for Programming
 
@@ -465,12 +474,14 @@ if package_manager == "vim-plug"
     Plug 'moll/vim-bbye'
     Plug 'surround.vim'
     Plug 'repeat.vim'
-    Plug 'yueyoum/vim-alignment'
-    Plug 'ervandew/supertab'
+    Plug 'yueyoum/vim-alignment'    " for easy alignment
+    Plug 'ervandew/supertab'    " you'll need it
+    "Plug 'osyo-manga/vim-over'  " for substitution preview
     "Plug 'EasyMotion'
     Plug 'easymotion/vim-easymotion'
-    Plug 'haya14busa/incsearch.vim'
-    Plug 'Tagbar'
+    Plug 'haya14busa/incsearch.vim' " highlight all instances when search
+
+    Plug 'Tagbar' " actually not used frequently
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
     " for word wraps for japanese and chinese
@@ -481,8 +492,7 @@ if package_manager == "vim-plug"
 
     Plug 'terryma/vim-expand-region'
 
-    " enhance the format function (press '=' key)
-    Plug 'Chiel92/vim-autoformat'
+    Plug 'Chiel92/vim-autoformat' " enhance the format function (press '=' key)
 
     Plug 'MattesGroeger/vim-bookmarks'
 
