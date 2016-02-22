@@ -571,8 +571,9 @@ if package_manager == "vim-plug"
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'https://github.com/mattn/calendar-vim'
     "Plug 'vimwiki/vimwiki'
-    Plug 'https://github.com/xolox/vim-misc.git'
-    Plug 'xolox/vim-notes'
+    Plug 'lotabout/vimwiki-1'
+    "Plug 'https://github.com/xolox/vim-misc.git'
+    "Plug 'xolox/vim-notes'
 
     call plug#end()
 elseif package_manager == "pathogen"
@@ -787,15 +788,16 @@ nmap <leader>f :setlocal formatexpr=autofmt#japanese#formatexpr()<CR>
 " Gundo
 nnoremap <F5> :GundoToggle<CR>
 
-
 "---------------------------------------------------------------------
 " vimwiki
 
 " turn off insert mode mappings
+let g:vimwiki_global_ext = 0
 let g:vimwiki_table_mappings = 0
-" let g:vimwiki_ext2syntax = {'.md': 'markdown',
-"                 \ '.mkd': 'markdown',
-"                 \ '.wiki': 'media'}
+let g:vimwiki_ext2syntax = {'.md': 'markdown',
+                \ '.mkd': 'markdown',
+                \ '.wiki': 'media'}
+let g:vimwiki_use_calendar = 0
 
 let wiki_1 = {}
 let wiki_1.path = '~/Dropbox/wiki/vimwiki'
@@ -804,20 +806,20 @@ let wiki_1.path = '~/Dropbox/wiki/vimwiki'
 "let wiki_1.template_default = 'default'
 "let wiki_1.template_ext = '.htm'
 let wiki_1.nested_syntaxes = {'python': 'python',
-    \ 'javascript': 'javascript',
+    \ 'js': 'javascript',
     \ 'c': 'c',
     \ 'sql': 'sql',
     \ 'rust': 'rust',
     \ 'scheme': 'scheme',
     \ 'racket': 'racket'}
-"let wiki_1.syntax = 'markdown'
-"let wiki_1.ext = '.md'
+let wiki_1.syntax = 'markdown'
+let wiki_1.ext = '.md'
 
 let wiki_2 = {}
 let wiki_2.path = '~/Dropbox/wiki/vimwiki-private'
 let wiki_2.nested_syntaxes = wiki_1.nested_syntaxes
-"let wiki_2.syntax = 'markdown'
-"let wiki_2.ext = '.md'
+let wiki_2.syntax = 'markdown'
+let wiki_2.ext = '.md'
 let g:vimwiki_list = [wiki_1, wiki_2]
 "map <F4> :VimwikiAll2HTML<cr> :exec '!cd '.VimwikiGet('path_html').'; ./sync.sh'<cr>
 
@@ -830,7 +832,7 @@ nmap <Plug>NoVimwikiMakeDiaryNote <Plug>VimwikiMakeDiaryNote
 nmap <Plug>NoVimwikiTabMakeDiaryNote <Plug>VimwikiTabMakeDiaryNote
 nmap <Plug>NoVimwikiDiaryGenerateLinks <Plug>VimwikiDiaryGenerateLinks
 
-"nmap <leader>` <Plug>VimwikiIndex
+nmap <leader>` <Plug>VimwikiIndex
 
 "---------------------------------------------------------------------
 " Calendar.vim
