@@ -611,6 +611,8 @@ nmap ; <Plug>(easymotion-next)
 vmap ; <Plug>(easymotion-next)
 nmap , <Plug>(easymotion-prev)
 vmap , <Plug>(easymotion-prev)
+nmap <Leader>l <Plug>(easymotion-bd-jk)
+vmap <Leader>l <Plug>(easymotion-bd-jk)
 nmap <Space>. <Plug>(easymotion-repeat)
 
 "----------------------------------------------------------------------
@@ -773,9 +775,9 @@ nnoremap <leader>/ :Ag<space>
 "---------------------------------------------------------------------
 " vim-bookmarks
 "nmap <leader>i <Plug>BookmarkAnnotate
-nmap <leader>j <Plug>BookmarkNext
-nmap <leader>k <Plug>BookmarkPrev
-nmap <leader>l <Plug>BookmarkShowAll
+nmap mj <Plug>BookmarkNext
+nmap mk <Plug>BookmarkPrev
+nmap ml <Plug>BookmarkShowAll
 nmap <F2> <Plug>BookmarkNext
 
 let g:bookmark_auto_save = 1
@@ -821,7 +823,8 @@ let wiki_2.nested_syntaxes = wiki_1.nested_syntaxes
 let wiki_2.syntax = 'markdown'
 let wiki_2.ext = '.md'
 let g:vimwiki_list = [wiki_1, wiki_2]
-"map <F4> :VimwikiAll2HTML<cr> :exec '!cd '.VimwikiGet('path_html').'; ./sync.sh'<cr>
+
+map <F4> :exec '!cd '.VimwikiGet('path').'; ./sync.sh'<cr>
 
 " Disable vimwiki mappings (to remove bindings begins with <leader>w)
 nmap <Plug>NoVimwikiIndex <Plug>VimwikiIndex

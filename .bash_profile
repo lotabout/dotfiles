@@ -122,9 +122,9 @@ if hash gvim 2> /dev/null;then
     alias vi='gvim -v'
 fi
 
-#if hash nvim 2> /dev/null ;then
-    #alias vi='nvim'
-#fi
+if hash nvim 2> /dev/null ;then
+    alias vi='nvim'
+fi
 
 if [ "$(uname)" == "Darwin" ]; then
     # Do something under Mac OS X platform
