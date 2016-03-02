@@ -489,6 +489,7 @@ if package_manager == "vim-plug"
 
     " powerline alternative; for better status line
     Plug 'bling/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
 
     Plug 'terryma/vim-expand-region'
 
@@ -571,9 +572,10 @@ if package_manager == "vim-plug"
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'https://github.com/mattn/calendar-vim'
     "Plug 'vimwiki/vimwiki'
-    Plug 'lotabout/vimwiki-1'
+    Plug 'lotabout/vimwiki', {'branch': 'dev'}
     "Plug 'https://github.com/xolox/vim-misc.git'
     "Plug 'xolox/vim-notes'
+    Plug 'dhruvasagar/vim-dotoo'
 
     call plug#end()
 elseif package_manager == "pathogen"
@@ -834,6 +836,11 @@ nmap <Plug>NoVimwikiDiaryIndex <Plug>VimwikiDiaryIndex
 nmap <Plug>NoVimwikiMakeDiaryNote <Plug>VimwikiMakeDiaryNote
 nmap <Plug>NoVimwikiTabMakeDiaryNote <Plug>VimwikiTabMakeDiaryNote
 nmap <Plug>NoVimwikiDiaryGenerateLinks <Plug>VimwikiDiaryGenerateLinks
+nmap <Plug>NoVimwikiMakeYesterdayDiaryNote <Plug>VimwikiMakeYesterdayDiaryNote
+nmap <Plug>NoVimwikiRenameLink <Plug>VimwikiRenameLink
+nmap <Plug>NoVimwikiDeleteLink <Plug>VimwikiDeleteLink
+nmap <Plug>NoVimwiki2HTMLBrowse <Plug>Vimwiki2HTMLBrowse
+nmap <Plug>NoVimwiki2HTML <Plug>Vimwiki2HTML
 
 nmap <leader>` <Plug>VimwikiIndex
 
@@ -936,11 +943,11 @@ if has('nvim')
     " Fast editing or sourcing vimrc file
     nmap <silent> <leader>ee :tabnew<cr>:edit ~/.nvimrc<cr>
 
-    tnoremap <A-h> <C-\><C-n>:TmuxNavigateLeft<cr>
-    tnoremap <A-j> <C-\><C-n>:TmuxNavigateDown<cr>
-    tnoremap <A-k> <C-\><C-n>:TmuxNavigateUp<cr>
-    tnoremap <A-l> <C-\><C-n>:TmuxNavigateRight<cr>
-    tnoremap <A-\> <C-\><C-n>:TmuxNavigatePrevious<cr>
+    tnoremap <C-h> <C-\><C-n>:TmuxNavigateLeft<cr>
+    tnoremap <C-j> <C-\><C-n>:TmuxNavigateDown<cr>
+    tnoremap <C-k> <C-\><C-n>:TmuxNavigateUp<cr>
+    tnoremap <C-l> <C-\><C-n>:TmuxNavigateRight<cr>
+    tnoremap <C-\> <C-\><C-n>:TmuxNavigatePrevious<cr>
 
 else
     "--------------------------------------------------
