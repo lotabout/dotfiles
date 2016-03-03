@@ -570,7 +570,8 @@ if package_manager == "vim-plug"
     " Others
     "------------------------------------------------------------------
     Plug 'christoomey/vim-tmux-navigator'
-    Plug 'https://github.com/mattn/calendar-vim'
+    "Plug 'mattn/calendar-vim'
+    Plug 'itchyny/calendar.vim'
     "Plug 'vimwiki/vimwiki'
     Plug 'lotabout/vimwiki', {'branch': 'dev'}
     "Plug 'https://github.com/xolox/vim-misc.git'
@@ -801,7 +802,7 @@ let g:vimwiki_table_mappings = 0
 let g:vimwiki_ext2syntax = {'.md': 'markdown',
                 \ '.mkd': 'markdown',
                 \ '.wiki': 'media'}
-let g:vimwiki_use_calendar = 0
+let g:vimwiki_use_calendar = 1
 
 let wiki_1 = {}
 let wiki_1.path = '~/Dropbox/wiki/vimwiki'
@@ -847,6 +848,11 @@ nmap <leader>` <Plug>VimwikiIndex
 "---------------------------------------------------------------------
 " Calendar.vim
 let g:calendar_diary=$HOME.'/Dropbox/wiki/diary'
+autocmd FileType calendar nmap <buffer> <CR> :<C-u>call vimwiki#diary#calendar_action(b:calendar.day().get_day(), b:calendar.day().get_month(), b:calendar.day().get_year(), b:calendar.day().week(), "V")<CR>
+let g:calendar_google_calendar = 1
+let g:calendar_google_task = 1
+let g:calendar_task=1
+nmap <silent> <leader>cal :Calendar -view=day<CR>
 
 "---------------------------------------------------------------------
 " vim-notes
