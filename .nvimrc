@@ -499,6 +499,8 @@ if package_manager == "vim-plug"
 
     Plug 'MattesGroeger/vim-bookmarks'
 
+    Plug 't9md/vim-choosewin'
+
     "------------------------------------------------------------------
     " Integration with Linux environment
     "------------------------------------------------------------------
@@ -818,6 +820,12 @@ nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
 " originally binded to C-l, now change to C-d
 nnoremap <silent> <C-d> :<C-u>nohlsearch<CR><C-l>
 nnoremap <silent> <C-\> :TmuxNavigatePrevious<cr>
+
+"---------------------------------------------------------------------
+" vim-choosewin
+nmap - <Plug>(choosewin)
+let g:choosewin_blink_on_land  = 0 " don't blink at land
+"let g:choosewin_overlay_enable = 1
 
 "===============================================================================
 " self-added plugins && settigns
