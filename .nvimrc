@@ -104,9 +104,8 @@ syntax enable
 
 " Colorscheme
 if has("gui_running")
-    "colorscheme zenburn
+    colorscheme zenburn
     "colorscheme obsidian
-    colorscheme molokai
     set guifont=Dejavu\ Sans\ Mono\ for\ Powerline\ 11,Dejavu\ Sans\ Mono\ 11
 elseif &t_Co == 256
     "colorscheme zenburn
@@ -472,6 +471,8 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     " Enhance Basic functionality
     "------------------------------------------------------------------
+    Plug 'altercation/vim-colors-solarized'
+
     Plug 'moll/vim-bbye'
     Plug 'surround.vim'
     Plug 'repeat.vim'
@@ -560,8 +561,8 @@ if package_manager == "vim-plug"
     Plug 'ternjs/tern_for_vim', {'do' : 'npm install'}
 
     Plug 'tpope/vim-fireplace', {'for': 'clojure'}
-    Plug 'rust-lang/rust.vim'
-    Plug 'racer-rust/vim-racer'
+    Plug 'rust-lang/rust.vim', {'for': 'rust'}
+    Plug 'racer-rust/vim-racer', {'for': 'rust'}
 
     " for markdown
     Plug 'godlygeek/tabular'
@@ -587,10 +588,10 @@ endif
 " settings for bundle plugins
 
 "----------------------------------------------------------------------
-" savesession
-let g:session_directory="~/.tmp/vim/sessions"
-let g:session_autosave = 'no'
-let g:session_autoload = 'no'
+" color scheme
+if has('gui_running')
+    colorscheme solarized
+endif
 
 "----------------------------------------------------------------------
 " supertab
@@ -629,8 +630,6 @@ map g/ <Plug>(incsearch-stay)
 let g:slimux_select_from_current_window = 1
 map <Leader>s :SlimuxREPLSendLine<CR>
 vmap <Leader>s :SlimuxREPLSendSelection<CR>
-"map <Leader>sl :SlimuxShellLast<CR>
-"map <leader>bl :SlimuxREPLSendBuffer<CR>
 
 let g:slimux_scheme_keybindings=1
 let g:slimux_scheme_leader=';'
@@ -688,24 +687,6 @@ let g:fakeclip_terminal_multiplexer_type = "tmux"
 " UltiSnips
 
 let g:UltiSnipsSnippetsDir = "~/.vim/plugged/vim-ultisnippet-private/UltiSnips"
-
-"---------------------------------------------------------------------
-" Unite.vim
-let g:unite_prompt='» '
-"let g:unite_enable_start_insert=1
-let g:unite_data_directory='~/.vim/.cache/unite'
-
-if executable('ag')
-    let g:unite_source_grep_command = 'ag'
-    let g:unite_source_grep_default_opts =
-          \ '--line-numbers --nocolor --nogroup --hidden --ignore ' .
-          \  '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'''
-    let g:unite_source_grep_recursive_opt = ''
-endif
-
-"nnoremap <C-p> :Unite -start-insert file_rec/async:!<cr>
-"nnoremap <leader>b :Unite buffer<cr>
-"nnoremap <leader>. :UniteResume<cr>
 
 "---------------------------------------------------------------------
 " ctrlp
@@ -846,19 +827,14 @@ nmap <Plug>NoVimwiki2HTML <Plug>Vimwiki2HTML
 nmap <leader>` <Plug>VimwikiIndex
 
 "---------------------------------------------------------------------
-" vim-notes
-let g:notes_directories = ['~/Dropbox/wiki/vimnotes']
-let g:notes_suffix = '.md'
-
-autocmd FileType notes vmap <buffer> <CR> :NoteFromSelectedText<CR>
-autocmd FileType notes nmap <buffer> <CR> gf
-
-" disable smart quotes
-let g:notes_smart_quotes = 0
-
-"---------------------------------------------------------------------
 " vim-airline
-let g:airline_theme='wombat'
+"
+if has("gui_running")
+    let g:airline_theme='solarized'
+else
+    let g:airline_theme='wombat'
+endif
+
 " let g:airline#extensions#tabline#enabled = 1
 let g:airline_left_sep = ''
 let g:airline_left_alt_sep = ''
@@ -881,8 +857,6 @@ nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
 nnoremap <silent> <C-d> :<C-u>nohlsearch<CR><C-l>
 nnoremap <silent> <C-\> :TmuxNavigatePrevious<cr>
 
-
-
 "===============================================================================
 " self-added plugins && settigns
 
@@ -901,20 +875,6 @@ autocmd FileType c,cpp setlocal colorcolumn=80
 "----------------------------------------------------------------------
 " python
 let g:enable_my_python_config = 1
-
-"----------------------------------------------------------------------
-" javascript
-
-" Simple re-format for minified Javascript
-command! UnMinify call UnMinify()
-function! UnMinify()
-    %s/{\ze[^\r\n]/{\r/g
-    %s/){/) {/g
-    %s/};\?\ze[^\r\n]/\0\r/g
-    %s/;\ze[^\r\n]/;\r/g
-    %s/[^\s]\zs[=&|]\+\ze[^\s]/ \0 /g
-    normal ggVG=
-endfunction
 
 "----------------------------------------------------------------------
 " rust
