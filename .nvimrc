@@ -514,6 +514,7 @@ if package_manager == "vim-plug"
     " search files/MRUs easily (by press 'Ctrl-p' in normal mode)
     " use ctrlp only when FZF do not exist
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    Plug 'junegunn/fzf.vim'
     if !executable('fzf')
         Plug 'ctrlp.vim'
         Plug 'JazzCore/ctrlp-cmatcher'
@@ -696,65 +697,26 @@ let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files']
 " if you do not use it, disable the following line.
 let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
 
-if executable('fzf')
-    nmap <C-p> :FZF --multi --bind ctrl-f:toggle<CR>
-endif
-
 "---------------------------------------------------------------------
-" FZF utilities
+" fzf.vim
 
-" https://github.com/junegunn/fzf/wiki/Examples-%28vim%29
-command! FZFMru call fzf#run({
-\ 'source':  reverse(s:all_files()),
-\ 'sink':    'edit',
-\ 'options': '-m -x +s',
-\ 'down':    '40%' })
+" change keybinding for AG
+if executable('fzf')
+    let $FZF_DEFAULT_OPTS = '--bind ctrl-f:toggle'
+    " replace Ctrl-p
+    nmap <C-p> :Files<CR>
 
-function! s:all_files()
-  return extend(
-  \ filter(copy(v:oldfiles),
-  \        "v:val !~ 'fugitive:\\|NERD_tree\\|^/tmp/\\|.git/'"),
-  \ map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'bufname(v:val)'))
-endfunction
+    " Customized binding for AG
+    nnoremap <leader>/ :Ag<space>
 
-" FZF Ag integration
-function! s:ag_to_qf(line)
-  let parts = split(a:line, ':')
-  return {'filename': parts[0], 'lnum': parts[1], 'col': parts[2],
-        \ 'text': join(parts[3:], ':')}
-endfunction
+    " Replace Bufexplore
+    nmap <C-e> :Buffers<CR>
 
-function! s:ag_handler(lines)
-  if len(a:lines) < 2 | return | endif
-
-  let cmd = get({'ctrl-x': 'split',
-               \ 'ctrl-v': 'vertical split',
-               \ 'ctrl-t': 'tabe'}, a:lines[0], 'e')
-  let list = map(a:lines[1:], 's:ag_to_qf(v:val)')
-
-  let first = list[0]
-  execute cmd escape(first.filename, ' %#\')
-  execute first.lnum
-  execute 'normal!' first.col.'|zz'
-
-  if len(list) > 1
-    call setqflist(list)
-    copen
-    wincmd p
-  endif
-endfunction
-
-command! -nargs=* Ag call fzf#run({
-\ 'source':  printf('ag --nogroup --column --color "%s"',
-\                   escape(empty(<q-args>) ? '^(?=.)' : <q-args>, '"\')),
-\ 'sink*':    function('<sid>ag_handler'),
-\ 'options': '--ansi --expect=ctrl-t,ctrl-v,ctrl-x --delimiter : --nth 4.. '.
-\            '--multi --bind ctrl-a:select-all,ctrl-d:deselect-all,ctrl-f:toggle '.
-\            '--color hl:68,hl+:110',
-\ 'down':    '50%'
-\ })
-
-nnoremap <leader>/ :Ag<space>
+    " select mapping
+    nmap <leader><tab> <plug>(fzf-maps-n)
+    xmap <leader><tab> <plug>(fzf-maps-x)
+    omap <leader><tab> <plug>(fzf-maps-o)
+endif
 
 "---------------------------------------------------------------------
 " vim-bookmarks
