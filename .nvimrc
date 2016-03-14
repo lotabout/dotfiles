@@ -501,6 +501,8 @@ if package_manager == "vim-plug"
 
     Plug 't9md/vim-choosewin'
 
+    Plug 'sjl/gundo.vim'
+
     "------------------------------------------------------------------
     " Integration with Linux environment
     "------------------------------------------------------------------
