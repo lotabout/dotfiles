@@ -223,6 +223,11 @@ alias pp="sudo pppoe-stop"
 function pac() {
     # short for python activate
     localenv=$HOME/localenv
+
+    if [ "$1" ]; then
+        localenv=$localenv-$1
+    fi
+
     if [ -f $localenv/bin/activate ]; then
         source $localenv/bin/activate
     fi
