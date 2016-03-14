@@ -564,6 +564,8 @@ if package_manager == "vim-plug"
     " for javascript
     "Plug 'ternjs/tern_for_vim', {'for': 'javascript', 'do' : 'npm install'}
     Plug 'ternjs/tern_for_vim', {'do' : 'npm install'}
+    Plug 'pangloss/vim-javascript', {'for': 'javascript'}
+    Plug 'mxw/vim-jsx' " for react.js
 
     Plug 'tpope/vim-fireplace', {'for': 'clojure'}
     Plug 'rust-lang/rust.vim', {'for': 'rust'}
