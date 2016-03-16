@@ -40,8 +40,6 @@ filetype plugin indent on
 set autoread
 
 " Set map leader
-"let mapleader = ","
-"let g:mapleader = ","
 let mapleader = "\<Space>"
 let g:mapleader = "\<Space>"
 
@@ -213,8 +211,6 @@ noremap ` '
 
 
 " Close current buffer
-" map <leader>q :bdelete<cr>
-" nmap <leader>k :call MyBufferDelete()<cr>
 " need vim-bbye
 nmap <leader>q :Bdelete<cr>
 
@@ -230,13 +226,6 @@ endfunction
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" Specify the behavior when switching between buffers
-" try
-"   set switchbuf=usetab,newtab
-"   set stal=2
-" catch
-" endtry
-
 " Return to last edit position when opening files (You want this!)
 autocmd BufReadPost *
      \ if line("'\"") > 0 && line("'\"") <= line("$") |
@@ -249,12 +238,8 @@ autocmd BufReadPost *
 " Remove the Windows ^M - when the encodings gets messed up
 nnoremap <Leader>mm mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
-" Toggle paste mode on and off
-" nmap <leader>p :setlocal paste!<cr>
-
 " strip the spaces at the end of line
 nnoremap <leader><Space><Space> :%s/\s\+$//<cr>:<C-u>nohlsearch<CR>
-
 
 " merge multiple continuous lines into one.
 nmap <leader><cr> :%s/\(^[[:blank:]]*\n\)\{2,}/\r/<cr>
@@ -376,17 +361,12 @@ nmap <silent> ]t :tnext<CR>
 nmap <silent> [T :tfirst<CR>
 nmap <silent> ]T :tlast<CR>
 
-" tab related
-nmap <silent> <leader>tn :tabnew<cr>
-nmap <silent> <leader>tc :tabclose<cr>
-
 " disable highlight search for current search
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 
-
 " visual mode: star-search
 xnoremap * :<C-u>call <SID>VSetSearch()<CR>/<C-R>=@/<CR><CR>
-xnoremap * :<C-u>call <SID>VSetSearch()<CR>?<C-R>=@/<CR><CR>
+xnoremap # :<C-u>call <SID>VSetSearch()<CR>?<C-R>=@/<CR><CR>
 
 function! s:VSetSearch()
     let tmp = @s
@@ -411,11 +391,6 @@ nnoremap <C-J> <C-E>j
 vnoremap <C-J> <C-E>j
 nnoremap <C-K> <C-Y>k
 vnoremap <C-K> <C-Y>k
-
-"nnoremap <A-h> <C-w>h
-"nnoremap <A-j> <C-w>j
-"nnoremap <A-k> <C-w>k
-"nnoremap <A-l> <C-w>l
 
 "----------------------------------------------------------------------
 " Show tabs (indent lines)
@@ -503,6 +478,8 @@ if package_manager == "vim-plug"
 
     Plug 'sjl/gundo.vim'
 
+    Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
+
     "------------------------------------------------------------------
     " Integration with Linux environment
     "------------------------------------------------------------------
@@ -539,7 +516,8 @@ if package_manager == "vim-plug"
     " private snippets
     Plug 'lotabout/vim-ultisnippet-private'
 
-    Plug 'Syntastic' " syntax checker
+    "Plug 'Syntastic' " syntax checker
+    Plug 'scrooloose/syntastic'
 
     " Plug 'LaTeX-Suite-aka-Vim-LaTeX'
     " Plug 'jcf/vim-latex.git'
@@ -556,7 +534,7 @@ if package_manager == "vim-plug"
     Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
     Plug 'https://github.com/wlangstroth/vim-racket', {'for': 'racket'}
 
-    Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml']}
+    Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript-jsx']}
 
     "Plug 'Rip-Rip/clang_complete'
     "Plug 'Valloric/YouCompleteMe'
@@ -566,6 +544,7 @@ if package_manager == "vim-plug"
     Plug 'ternjs/tern_for_vim', {'do' : 'npm install'}
     Plug 'pangloss/vim-javascript', {'for': 'javascript'}
     Plug 'mxw/vim-jsx' " for react.js
+    Plug 'othree/javascript-libraries-syntax.vim'
 
     Plug 'tpope/vim-fireplace', {'for': 'clojure'}
     Plug 'rust-lang/rust.vim', {'for': 'rust'}
@@ -575,9 +554,12 @@ if package_manager == "vim-plug"
     Plug 'godlygeek/tabular'
     Plug 'plasticboy/vim-markdown'
 
+
     "------------------------------------------------------------------
     " Others
     "------------------------------------------------------------------
+    Plug 'PeterRincker/vim-argumentative' " quick navigation between arguments
+
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'mattn/calendar-vim'
     "Plug 'vimwiki/vimwiki'
@@ -602,89 +584,103 @@ endif
 
 "----------------------------------------------------------------------
 " supertab
-let g:SuperTabLongestEnhanced = 1
-let g:SuperTabDefaultCompletionType = "context"
-let g:SuperTabCrMapping = 1
+
+if exists('g:plugs["supertab"]')
+    let g:SuperTabLongestEnhanced = 1
+    let g:SuperTabDefaultCompletionType = "context"
+    let g:SuperTabCrMapping = 1
+endif
 
 "----------------------------------------------------------------------
 " easymotion
-let g:EasyMotion_do_mapping = 0 " Disable default mappings
-let g:EasyMotion_enter_jump_first = 1
 
-" Turn on case insensitive feature
-"let g:EasyMotion_smartcase = 1
+if exists('g:plugs["vim-easymotion"]')
+    let g:EasyMotion_do_mapping = 0 " Disable default mappings
+    let g:EasyMotion_enter_jump_first = 1
 
-nmap f <Plug>(easymotion-s)
-vmap f <Plug>(easymotion-s)
-nmap F <Plug>(easymotion-F)
-vmap F <Plug>(easymotion-F)
-nmap ; <Plug>(easymotion-next)
-vmap ; <Plug>(easymotion-next)
-nmap , <Plug>(easymotion-prev)
-vmap , <Plug>(easymotion-prev)
-nmap <Leader>l <Plug>(easymotion-bd-jk)
-vmap <Leader>l <Plug>(easymotion-bd-jk)
-nmap <Space>. <Plug>(easymotion-repeat)
+    " Turn on case insensitive feature
+    "let g:EasyMotion_smartcase = 1
+
+    nmap f <Plug>(easymotion-s)
+    vmap f <Plug>(easymotion-s)
+    nmap F <Plug>(easymotion-F)
+    vmap F <Plug>(easymotion-F)
+    nmap ; <Plug>(easymotion-next)
+    vmap ; <Plug>(easymotion-next)
+    nmap , <Plug>(easymotion-prev)
+    vmap , <Plug>(easymotion-prev)
+    nmap <Leader>l <Plug>(easymotion-bd-jk)
+    vmap <Leader>l <Plug>(easymotion-bd-jk)
+    nmap <Space>. <Plug>(easymotion-repeat)
+endif
 
 "----------------------------------------------------------------------
 " incsearch.vim
-map /  <Plug>(incsearch-forward)
-map ?  <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
+if exists('g:plugs["incsearch.vim"]')
+    map /  <Plug>(incsearch-forward)
+    map ?  <Plug>(incsearch-backward)
+    map g/ <Plug>(incsearch-stay)
+endif
 
 "----------------------------------------------------------------------
 " slimux
-let g:slimux_select_from_current_window = 1
-map <Leader>s :SlimuxREPLSendLine<CR>
-vmap <Leader>s :SlimuxREPLSendSelection<CR>
 
-let g:slimux_scheme_keybindings=1
-let g:slimux_scheme_leader=';'
-let g:slimux_racket_keybindings=1
-let g:slimux_racket_leader=';'
-let g:slimux_racket_xrepl=1
+if exists('g:plugs["slimux"]')
+    let g:slimux_select_from_current_window = 1
+    map <Leader>s :SlimuxREPLSendLine<CR>
+    vmap <Leader>s :SlimuxREPLSendSelection<CR>
+
+    let g:slimux_scheme_keybindings=1
+    let g:slimux_scheme_leader=';'
+    let g:slimux_racket_keybindings=1
+    let g:slimux_racket_leader=';'
+    let g:slimux_racket_xrepl=1
+endif
 
 "----------------------------------------------------------------------
 " Tagbar
 
-" nmap <silent> <leader>tl :TlistToggle<cr>
-nmap <silent> <leader>tl :TagbarToggle<cr>
-nmap <silent> <leader>ne :NERDTreeToggle<cr>
-nmap <silent> <F8> :call  ToggleNERDTreeAndTagbar()<cr>
+if exists('g:plugs["Tagbar"]')
 
-function! ToggleNERDTreeAndTagbar()
-    let w:jumpbacktohere = 1
+    " nmap <silent> <leader>tl :TlistToggle<cr>
+    nmap <silent> <leader>tl :TagbarToggle<cr>
+    nmap <silent> <leader>ne :NERDTreeToggle<cr>
+    nmap <silent> <F8> :call  ToggleNERDTreeAndTagbar()<cr>
 
-    " Detect which plugins are open
-    if exists('t:NERDTreeBufName')
-        let nerdtree_open = bufwinnr(t:NERDTreeBufName) != -1
-    else
-        let nerdtree_open = 0
-    endif
-    let tagbar_open = bufwinnr('__Tagbar__') != -1
+    function! ToggleNERDTreeAndTagbar()
+        let w:jumpbacktohere = 1
 
-    " Perform the appropriate action
-    if nerdtree_open && tagbar_open
-        NERDTreeClose
-        TagbarClose
-    elseif nerdtree_open
-        TagbarOpen
-    elseif tagbar_open
-        NERDTree
-    else
-        NERDTree
-        TagbarOpen
-    endif
-
-    " Jump back to the original window
-    for window in range(1, winnr('$'))
-        execute window . 'wincmd w'
-        if exists('w:jumpbacktohere')
-            unlet w:jumpbacktohere
-            break
+        " Detect which plugins are open
+        if exists('t:NERDTreeBufName')
+            let nerdtree_open = bufwinnr(t:NERDTreeBufName) != -1
+        else
+            let nerdtree_open = 0
         endif
-    endfor
-endfunction
+        let tagbar_open = bufwinnr('__Tagbar__') != -1
+
+        " Perform the appropriate action
+        if nerdtree_open && tagbar_open
+            NERDTreeClose
+            TagbarClose
+        elseif nerdtree_open
+            TagbarOpen
+        elseif tagbar_open
+            NERDTree
+        else
+            NERDTree
+            TagbarOpen
+        endif
+
+        " Jump back to the original window
+        for window in range(1, winnr('$'))
+            execute window . 'wincmd w'
+            if exists('w:jumpbacktohere')
+                unlet w:jumpbacktohere
+                break
+            endif
+        endfor
+    endfunction
+endif
 
 "---------------------------------------------------------------------
 " fakeclip
@@ -726,110 +722,134 @@ endif
 
 "---------------------------------------------------------------------
 " vim-bookmarks
-"nmap <leader>i <Plug>BookmarkAnnotate
-nmap mj <Plug>BookmarkNext
-nmap mk <Plug>BookmarkPrev
-nmap ml <Plug>BookmarkShowAll
-nmap <F2> <Plug>BookmarkNext
+if exists('g:plugs["vim-bookmarks"]')
+    "nmap <leader>i <Plug>BookmarkAnnotate
+    nmap mj <Plug>BookmarkNext
+    nmap mk <Plug>BookmarkPrev
+    nmap ml <Plug>BookmarkShowAll
+    nmap <F2> <Plug>BookmarkNext
 
-let g:bookmark_auto_save = 1
+    " unmap for mkk/mjj
+    nmap <Plug>NoBookmarkMoveUp <Plug>BookmarkMoveUp
+    nmap <Plug>NoBookmarkMoveDown <Plug>BookmarkMoveDown
+
+    let g:bookmark_auto_save = 1
+endif
 
 "---------------------------------------------------------------------
 " autofmt
-nmap <leader>f :setlocal formatexpr=autofmt#japanese#formatexpr()<CR>
+if exists('g:plugs["autofmt"]')
+    nmap <leader>f :setlocal formatexpr=autofmt#japanese#formatexpr()<CR>
+endif
 
 "---------------------------------------------------------------------
 " Gundo
-nnoremap <F5> :GundoToggle<CR>
+if exists('g:plugs["gundo.vim"]')
+    nnoremap <F5> :GundoToggle<CR>
+endif
 
 "---------------------------------------------------------------------
 " vimwiki
 
-" turn off insert mode mappings
-let g:vimwiki_global_ext = 0
-let g:vimwiki_table_mappings = 0
-let g:vimwiki_ext2syntax = {'.md': 'markdown',
-                \ '.mkd': 'markdown',
-                \ '.wiki': 'media'}
-let g:vimwiki_use_calendar = 1
+if exists('g:plugs["vimwiki"]')
+    " turn off insert mode mappings
+    let g:vimwiki_global_ext = 0
+    let g:vimwiki_table_mappings = 0
+    let g:vimwiki_ext2syntax = {'.md': 'markdown',
+                    \ '.mkd': 'markdown',
+                    \ '.wiki': 'media'}
+    let g:vimwiki_use_calendar = 1
 
-let wiki_1 = {}
-let wiki_1.path = '~/Dropbox/wiki/vimwiki'
-"let wiki_1.path_html = '~/repos/vimwiki_html'
-"let wiki_1.template_path= wiki_1.path_html . '/template'
-"let wiki_1.template_default = 'default'
-"let wiki_1.template_ext = '.htm'
-let wiki_1.nested_syntaxes = {'python': 'python',
-    \ 'js': 'javascript',
-    \ 'c': 'c',
-    \ 'sql': 'sql',
-    \ 'rust': 'rust',
-    \ 'scheme': 'scheme',
-    \ 'racket': 'racket'}
-let wiki_1.syntax = 'markdown'
-let wiki_1.ext = '.md'
+    let wiki_1 = {}
+    let wiki_1.path = '~/Dropbox/wiki/vimwiki'
+    "let wiki_1.path_html = '~/repos/vimwiki_html'
+    "let wiki_1.template_path= wiki_1.path_html . '/template'
+    "let wiki_1.template_default = 'default'
+    "let wiki_1.template_ext = '.htm'
+    let wiki_1.nested_syntaxes = {'python': 'python',
+        \ 'js': 'javascript',
+        \ 'c': 'c',
+        \ 'sql': 'sql',
+        \ 'rust': 'rust',
+        \ 'scheme': 'scheme',
+        \ 'racket': 'racket'}
+    let wiki_1.syntax = 'markdown'
+    let wiki_1.ext = '.md'
 
-let wiki_2 = {}
-let wiki_2.path = '~/Dropbox/wiki/vimwiki-private'
-let wiki_2.nested_syntaxes = wiki_1.nested_syntaxes
-let wiki_2.syntax = 'markdown'
-let wiki_2.ext = '.md'
-let g:vimwiki_list = [wiki_1, wiki_2]
+    let wiki_2 = {}
+    let wiki_2.path = '~/Dropbox/wiki/vimwiki-private'
+    let wiki_2.nested_syntaxes = wiki_1.nested_syntaxes
+    let wiki_2.syntax = 'markdown'
+    let wiki_2.ext = '.md'
+    let g:vimwiki_list = [wiki_1, wiki_2]
 
-map <F4> :exec '!cd '.VimwikiGet('path').'; ./sync.sh'<cr>
+    map <F4> :exec '!cd '.VimwikiGet('path').'; ./sync.sh'<cr>
 
-" Disable vimwiki mappings (to remove bindings begins with <leader>w)
-nmap <Plug>NoVimwikiIndex <Plug>VimwikiIndex
-nmap <Plug>NoVimwikiTabIndex <Plug>VimwikiTabIndex
-nmap <Plug>NoVimwikiUISelect <Plug>VimwikiUISelect
-nmap <Plug>NoVimwikiDiaryIndex <Plug>VimwikiDiaryIndex
-nmap <Plug>NoVimwikiMakeDiaryNote <Plug>VimwikiMakeDiaryNote
-nmap <Plug>NoVimwikiTabMakeDiaryNote <Plug>VimwikiTabMakeDiaryNote
-nmap <Plug>NoVimwikiDiaryGenerateLinks <Plug>VimwikiDiaryGenerateLinks
-nmap <Plug>NoVimwikiMakeYesterdayDiaryNote <Plug>VimwikiMakeYesterdayDiaryNote
-nmap <Plug>NoVimwikiRenameLink <Plug>VimwikiRenameLink
-nmap <Plug>NoVimwikiDeleteLink <Plug>VimwikiDeleteLink
-nmap <Plug>NoVimwiki2HTMLBrowse <Plug>Vimwiki2HTMLBrowse
-nmap <Plug>NoVimwiki2HTML <Plug>Vimwiki2HTML
+    " Disable vimwiki mappings (to remove bindings begins with <leader>w)
+    nmap <Plug>NoVimwikiIndex <Plug>VimwikiIndex
+    nmap <Plug>NoVimwikiTabIndex <Plug>VimwikiTabIndex
+    nmap <Plug>NoVimwikiUISelect <Plug>VimwikiUISelect
+    nmap <Plug>NoVimwikiDiaryIndex <Plug>VimwikiDiaryIndex
+    nmap <Plug>NoVimwikiMakeDiaryNote <Plug>VimwikiMakeDiaryNote
+    nmap <Plug>NoVimwikiTabMakeDiaryNote <Plug>VimwikiTabMakeDiaryNote
+    nmap <Plug>NoVimwikiDiaryGenerateLinks <Plug>VimwikiDiaryGenerateLinks
+    nmap <Plug>NoVimwikiMakeYesterdayDiaryNote <Plug>VimwikiMakeYesterdayDiaryNote
+    nmap <Plug>NoVimwikiRenameLink <Plug>VimwikiRenameLink
+    nmap <Plug>NoVimwikiDeleteLink <Plug>VimwikiDeleteLink
+    nmap <Plug>NoVimwiki2HTMLBrowse <Plug>Vimwiki2HTMLBrowse
+    nmap <Plug>NoVimwiki2HTML <Plug>Vimwiki2HTML
 
-nmap <leader>` <Plug>VimwikiIndex
+    nmap <leader>` <Plug>VimwikiIndex
+endif
 
 "---------------------------------------------------------------------
 " vim-airline
-"
-if has("gui_running")
-    let g:airline_theme='solarized'
-else
-    let g:airline_theme='wombat'
+
+if exists('g:plugs["vim-airline"]')
+    if has("gui_running")
+        let g:airline_theme='solarized'
+    else
+        let g:airline_theme='wombat'
+    endif
+
+    " let g:airline#extensions#tabline#enabled = 1
+    let g:airline_left_sep = ''
+    let g:airline_left_alt_sep = ''
+    let g:airline_right_sep = ''
+    let g:airline_right_alt_sep = ''
+    let g:airline_symbols = {}
+    let g:airline_symbols.branch = ''
+    let g:airline_symbols.readonly = ''
+    let g:airline_symbols.linenr = ''
 endif
 
-" let g:airline#extensions#tabline#enabled = 1
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-let g:airline_symbols = {}
-let g:airline_symbols.branch = ''
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.linenr = ''
+"---------------------------------------------------------------------
+" vim-argumentative
+if exists('g:plugs["vim-argumentative"]')
+    nmap >. <Plug>Argumentative_MoveRight
+endif
 
 "---------------------------------------------------------------------
 " vim-tmux-navigator
-let g:tmux_navigator_no_mappings = 1
+if exists('g:plugs["vim-tmux-navigator"]')
+    let g:tmux_navigator_no_mappings = 1
 
-nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
-nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
-nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
-nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
-" originally binded to C-l, now change to C-d
-nnoremap <silent> <C-d> :<C-u>nohlsearch<CR><C-l>
-nnoremap <silent> <C-\> :TmuxNavigatePrevious<cr>
+    nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
+    nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
+    nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+    nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
+    " originally binded to C-l, now change to C-d
+    nnoremap <silent> <C-d> :<C-u>nohlsearch<CR><C-l>
+    nnoremap <silent> <C-\> :TmuxNavigatePrevious<cr>
+endif
 
 "---------------------------------------------------------------------
 " vim-choosewin
-nmap - <Plug>(choosewin)
-let g:choosewin_blink_on_land  = 0 " don't blink at land
-"let g:choosewin_overlay_enable = 1
+if exists('g:plugs["vim-choosewin"]')
+    nmap - <Plug>(choosewin)
+    let g:choosewin_blink_on_land  = 0 " don't blink at land
+    "let g:choosewin_overlay_enable = 1
+endif
 
 "===============================================================================
 " self-added plugins && settigns
@@ -860,6 +880,16 @@ let $RUST_SRC_PATH = "/usr/local/src/rust/src/"
 "----------------------------------------------------------------------
 " rust
 let g:vim_markdown_folding_disabled = 1
+
+"----------------------------------------------------------------------
+" javascript
+
+" javascript-libraries-syntax.vim
+let g:used_javascript_libs = 'underscore,jquery,angularjs,angularui,react'
+let g:jsx_ext_required = 0 " Allow JSX in normal JS files
+
+" Syntastic
+let g:syntastic_javascript_checkers = ['eslint']
 
 "===============================================================================
 " client specified settings
