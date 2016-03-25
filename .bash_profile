@@ -283,11 +283,12 @@ export FZF_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # integrate with fasd
-j() {
+function j() {
   local dir
   dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
 }
-v() {
+
+function v() {
   local file
   file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && vi "${file}" || return 1
 }
