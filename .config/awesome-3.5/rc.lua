@@ -123,6 +123,33 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
+-- {{{ Functions
+local function translate(cin_word)
+    if cin_word == "" then return end
+    local f  = io.popen("google-translate.py '"..cin_word.."'")
+    local ret = "";
+    for line in f:lines() do
+        ret = ret .. line .. '\n'
+    end
+    f:close()
+    return ret
+    -- body
+end
+
+local function pop_translate(cin_word)
+    naughty.destroy(frame)
+
+    local translation = translate(cin_word)
+
+    local function listen()
+        os.execute("google-translate.py -v '"..cin_word.."' | mplayer -cache 1024 -")
+    end
+
+    frame = naughty.notify({ text = translation, timeout = 10, run = listen})
+end
+--}}}
+
+
 -- {{{ Wibox
 
 -- A reusable seperator
@@ -254,13 +281,34 @@ vicious.register(weatherwidget, vicious.widgets.weather,
     function (widget, args)
         weather_t:set_text("City:\t\t" .. args["{city}"] .. "\nWind:\t" .. args["{windkmh}"] .. "km/h " .. args["{wind}"] .. "\nSky:\t\t" .. args["{sky}"] .. "\nHumidity:\t" .. args["{humid}"] .. "%")
         return args["{tempc}"] .. "℃"
-    end, 1800, "ZSNJ"
+    end, 1801, "ZSSS"
     -- 1800: check every 30 minutes.
     -- "ZSNJ" the Montreal ICAO code.
 )
 
--- dictionary everyday
+-- {{{ dictionary everyday
 word_of_day = wibox.widget.textbox()
+
+function word_of_day_widget(format, warg)
+    local url = "http://www.dictionary.com/wordoftheday/"
+    local f = io.popen("curl --connect-timeout 1 -fsm 3 '"..url.."'")
+    local html = f:read("*all")
+    f:close()
+    local word = string.match(html, 'data%-word="(.-)"')
+
+    return {["word"] = word,
+            ["translation"] = translate(word)}
+end
+
+word_of_day_t = awful.tooltip({objects = {word_of_day}, })
+vicious.register(word_of_day, word_of_day_widget,
+    function (widget, args)
+        word_of_day_t:set_text(args["translation"])
+        widget:buttons(awful.button({}, 1, function() os.execute("google-translate.py -v '"..args['word'].."' | mplayer -cache 1024 -") end))
+        return 'WoD: '..args["word"]
+    end, 1801
+)
+-- }}}
 
 -- Create a textclock widget
 mytextclock = awful.widget.textclock()
@@ -348,6 +396,8 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
     right_layout:add(seperator)
+    right_layout:add(word_of_day)
+    right_layout:add(seperator)
     right_layout:add(baticon);right_layout:add(batwidget)
     right_layout:add(seperator)
     --right_layout:add(cpuicon);right_layout:add(cpugraph);right_layout:add(tzswidget)
@@ -397,28 +447,6 @@ root.buttons(awful.util.table.join(
     awful.button({ }, 5, awful.tag.viewprev)
 ))
 -- }}}
-
--- {{{ Functions
-local function translate(cin_word)
-    naughty.destroy(frame)
-    if cin_word == "" then
-        return
-    end
-
-    local fc = ""
-    local f  = io.popen("google-translate.py '"..cin_word.."'")
-    for line in f:lines() do
-        fc = fc .. line .. '\n'
-    end
-    f:close()
-
-    local function listen()
-        os.execute("google-translate.py -v '"..cin_word.."' | mplayer -cache 1024 -")
-    end
-
-    frame = naughty.notify({ text = fc, timeout = 10, run = listen})
-end
---}}}
 
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
@@ -523,10 +551,10 @@ globalkeys = awful.util.table.join(
         end
         old_word = new_word
 
-        translate(new_word)
+        pop_translate(new_word)
     end),
     awful.key({ modkey, "Shift" }, "d", function ()
-        awful.prompt.run({prompt = "Dict: "}, mypromptbox[mouse.screen].widget, translate, nil, awful.util.getdir("cache").."/dict")
+        awful.prompt.run({prompt = "Dict: "}, mypromptbox[mouse.screen].widget, pop_translate, nil, awful.util.getdir("cache").."/dict")
     end)
     -- }
     --}}
