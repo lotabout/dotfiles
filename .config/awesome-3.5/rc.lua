@@ -12,7 +12,7 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 
 -- User Library
-vicious = require("vicious")
+local vicious = require("vicious")
 
 -- wmii like tagging(auto hide)
 require("eminent")
@@ -150,25 +150,6 @@ end, 3)
 thermalwidgit = wibox.widget.textbox()
 vicious.register(thermalwidgit, vicious.widgets.thermal, " ($1 ℃)", 10, "thermal_zone0")
 
---[[ Old configuration
--- initialize widget
-cpugraph = awful.widget.graph()
-tzswidget = wibox.widget.textbox()
--- graph properties
-cpugraph:set_width(40):set_height(17)
-cpugraph:set_background_color(beautiful.fg_off_widget)
-cpugraph:set_color({type = "linear", from = {0,0}, to = {8, 14}, stops = {{0, beautiful.fg_end_widget}, {0.5, beautiful.fg_center_widget}, {1, beautiful.fg_widget}}})
-cpugraph_t = awful.tooltip({objects = {cpugraph},})
---register widgets
--- vicious.register(cpugraph,  vicious.widgets.cpu,      "$1")
-vicious.register(cpugraph,  vicious.widgets.cpu, function (widget, args)
-    cpugraph_t:set_text("CPU Usage: " .. args[1] .. "%")
-    return args[1]
-end)
-
-vicious.register(tzswidget, vicious.widgets.thermal, " $1C", 19, "thermal_zone0")
---]]
-
 --{{ Battery state
 baticon = wibox.widget.imagebox()
 baticon:set_image(beautiful.widget_bat)
@@ -193,19 +174,13 @@ membar_t = awful.tooltip({objects = {membar}, })
 -- Register widget
 vicious.cache(vicious.widgets.mem)
 -- vicious.register(membar, vicious.widgets.mem, "$1", 13)
-vicious.register(membar, vicious.widgets.mem, 
+vicious.register(membar, vicious.widgets.mem,
     function (widget, args)
         membar_t:set_text("RAM:\t" .. args[2] .. "MB / " .. args[3] .. "MB ")
         return args[1]
     end, 13)
 --}}
 
---{{ Network usage
---dnicon = wibox.widget.imagebox()
---upicon = wibox.widget.imagebox()
---dnicon:set_image(beautiful.widget_net)
---upicon:set_image(beautiful.widget_netup)
--- Initialize widget
 netwidget = wibox.widget.textbox()
 
 -- Register widget
@@ -214,8 +189,8 @@ local function format_interface(table, interface)
     local netstr = ""
     if table["{" .. interface .. " carrier}"] == 1 then
         netstr = string.upper(string.sub(interface, 0, -2)) .. ' '
-        .. string.sub(interface, -1) .. '[<span color="' 
-        .. beautiful.fg_netdn_widget ..'">↙' 
+        .. string.sub(interface, -1) .. '[<span color="'
+        .. beautiful.fg_netdn_widget ..'">↙'
         ..  table["{" .. interface .. " down_kb}"] .. 'K</span> <span color="'
         .. beautiful.fg_netup_widget ..'">'
         .. table["{" .. interface .. " up_kb}"] .. 'K↗</span>]'
@@ -245,7 +220,7 @@ vicious.register(netwidget, vicious.widgets.net, get_network_string , 3)
 diskicon = wibox.widget.imagebox()
 diskicon:set_image(beautiful.widget_fs)
 diskwidget = wibox.widget.textbox()
-vicious.register(diskwidget, vicious.widgets.dio, 
+vicious.register(diskwidget, vicious.widgets.dio,
     "↙(${sda read_mb}M,${sda write_mb}M)↗", 3)
 --}}
 
@@ -255,7 +230,7 @@ vicious.register(diskwidget, vicious.widgets.dio,
 volicon = wibox.widget.imagebox()
 volicon:set_image(beautiful.widget_vol)
 volwidget = wibox.widget.textbox()
-vicious.register(volwidget, vicious.widgets.volume, 
+vicious.register(volwidget, vicious.widgets.volume,
     function (widget, args)
     local label = { ["♫"] = "%", ["♩"] = "M" }
     local vol = args[1]
@@ -283,6 +258,9 @@ vicious.register(weatherwidget, vicious.widgets.weather,
     -- 1800: check every 30 minutes.
     -- "ZSNJ" the Montreal ICAO code.
 )
+
+-- dictionary everyday
+word_of_day = wibox.widget.textbox()
 
 -- Create a textclock widget
 mytextclock = awful.widget.textclock()
@@ -524,12 +502,10 @@ globalkeys = awful.util.table.join(
         old_word = new_word
 
         local fc = ""
-        local f  = io.popen("sdcv -n --utf8-output ".. new_word)
+        local f  = io.popen("google-translate.py '".. new_word.."'")
         for line in f:lines() do
             fc = fc .. line .. '\n'
         end
-        print (new_word)
-        print (fc)
         f:close()
         frame = naughty.notify({ text = fc, timeout = 10, width = 320 })
     end),
@@ -541,7 +517,7 @@ globalkeys = awful.util.table.join(
             end
 
             local fc = ""
-            local f  = io.popen("sdcv -n --utf8-output "..cin_word)
+            local f  = io.popen("google-translate.py '"..cin_word.."'")
             for line in f:lines() do
                 fc = fc .. line .. '\n'
             end
@@ -558,7 +534,7 @@ clientkeys = awful.util.table.join(
     awful.key({ modkey,           }, "F4",      function (c) c:kill()                         end),
     awful.key({ modkey, "Control" }, "space",  function (c) awful.titlebar.toggle(c); awful.client.floating.toggle(); end),
     --awful.key({ modkey,           }, "Return", function (c) c:swap(awful.client.getmaster()) end),
-    awful.key({ modkey,           }, "Return", function (c) 
+    awful.key({ modkey,           }, "Return", function (c)
         if c == awful.client.getmaster() then
             local screen = mouse.screen
             -- If the client is newly create, then it is the last visited
@@ -574,7 +550,7 @@ clientkeys = awful.util.table.join(
             end
         else
             awful.client.focus.history.add(awful.client.getmaster())
-            c:swap(awful.client.getmaster()) 
+            c:swap(awful.client.getmaster())
         end
     end),
     awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
@@ -651,7 +627,7 @@ awful.rules.rules = {
                      focus = awful.client.focus.filter,
                      keys = clientkeys,
                      buttons = clientbuttons,
-                     
+
                      -- disable size hint
                      size_hints_honor = false
                  } },
@@ -831,7 +807,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- {{ Autorun programs
 autorun = true
-autorunApps = 
+autorunApps =
 {
     HOME .. "/.config/awesome/autostart.sh",
 }
