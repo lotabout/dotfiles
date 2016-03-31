@@ -16,6 +16,8 @@ except:
 
 import json
 import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 def translate(text, from_lang="auto", to_lang="zh-CN"):
     """translate text, return the result as json"""
@@ -78,12 +80,16 @@ def main():
     parser.add_argument('words', type=str, help="word or sentence", nargs="+")
     parser.add_argument('-f', '--from_lang', help="language of the input", default='auto')
     parser.add_argument('-t', '--to_lang', help="target language", default='zh-CN')
+    parser.add_argument('-v', '--voice', help="output voice stream data instead of translation", action='store_true', default=False)
 
     args = parser.parse_args()
 
     sentence = ' '.join(args.words)
     result = translate(sentence, from_lang=args.from_lang, to_lang=args.to_lang)
-    sys.stdout.write(format_json(result))
+    if args.voice:
+        sys.stdout.write(voice(args.words, result['src']))
+    else:
+        sys.stdout.write(format_json(result))
 
 if __name__ == '__main__':
     main()
