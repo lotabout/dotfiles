@@ -398,6 +398,28 @@ root.buttons(awful.util.table.join(
 ))
 -- }}}
 
+-- {{{ Functions
+local function translate(cin_word)
+    naughty.destroy(frame)
+    if cin_word == "" then
+        return
+    end
+
+    local fc = ""
+    local f  = io.popen("google-translate.py '"..cin_word.."'")
+    for line in f:lines() do
+        fc = fc .. line .. '\n'
+    end
+    f:close()
+
+    local function listen()
+        os.execute("google-translate.py -v '"..cin_word.."' | mplayer -cache 1024 -")
+    end
+
+    frame = naughty.notify({ text = fc, timeout = 10, run = listen})
+end
+--}}}
+
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
@@ -501,29 +523,10 @@ globalkeys = awful.util.table.join(
         end
         old_word = new_word
 
-        local fc = ""
-        local f  = io.popen("google-translate.py '".. new_word.."'")
-        for line in f:lines() do
-            fc = fc .. line .. '\n'
-        end
-        f:close()
-        frame = naughty.notify({ text = fc, timeout = 10, width = 320 })
+        translate(new_word)
     end),
     awful.key({ modkey, "Shift" }, "d", function ()
-        awful.prompt.run({prompt = "Dict: "}, mypromptbox[mouse.screen].widget, function(cin_word)
-            naughty.destroy(frame)
-            if cin_word == "" then
-                return
-            end
-
-            local fc = ""
-            local f  = io.popen("google-translate.py '"..cin_word.."'")
-            for line in f:lines() do
-                fc = fc .. line .. '\n'
-            end
-            f:close()
-            frame = naughty.notify({ text = fc, timeout = 10, width = 320 })
-        end, nil, awful.util.getdir("cache").."/dict")
+        awful.prompt.run({prompt = "Dict: "}, mypromptbox[mouse.screen].widget, translate, nil, awful.util.getdir("cache").."/dict")
     end)
     -- }
     --}}

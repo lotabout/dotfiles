@@ -61,7 +61,7 @@ def format_json(result, max_entries=5):
     ret = []
     for sentence in result['sentences']:
         ret.append(sentence['orig'] + ': ' + sentence['trans'])
-    ret.append('')
+        ret.append('')
 
     # format pos
     if 'dict' in result:
