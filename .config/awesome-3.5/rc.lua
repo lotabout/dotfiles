@@ -217,10 +217,10 @@ local function format_interface(table, interface)
     if table["{" .. interface .. " carrier}"] == 1 then
         netstr = string.upper(string.sub(interface, 0, -2)) .. ' '
         .. string.sub(interface, -1) .. '[<span color="'
-        .. beautiful.fg_netdn_widget ..'">↙'
+        .. beautiful.fg_netdn_widget ..'">↓'
         ..  table["{" .. interface .. " down_kb}"] .. 'K</span> <span color="'
         .. beautiful.fg_netup_widget ..'">'
-        .. table["{" .. interface .. " up_kb}"] .. 'K↗</span>]'
+        .. table["{" .. interface .. " up_kb}"] .. 'K↑</span>]'
     end
     return netstr
 end
@@ -248,7 +248,7 @@ diskicon = wibox.widget.imagebox()
 diskicon:set_image(beautiful.widget_fs)
 diskwidget = wibox.widget.textbox()
 vicious.register(diskwidget, vicious.widgets.dio,
-    "↙(${sda read_mb}M,${sda write_mb}M)↗", 3)
+    "↓(${sda read_mb}M,${sda write_mb}M)↑", 3)
 --}}
 
 -- Volume level
@@ -287,7 +287,6 @@ vicious.register(weatherwidget, vicious.widgets.weather,
 )
 
 -- {{{ dictionary everyday
-word_of_day = wibox.widget.textbox()
 
 function word_of_day_widget(format, warg)
     local url = "http://www.dictionary.com/wordoftheday/"
@@ -300,6 +299,7 @@ function word_of_day_widget(format, warg)
             ["translation"] = translate(word)}
 end
 
+word_of_day = wibox.widget.textbox()
 word_of_day_t = awful.tooltip({objects = {word_of_day}, })
 vicious.register(word_of_day, word_of_day_widget,
     function (widget, args)
@@ -309,6 +309,70 @@ vicious.register(word_of_day, word_of_day_widget,
     end, 1801
 )
 -- }}}
+
+-- {{{ Show stock data real time
+
+local _stocks = {}
+
+local function split(s, delimiter)
+    result = {};
+    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+        table.insert(result, match);
+    end
+    return result;
+end
+
+local function parse_stock_line(line)
+    local data = split(line, ',')
+    _stocks["code"]   = string.match(data[1], '"(.-)"')
+    _stocks["start"]  = data[2]
+    _stocks["change"] = string.match(data[3], '"(.-)"')
+    _stocks["low"]    = data[4]
+    _stocks["high"]   = data[5]
+    _stocks["close"]  = data[6]
+    return _stocks
+end
+
+local function stock(format, warg)
+    if not warg then return end
+
+    local codes = 's='..table.concat(warg, "+")
+    local fmt = "&f=socghl1"
+    local url = "http://finance.yahoo.com/d/quotes.csv?"..codes..fmt
+    local ret = {}
+    local f = io.popen("curl -L --connect-timeout 1 -fsm 3 '"..url.."'")
+    for line in f:lines() do
+        table.insert(ret, parse_stock_line(line))
+    end
+    f:close()
+    return ret
+end
+
+local function format_stock_change(change)
+    if change:sub(1,1) == '-' then
+        return '<span color="' .. beautiful.fg_netup_widget .. '">' .. change .. '</span>'
+    else
+        return '<span color="' .. beautiful.fg_netdn_widget .. '">' .. change .. '</span>'
+    end
+end
+
+local function format_stock_detail(stock_info)
+
+end
+
+stock_widget = wibox.widget.textbox()
+stock_widget_t = awful.tooltip({objects = {stock_widget}, })
+vicious.register(stock_widget, stock,
+    function (widget, args)
+        local ret = ""
+        for i, stock in ipairs(args) do
+            local change = stock['change']
+            ret = ret .. ' ' .. stock['code'] .. ': ' .. format_stock_change(change)
+        end
+        return ret
+    end, 11, {'399001.sz'}
+)
+---}}}
 
 -- Create a textclock widget
 mytextclock = awful.widget.textclock()
@@ -395,6 +459,8 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
+    right_layout:add(seperator)
+    right_layout:add(stock_widget)
     right_layout:add(seperator)
     right_layout:add(word_of_day)
     right_layout:add(seperator)
