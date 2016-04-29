@@ -72,6 +72,12 @@ keys = [
     Key([mod, "shift"], "r", lazy.restart()),
     Key([mod, "shift"], "q", lazy.shutdown()),
     Key([mod], "p", lazy.spawncmd()),
+
+    # Utiflities
+
+    Key([mod], "BackSpace", lazy.spawn('amixer -q -D pulse sset Master toggle')),
+    Key([mod], "equal", lazy.spawn('amixer -q sset Master 5%+ unmute')),
+    Key([mod], "minus", lazy.spawn('amixer -q sset Master 5%- unmute')),
 ]
 
 groups = [Group(str(i), persist=False) for i in range(1,10)]
@@ -104,10 +110,17 @@ screens = [
             [
                 widget.GroupBox(),
                 widget.Prompt(),
-                widget.WindowName(),
-                widget.TextBox("default config", name="default"),
+                widget.TaskList(foreground="#AAAAAA", highlight_method="block"),
+                widget.Sep(),
+                widget.CPUGraph(),
+                widget.MemoryGraph(),
+                widget.Sep(),
+                widget.Net(interface='eth0'),
+                widget.Sep(),
+                widget.Volume(),
+                widget.Sep(),
                 widget.Systray(),
-                widget.Clock(format='%Y-%m-%d %a %I:%M %p'),
+                widget.Clock(format='%b %d, %Y %H:%M'),
             ],
             30,
         ),
