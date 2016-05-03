@@ -78,14 +78,16 @@ keys = [
     Key([mod], "BackSpace", lazy.spawn('amixer -q -D pulse sset Master toggle')),
     Key([mod], "equal", lazy.spawn('amixer -q sset Master 5%+ unmute')),
     Key([mod], "minus", lazy.spawn('amixer -q sset Master 5%- unmute')),
+    Key([mod, "control"], "Return", lazy.spawn("xscreensaver-command -lock")),
 ]
 
-groups = [Group(str(i), persist=False) for i in range(1,10)]
+
+groups = [Group(str(i)) for i in range(1,10)]
 
 for idx, grp in enumerate(groups):
     # mod1 + letter of grp = switch to grp
     keys.append(
-        Key([mod], str(idx+1), lazy.group[str(idx+1)].toscreen())
+        Key([mod], str(idx+1), lazy.screen.togglegroup(str(idx+1)))
     )
 
     # mod1 + shift + letter of grp = switch to & move focused window to grp
@@ -99,30 +101,48 @@ layouts = [
 ]
 
 widget_defaults = dict(
-    font='Arial',
-    fontsize=16,
-    padding=3,
+    font='Dejavu Sans Mono',
+    fontsize=14,
+    padding=1,
 )
+
+#-----------------------------------------------------------------------------
+# Custom widgets
+
+class DGroupBox(widget.GroupBox):
+    """GroupBox widget that mimic i3 wm's tag which will hide empty groups"""
+    def __init__(self, **config):
+        super(DGroupBox, self).__init__(**config)
+
+    @property
+    def groups(self):
+        return [g for g in super(DGroupBox, self).groups if g.windows or self.qtile.currentGroup.name == g.name]
 
 screens = [
     Screen(
         bottom=bar.Bar(
             [
-                widget.GroupBox(),
-                widget.Prompt(),
-                widget.TaskList(foreground="#AAAAAA", highlight_method="block"),
+                DGroupBox(highlight_method="block"),
                 widget.Sep(),
-                widget.CPUGraph(),
-                widget.MemoryGraph(),
+                widget.Prompt(),
+                widget.Sep(),
+                widget.TaskList(foreground="#AAAAAA", highlight_method="block"),
                 widget.Sep(),
                 widget.Net(interface='eth0'),
                 widget.Sep(),
+                widget.TextBox('CPU:'),
+                widget.CPUGraph(),
+                widget.TextBox('MEM:'),
+                widget.MemoryGraph(),
+                widget.Sep(),
+                widget.TextBox('VOL:'),
                 widget.Volume(),
                 widget.Sep(),
                 widget.Systray(),
+                widget.Sep(),
                 widget.Clock(format='%b %d, %Y %H:%M'),
             ],
-            30,
+            22,
         ),
     ),
 ]
