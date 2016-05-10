@@ -29,6 +29,9 @@ from libqtile.command import lazy
 from libqtile import layout, bar, widget, hook
 import os
 import subprocess
+from urllib.request import urlopen
+import re
+import json
 
 mod = "mod1"
 
@@ -106,9 +109,10 @@ widget_defaults = dict(
     padding=1,
 )
 
-#-----------------------------------------------------------------------------
+#=============================================================================
 # Custom widgets
 
+#-----------------------------------------------------------------------------
 class DGroupBox(widget.GroupBox):
     """GroupBox widget that mimic i3 wm's tag which will hide empty groups"""
     def __init__(self, **config):
@@ -117,6 +121,44 @@ class DGroupBox(widget.GroupBox):
     @property
     def groups(self):
         return [g for g in super(DGroupBox, self).groups if g.windows or self.qtile.currentGroup.name == g.name]
+
+
+#-----------------------------------------------------------------------------
+# Fetch stock price
+def format_stock(stock):
+    return '%s: %6.2f, %.2f%%' % (stock['symbol'], stock['price'], stock['percent']*100)
+
+class StockBox(widget.base.ThreadedPollText):
+    """Fetch stock price, data from 'http://quotes.money.163.com/stock'
+       Stock code: SH, add prefix '0', SZ, add prefix '1'"""
+    defaults = [
+        ('format_func', format_stock, 'Format Function'),
+        ('update_interval', 3, 'The update interval.'),
+        ('foreground', '#AAAAAA', 'Foreground  color.'),
+    ]
+
+    def __init__(self, stocks=['0000001', '1399001'], **config):
+        super(StockBox, self).__init__(**config)
+        self.add_defaults(StockBox.defaults)
+        self.stocks = stocks
+
+    def _retrieve_stock_data(self):
+        url = 'http://api.money.126.net/data/feed/' + ','.join(self.stocks) + ',money.api'
+        response = urlopen(url).read()
+        return json.loads(re.sub(r'_ntes_quote_callback\((.*)\);', r'\1', response.decode('utf-8')))
+
+    def poll(self):
+        texts = []
+
+        try:
+            for stock, stock_data in sorted(self._retrieve_stock_data().items()):
+                texts.append(self.format_func(stock_data))
+        except:
+            pass
+
+        return '|'.join(texts)
+
+#=============================================================================
 
 screens = [
     Screen(
@@ -127,6 +169,7 @@ screens = [
                 widget.Prompt(),
                 widget.Sep(),
                 widget.TaskList(foreground="#AAAAAA", highlight_method="block"),
+                StockBox(['0000001']),
                 widget.Sep(),
                 widget.Net(interface='eth0'),
                 widget.Sep(),
