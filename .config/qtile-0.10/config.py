@@ -136,6 +136,43 @@ class DGroupBox(widget.GroupBox):
     def groups(self):
         return [g for g in super(DGroupBox, self).groups if g.windows or self.qtile.currentGroup.name == g.name]
 
+#-----------------------------------------------------------------------------
+# Disk IO
+
+class DiskIO(widget.Net):
+    """Displays disk IO down and up speed"""
+    defaults = [
+        ('interface', 'sda', 'The interface to monitor'),
+        ('update_interval', 3, 'The update interval.'),
+    ]
+
+    columns_disk = ['m', 'mm', 'dev', 'reads', 'rd_mrg', 'rd_sectors',
+                    'ms_reading', 'writes', 'wr_mrg', 'wr_sectors',
+                    'ms_writing', 'cur_ios', 'ms_doing_io', 'ms_weighted']
+
+    def __init__(self, **config):
+        # fetch sector size
+        try:
+            with open(os.path.join('/sys/block/', self.interface, 'queue/hw_sector_size')) as f:
+                self.sector_size = int(f.read().strip())
+        except:
+            self.sector_size = 512
+
+        super(DiskIO, self).__init__(**config)
+
+
+    def get_stats(self):
+        lines = []  # type: List[str]
+        with open('/proc/diskstats', 'r') as f:
+            lines = f.readlines()
+        interfaces = {}
+        for s in lines:
+            int_s = s.split()
+            name = int_s[2]
+            down = float(int_s[5])*self.sector_size
+            up = float(int_s[9])*self.sector_size
+            interfaces[name] = {'down': down, 'up': up}
+        return interfaces
 
 #-----------------------------------------------------------------------------
 # Fetch stock price
@@ -191,7 +228,11 @@ screens = [
                 widget.TaskList(foreground="#AAAAAA", highlight_method="block"),
                 StockBox(stocks),
                 widget.Sep(),
-                widget.Net(interface='eth0'),
+                widget.TextBox('Net:'),
+                widget.Net(interface='eth0', update_interval=3),
+                widget.Sep(),
+                widget.TextBox('Disk:'),
+                DiskIO(interface='sda'),
                 widget.Sep(),
                 widget.TextBox('CPU:'),
                 widget.CPUGraph(),
