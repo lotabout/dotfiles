@@ -33,6 +33,7 @@ from urllib.request import urlopen
 import re
 import json
 
+
 mod = "mod1"
 
 keys = [
@@ -109,6 +110,19 @@ widget_defaults = dict(
     padding=1,
 )
 
+
+#=============================================================================
+# Local configuration file
+
+config_file = 'config.ini'
+script_path = os.path.dirname(os.path.realpath(__file__))
+g_config = {}
+
+if os.path.exists(os.path.join(script_path, config_file)):
+    import configparser
+    g_config = configparser.ConfigParser()
+    g_config.read(os.path.join(script_path, config_file))
+
 #=============================================================================
 # Custom widgets
 
@@ -160,6 +174,12 @@ class StockBox(widget.base.ThreadedPollText):
 
 #=============================================================================
 
+# read stock list from config file
+# Example Config File:
+# [stocks]
+# codes = ["0000001", "1399001"]
+stocks = ['0000001'] if 'stocks' not in g_config else json.loads(g_config.get('stocks', 'codes'))
+
 screens = [
     Screen(
         bottom=bar.Bar(
@@ -169,7 +189,7 @@ screens = [
                 widget.Prompt(),
                 widget.Sep(),
                 widget.TaskList(foreground="#AAAAAA", highlight_method="block"),
-                StockBox(['0000001']),
+                StockBox(stocks),
                 widget.Sep(),
                 widget.Net(interface='eth0'),
                 widget.Sep(),
