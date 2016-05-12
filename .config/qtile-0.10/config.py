@@ -159,6 +159,7 @@ class DiskIO(widget.Net):
             self.sector_size = 512
 
         super(DiskIO, self).__init__(**config)
+        self.add_defaults(DiskIO.defaults)
 
 
     def get_stats(self):
@@ -219,13 +220,17 @@ stocks = ['0000001'] if 'stocks' not in g_config else json.loads(g_config.get('s
 
 screens = [
     Screen(
+        top=bar.Bar([
+            widget.TaskList(foreground="#AAAAAA", highlight_method="block",
+                fontsize=12, rounded=False, margin_y=0, max_title_width=400)
+            ], 20),
         bottom=bar.Bar(
             [
                 DGroupBox(highlight_method="block"),
                 widget.Sep(),
                 widget.Prompt(),
+                widget.Spacer(),
                 widget.Sep(),
-                widget.TaskList(foreground="#AAAAAA", highlight_method="block"),
                 StockBox(stocks),
                 widget.Sep(),
                 widget.TextBox('Net:'),
