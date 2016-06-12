@@ -105,8 +105,8 @@ fi
 # enable some bash options
 shopt -s histverify
 shopt -s histappend
-HISTSIZE=10000
-HISTFILESIZE=10000
+HISTSIZE=100000
+HISTFILESIZE=100000
 PROMPT_COMMAND='history -a'
 
 # udisk_functions
@@ -136,14 +136,14 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     # Do something under Linux platform
     # enable color support of ls and also add handy aliases
     if [ -x /usr/bin/dircolors ]; then
-	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-	alias ls='ls -B --color=auto'
-	alias dir='dir --color=auto'
-	alias vdir='vdir --color=auto'
+        test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+        alias ls='ls -B --color=auto'
+        alias dir='dir --color=auto'
+        alias vdir='vdir --color=auto'
 
-	alias grep='grep --color=auto'
-	alias fgrep='fgrep --color=auto'
-	alias egrep='egrep --color=auto'
+        alias grep='grep --color=auto'
+        alias fgrep='fgrep --color=auto'
+        alias egrep='egrep --color=auto'
     fi
 
 elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
@@ -197,15 +197,14 @@ function move_to_trash() {
     if [ ! -d $HOME/.trash ]; then
         mkdir $HOME/.trash
     fi
-    if [ -d "$@" ]; then
+    for FILE in "$@";
+    do
         # remove trailing slash
-        local mindtrailingslash=${@%/}
+        local mindtrailingslash=${FILE%/}
         # remove preceding directory path
         local dst=${mindtrailingslash##*/}
-        mv "$@" $HOME/.trash/"${dst}-$(date '+%Y-%m-%d-%T')"
-    else
-        mv "$@" $HOME/.trash/
-    fi
+        mv -- "$FILE" $HOME/.trash/"${dst}-$(date '+%Y-%m-%d-%T')"
+    done
 
 }
 function trash_empty() {
@@ -246,7 +245,14 @@ function pdc() {
     deactivate
 }
 
+# set operation
+function set_union () {
+   cat $1 $2 | sort | uniq
+}
 
+function set_difference () {
+   cat $1 $2 $2 | sort | uniq -u
+}
 
 # quick bookmark
 alias mdump='alias|grep -e "alias g[0-9]"|grep -v "alias m" > ~/.bookmarks'
@@ -306,3 +312,5 @@ if [ -f ~/.bashrc_local ]; then
 fi
 set -o vi
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
