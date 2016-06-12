@@ -38,8 +38,8 @@ mod = "mod1"
 
 keys = [
     # Switch between windows in current stack pane
-    Key([mod], "k", lazy.layout.down()),
-    Key([mod], "j", lazy.layout.up()),
+    Key([mod], "j", lazy.layout.down()),
+    Key([mod], "k", lazy.layout.up()),
     Key([mod], "h", lazy.layout.left()),
     Key([mod], "l", lazy.layout.right()),
 
@@ -63,6 +63,9 @@ keys = [
     # next layout
     Key([mod], "s", lazy.next_layout()),
 
+    Key([mod], "f", lazy.window.toggle_floating()),
+    Key([mod, "shift"], "f", lazy.window.toggle_fullscreen()),
+
     # increase ratio
     Key([mod], "Right", lazy.layout.increase_ratio()),
     Key([mod], "Left", lazy.layout.decrease_ratio()),
@@ -77,12 +80,13 @@ keys = [
     Key([mod, "shift"], "q", lazy.shutdown()),
     Key([mod], "p", lazy.spawncmd()),
 
-    # Utiflities
+    # Utilities
 
     Key([mod], "BackSpace", lazy.spawn('amixer -q -D pulse sset Master toggle')),
     Key([mod], "equal", lazy.spawn('amixer -q sset Master 5%+ unmute')),
     Key([mod], "minus", lazy.spawn('amixer -q sset Master 5%- unmute')),
     Key([mod, "control"], "Return", lazy.spawn("xscreensaver-command -lock")),
+    Key([mod], "b", lazy.hide_show_bar()),
 ]
 
 
