@@ -45,6 +45,8 @@ let g:mapleader = "\<Space>"
 
 " Show line number
 set nu
+" set relative number
+set relativenumber
 
 "----------------------------------------------------------------------
 " VIM user interface
@@ -494,12 +496,14 @@ if package_manager == "vim-plug"
 
     " search files/MRUs easily (by press 'Ctrl-p' in normal mode)
     " use ctrlp only when FZF do not exist
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-    Plug 'junegunn/fzf.vim'
-    if !executable('fzf')
-        Plug 'ctrlp.vim'
-        Plug 'JazzCore/ctrlp-cmatcher'
-    endif
+    "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    "Plug 'junegunn/fzf.vim'
+    "if !executable('fzf')
+        "Plug 'ctrlp.vim'
+        "Plug 'JazzCore/ctrlp-cmatcher'
+    "endif
+    Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
+    Plug 'lotabout/skim.vim'
 
     " work with git
     Plug 'fugitive.vim'
@@ -554,19 +558,12 @@ if package_manager == "vim-plug"
     Plug 'godlygeek/tabular'
     Plug 'plasticboy/vim-markdown'
 
-
     "------------------------------------------------------------------
     " Others
     "------------------------------------------------------------------
-    Plug 'PeterRincker/vim-argumentative' " quick navigation between arguments
-
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'mattn/calendar-vim'
-    "Plug 'vimwiki/vimwiki'
     Plug 'lotabout/vimwiki', {'branch': 'dev'}
-    "Plug 'https://github.com/xolox/vim-misc.git'
-    "Plug 'xolox/vim-notes'
-    Plug 'dhruvasagar/vim-dotoo'
 
     call plug#end()
 elseif package_manager == "pathogen"
@@ -721,6 +718,25 @@ if executable('fzf')
 endif
 
 "---------------------------------------------------------------------
+" skim.vim
+if executable('sk')
+    let $SKIM_DEFAULT_OPTS = '--bind ctrl-f:toggle'
+    " replace Ctrl-p
+    nmap <C-p> :Files<CR>
+
+    " Customized binding for AG
+    nnoremap <leader>/ :Ag<space>
+
+    " Replace Bufexplore
+    nmap <C-e> :Buffers<CR>
+
+    " select mapping
+    nmap <leader><tab> <plug>(fzf-maps-n)
+    xmap <leader><tab> <plug>(fzf-maps-x)
+    omap <leader><tab> <plug>(fzf-maps-o)
+endif
+
+"---------------------------------------------------------------------
 " vim-bookmarks
 if exists('g:plugs["vim-bookmarks"]')
     "nmap <leader>i <Plug>BookmarkAnnotate
@@ -747,6 +763,11 @@ endif
 if exists('g:plugs["gundo.vim"]')
     nnoremap <F5> :GundoToggle<CR>
 endif
+
+if exists('g:plugs["delimitMate"]')
+    " not used
+endif
+
 
 "---------------------------------------------------------------------
 " vimwiki
@@ -775,6 +796,7 @@ if exists('g:plugs["vimwiki"]')
         \ 'racket': 'racket'}
     let wiki_1.syntax = 'markdown'
     let wiki_1.ext = '.md'
+    let wiki_1.diary_rel_path = '../diary/'
 
     let wiki_2 = {}
     let wiki_2.path = '~/Dropbox/wiki/vimwiki-private'
@@ -874,11 +896,10 @@ let g:enable_my_python_config = 1
 " rust
 
 " racer : rust auto completion
-let g:racer_cmd = "~/bin/racer/target/release/racer"
 let $RUST_SRC_PATH = "/usr/local/src/rust/src/"
 
 "----------------------------------------------------------------------
-" rust
+" markdown
 let g:vim_markdown_folding_disabled = 1
 
 "----------------------------------------------------------------------
@@ -890,6 +911,10 @@ let g:jsx_ext_required = 0 " Allow JSX in normal JS files
 
 " Syntastic
 let g:syntastic_javascript_checkers = ['eslint']
+
+let g:syntastic_mode_map = {
+            \ "mode": "active",
+            \ "passive_filetypes": ["java", "racket"] }
 
 "===============================================================================
 " client specified settings
