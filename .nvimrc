@@ -31,7 +31,13 @@ endif
 set nocompatible
 
 " Set how many lines of history VIM has to remember
-set history=700
+if &history < 1000
+  set history=1000
+endif
+
+if &tabpagemax < 50
+  set tabpagemax=50
+endif
 
 " Enable filetype plugins
 filetype plugin indent on
@@ -45,8 +51,12 @@ let g:mapleader = "\<Space>"
 
 " Show line number
 set nu
+
 " set relative number
 set relativenumber
+
+" don't treat numbers as octal when performing Ctrl-A and Ctrl-X
+set nrformats-=octal
 
 "----------------------------------------------------------------------
 " VIM user interface
@@ -202,10 +212,6 @@ noremap j gj
 noremap gj j
 noremap k gk
 noremap gk k
-noremap 0 g0
-noremap g0 0
-noremap $ g$
-noremap g$ $
 
 " swap these too because ' is easier to type and ` is what I want
 noremap ' `
@@ -321,7 +327,19 @@ endfunction
 " Extra Settings
 
 set formatoptions=tclqron
-runtime macros/matchit.vim
+if v:version > 703 || v:version == 703 && has("patch541")
+  set formatoptions+=j " Delete comment character when joining commented lines
+endif
+
+" Path extra will enable Up/downwards search in 'path' and 'tags'
+if has('path_extra')
+  setglobal tags-=./tags tags-=./tags; tags^=./tags;
+endif
+
+" Load matchit.vim, but only if the user hasn't installed a newer version.
+if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+  runtime! macros/matchit.vim
+endif
 
 " grep, ignore some directories.
 set grepprg=grep\ -nrI\ --exclude-dir=target\ --exclude-dir=tmp\ --exclude=\"*.min.js\"\ --exclude=\"tags\"\ $*\ /dev/null
@@ -453,12 +471,11 @@ if package_manager == "vim-plug"
     Plug 'moll/vim-bbye'
     Plug 'surround.vim'
     Plug 'repeat.vim'
-    Plug 'yueyoum/vim-alignment'    " for easy alignment
+    Plug 'junegunn/vim-easy-align'
     Plug 'ervandew/supertab'    " you'll need it
     "Plug 'osyo-manga/vim-over'  " for substitution preview
-    "Plug 'EasyMotion'
-    Plug 'easymotion/vim-easymotion'
-    Plug 'haya14busa/incsearch.vim' " highlight all instances when search
+    "Plug 'easymotion/vim-easymotion'
+    "Plug 'haya14busa/incsearch.vim' " highlight all instances when search
 
     Plug 'Tagbar' " actually not used frequently
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -474,7 +491,7 @@ if package_manager == "vim-plug"
 
     Plug 'Chiel92/vim-autoformat' " enhance the format function (press '=' key)
 
-    Plug 'MattesGroeger/vim-bookmarks'
+    "Plug 'MattesGroeger/vim-bookmarks'
 
     Plug 't9md/vim-choosewin'
 
@@ -488,20 +505,6 @@ if package_manager == "vim-plug"
     Plug 'lotabout/slimux'
     Plug 'fakeclip'
 
-    "Plug 'rking/ag.vim'
-    "Plug 'lotabout/ag.nvim'
-
-    "Plug 'Shougo/Vimproc.vim', {'do': 'make'}
-    "Plug 'Shougo/Unite.vim'
-
-    " search files/MRUs easily (by press 'Ctrl-p' in normal mode)
-    " use ctrlp only when FZF do not exist
-    "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-    "Plug 'junegunn/fzf.vim'
-    "if !executable('fzf')
-        "Plug 'ctrlp.vim'
-        "Plug 'JazzCore/ctrlp-cmatcher'
-    "endif
     Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
     Plug 'lotabout/skim.vim'
 
@@ -533,15 +536,10 @@ if package_manager == "vim-plug"
     Plug 'vim-sexp', {'for': ['clojure', 'scheme']}
     Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': ['clojure', 'scheme']}
 
-    " Plug 'ivanov/vim-ipython.git'
-    "Plug 'Yggdroot/indentLine'
     Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
     Plug 'https://github.com/wlangstroth/vim-racket', {'for': 'racket'}
 
     Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript-jsx']}
-
-    "Plug 'Rip-Rip/clang_complete'
-    "Plug 'Valloric/YouCompleteMe'
 
     " for javascript
     "Plug 'ternjs/tern_for_vim', {'for': 'javascript', 'do' : 'npm install'}
@@ -587,6 +585,10 @@ if exists('g:plugs["supertab"]')
     let g:SuperTabDefaultCompletionType = "context"
     let g:SuperTabCrMapping = 1
 endif
+
+"----------------------------------------------------------------------
+" vim-easy-align
+xmap ga <Plug>(EasyAlign)
 
 "----------------------------------------------------------------------
 " easymotion
@@ -766,6 +768,7 @@ endif
 
 if exists('g:plugs["delimitMate"]')
     " not used
+    au FileType racket let b:delimitMate_quotes = "\""
 endif
 
 
