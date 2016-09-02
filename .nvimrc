@@ -539,6 +539,9 @@ if package_manager == "vim-plug"
     Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
     Plug 'https://github.com/wlangstroth/vim-racket', {'for': 'racket'}
 
+
+    Plug 'Rip-Rip/clang_complete', {'for': ['c', 'cpp']}
+
     Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript-jsx']}
 
     " for javascript
