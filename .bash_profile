@@ -8,7 +8,7 @@ set bell-style visible
 function color_my_prompt {
     local __num_of_jobs="\j"
     local __user_and_host="\[\033[01;32m\]\u@\h"
-    local __cur_location="\[\033[01;34m\]\W"
+    local __cur_location="\[\033[01;34m\]\W\033[0m"
     local __git_branch_color="\[\033[31m\]"
     #local __git_branch="\`ruby -e \"print (%x{git branch 2> /dev/null}.grep(/^\*/).first || '').gsub(/^\* (.+)$/, '(\1) ')\"\`"
     local __git_branch='`git branch 2> /dev/null | grep -e ^* | sed -E s/^\\\\\*\ \(.+\)$/\ \(\\\\\1\)\ /`'
@@ -298,6 +298,9 @@ function v() {
   local file
   file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && vi "${file}" || return 1
 }
+
+#----------  Skim settings --------------
+export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
 
 #----------  Load other settings --------------
 
