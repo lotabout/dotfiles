@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# fluxbox startup-script:
+#
+# Lines starting with a '#' are ignored.
+
+# Change your keymap:
+xmodmap "/home/jinzhouz/.Xmodmap"
+
+# Applications you want to run with fluxbox.
+# MAKE SURE THAT APPS THAT KEEP RUNNING HAVE AN ''&'' AT THE END.
+#
+# unclutter -idle 2 &
+# wmnd &
+# wmsmixer -w &
+# idesk &
+
+# Start DBUS session bus:
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+   eval $(dbus-launch --sh-syntax --exit-with-session)
+fi
+
+# set wmname to LG3D to solve JAVA problem
+which wmname &>/dev/null
+if [ $? == 0 ]; then
+    wmname "LG3D"
+fi
+
+fcitx &
+
+# xscreensaver
+if hash xscreensaver 2> /dev/null; then
+    xscreensaver -no-splash &
+elif hash gnome-screensaver 2> /dev/null; then
+    gnome-screensaver &
+fi
+
+# echo "Starting auto-sync tools"
+sleep 60 && dropbox start &
+
+if hash skippy-xd 2> /dev/null; then
+    skippy-xd --start-daemon &
+fi
+
+# And last but not least we start fluxbox.
+# Because it is the last app you have to run it with ''exec'' before it.
+
+exec fluxbox
+# or if you want to keep a log:
+# exec fluxbox -log "/home/jinzhouz/.fluxbox/log"
