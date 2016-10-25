@@ -16,7 +16,8 @@ id_map = {}
 id = 0
 for win in c.windows():
     # select only current group
-    if win["group"] and win['group'] == c.group.info()['name']:
+    #if win["group"] and win['group'] == c.group.info()['name']:
+    if win["group"]:
 
         wins.append(bytes("%i: %s | %s " % (id, c.window[win['id']].inspect()['wm_class'][-1],
             win["name"]), 'utf-8'))
@@ -34,7 +35,8 @@ x = (screen['width'] - width) / 2
 y = (screen['height'] - height) / 2
 
 DMENU = []
-DMENU.extend(['dmenu', '-z', '-l', '10'])
+#DMENU.extend(['dmenu', '-z', '-l', '10']) # only works on dmenu2
+DMENU.extend(['dmenu', '-i', '-l', '10'])
 DMENU.extend(['-x', str(x), '-y', str(y), '-w', str(width)])
 #DMENU.extend(['-nb', '#000', '-nf', '#fff', '-sb', '#00BF32', '-sf', '#FFF'])
 DMENU.extend(['-fn', 'WenQuanYi Micro Hei'])

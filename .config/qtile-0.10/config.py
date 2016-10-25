@@ -255,7 +255,7 @@ screens = [
                 widget.Sep(),
                 widget.Systray(),
                 widget.Sep(),
-                widget.Clock(format='%b %d, %Y %H:%M'),
+                widget.Clock(format='%a, %b %d, %H:%M'),
             ],
             22,
         ),
