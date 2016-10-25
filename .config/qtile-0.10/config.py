@@ -35,6 +35,8 @@ import json
 
 
 mod = "mod1"
+script_path = os.path.dirname(os.path.realpath(__file__))
+path_window_switcher = os.path.join(script_path, './utils/dmenu-qtile-windowlist.py')
 
 keys = [
     # Switch between windows in current stack pane
@@ -87,6 +89,7 @@ keys = [
     Key([mod], "minus", lazy.spawn('amixer -q sset Master 5%- unmute')),
     Key([mod, "control"], "Return", lazy.spawn("xscreensaver-command -lock")),
     Key([mod], "b", lazy.hide_show_bar()),
+    Key([mod], "e", lazy.spawn(path_window_switcher)),
 ]
 
 
@@ -119,7 +122,6 @@ widget_defaults = dict(
 # Local configuration file
 
 config_file = 'config.ini'
-script_path = os.path.dirname(os.path.realpath(__file__))
 g_config = {}
 
 if os.path.exists(os.path.join(script_path, config_file)):
