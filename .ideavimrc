@@ -1,0 +1,28 @@
+set hls
+set smartcase
+set clipboard=unnamedplus,unnamed
+
+let mapleader = " "
+let g:mapleader = " "
+
+vmap <leader>y "+y
+vmap <leader>Y "+Y
+vmap <leader>d "+d
+vmap <leader>p "+p
+vmap <leader>P "+P
+nmap <leader>p "+p
+nmap <leader>P "+P
+
+nmap <leader>w :w<CR>
+
+" borrowed from vim-unimpaired
+nmap <silent> [b :prev<CR>
+nmap <silent> ]b :next<CR>
+nmap <silent> [B :first<CR>
+nmap <silent> ]B :last<CR>
+
+nmap <leader>t :action GotoFile<cr>
+nmap <leader>c :action GotoClass<cr>
+nmap <leader>s :action GotoSymbol<cr>
+nmap <leader>f :action FileStructurePopup<cr>
+nmap <leader>d :action ShowErrorDescription<cr>
