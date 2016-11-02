@@ -33,5 +33,9 @@ if xinput list | grep Synaptics &> /dev/null; then
     xinput set-button-map "SynPS/2 Synaptics TouchPad" 3 2 1 &
 fi
 
+if hash dunst 2> /dev/null; then
+    dunst &
+fi
+
 # echo "Starting auto-sync tools"
 sleep 60 && dropbox start &

@@ -72,7 +72,7 @@ keys = [
     Key([mod], "Right", lazy.layout.increase_ratio()),
     Key([mod], "Left", lazy.layout.decrease_ratio()),
 
-    Key([mod, "shift"], "Return", lazy.spawn("xterm")),
+    Key([mod, "shift"], "Return", lazy.spawn("urxvt")),
 
     # Toggle between different layouts as defined below
     #Key([mod], "space", lazy.next_layout()),
