@@ -474,7 +474,7 @@ if package_manager == "vim-plug"
     Plug 'junegunn/vim-easy-align'
     Plug 'ervandew/supertab'    " you'll need it
     "Plug 'osyo-manga/vim-over'  " for substitution preview
-    "Plug 'easymotion/vim-easymotion'
+    Plug 'easymotion/vim-easymotion'
     "Plug 'haya14busa/incsearch.vim' " highlight all instances when search
 
     Plug 'Tagbar' " actually not used frequently
@@ -499,6 +499,7 @@ if package_manager == "vim-plug"
 
     Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
 
+    Plug 'takac/vim-hardtime'
     "------------------------------------------------------------------
     " Integration with Linux environment
     "------------------------------------------------------------------
@@ -554,6 +555,8 @@ if package_manager == "vim-plug"
     Plug 'tpope/vim-fireplace', {'for': 'clojure'}
     Plug 'rust-lang/rust.vim', {'for': 'rust'}
     Plug 'racer-rust/vim-racer', {'for': 'rust'}
+
+    Plug 'vim-ruby/vim-ruby'
 
     " for markdown
     Plug 'godlygeek/tabular'
@@ -647,6 +650,7 @@ if exists('g:plugs["Tagbar"]')
     " nmap <silent> <leader>tl :TlistToggle<cr>
     nmap <silent> <leader>tl :TagbarToggle<cr>
     nmap <silent> <leader>ne :NERDTreeToggle<cr>
+    nmap <silent> <leader>nf :NERDTreeFind<cr>
     nmap <silent> <F8> :call  ToggleNERDTreeAndTagbar()<cr>
 
     function! ToggleNERDTreeAndTagbar()
@@ -778,6 +782,9 @@ endif
 "---------------------------------------------------------------------
 " vimwiki
 
+" set norelativenumber manually.
+let g:calendar_options = "fdc=0 nonu nornu"
+
 if exists('g:plugs["vimwiki"]')
     " turn off insert mode mappings
     let g:vimwiki_global_ext = 0
@@ -796,6 +803,7 @@ if exists('g:plugs["vimwiki"]')
     let wiki_1.nested_syntaxes = {'python': 'python',
         \ 'js': 'javascript',
         \ 'c': 'c',
+        \ 'java': 'java',
         \ 'sql': 'sql',
         \ 'rust': 'rust',
         \ 'scheme': 'scheme',
@@ -879,6 +887,9 @@ if exists('g:plugs["vim-choosewin"]')
     "let g:choosewin_overlay_enable = 1
 endif
 
+if exists('g:plugs["vim-hardtime"]')
+    nnoremap <silent> <leader>h :HardTimeToggle<CR>
+endif
 "===============================================================================
 " self-added plugins && settigns
 
