@@ -509,10 +509,22 @@ if package_manager == "vim-plug"
     Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
     Plug 'lotabout/skim.vim'
 
+    " Async support for vim
+    " used by vim-monster
+    Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+
     " work with git
     Plug 'fugitive.vim'
 
     Plug 'DirDiff.vim'
+
+    " Completion
+    if has('nvim')
+        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+        Plug 'zchee/deoplete-jedi', {'for': 'python'}
+    else
+        Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
+    endif
 
     "------------------------------------------------------------------
     " Support more filetype specific feature
@@ -537,9 +549,9 @@ if package_manager == "vim-plug"
     Plug 'vim-sexp', {'for': ['clojure', 'scheme']}
     Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': ['clojure', 'scheme']}
 
-    Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
     Plug 'https://github.com/wlangstroth/vim-racket', {'for': 'racket'}
 
+    Plug 'osyo-manga/vim-monster', {'do': 'gem install rcodetools --user-install', 'for': 'ruby'}
 
     Plug 'Rip-Rip/clang_complete', {'for': ['c', 'cpp']}
 
@@ -857,6 +869,12 @@ if exists('g:plugs["vim-airline"]')
     let g:airline_symbols.branch = ''
     let g:airline_symbols.readonly = ''
     let g:airline_symbols.linenr = ''
+
+    "" Enable the list of buffers
+    "let g:airline#extensions#tabline#enabled = 1
+
+    "" Show just the filename
+    "let g:airline#extensions#tabline#fnamemod = ':t'
 endif
 
 "---------------------------------------------------------------------
@@ -952,6 +970,16 @@ if has('nvim')
     tnoremap <C-l> <C-\><C-n>:TmuxNavigateRight<cr>
     tnoremap <C-\> <C-\><C-n>:TmuxNavigatePrevious<cr>
 
+    if exists('g:plugs["deoplete.nvim"]')
+        let g:deoplete#enable_at_startup = 1
+
+        " With deoplete.nvim
+        let g:monster#completion#rcodetools#backend = "async_rct_complete"
+        let g:deoplete#sources#omni#input_patterns = {
+                    \   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
+                    \}
+    endif
+
 else
     "--------------------------------------------------
     " vim specified settings
@@ -983,3 +1011,4 @@ else
         "set ttimeoutlen=20
     "endif
 endif
+
