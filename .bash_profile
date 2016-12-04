@@ -5,13 +5,36 @@ set bell-style visible
 #if [ -z "$PS1" ];then
     #PS1='[\j][\u@\h \W]\$ '
 #fi
+
+#==============================================================================
+# prompt
+
+function parse_git_dirty() {
+    local STATUS=''
+    local FLAGS
+    FLAGS=('--porcelain' ' --ignore-submodules=dirty' ' --untracked-files=no')
+    STATUS=$(command git status ${FLAGS[@]} 2> /dev/null | tail -n1)
+    if [[ -n $STATUS ]]; then
+        echo " *"
+    else
+        echo ""
+    fi
+}
+
+# output the status of the directory
+function git_prompt_info() {
+    ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
+        ref=$(command git rev-parse --short HEAD 2> /dev/null) || return 0
+    echo " (${ref#refs/heads/}`parse_git_dirty`)"
+}
+
 function color_my_prompt {
     local __num_of_jobs="\j"
     local __user_and_host="\[\033[01;32m\]\u@\h"
     local __cur_location="\[\033[01;34m\]\W\033[0m"
     local __git_branch_color="\[\033[31m\]"
-    #local __git_branch="\`ruby -e \"print (%x{git branch 2> /dev/null}.grep(/^\*/).first || '').gsub(/^\* (.+)$/, '(\1) ')\"\`"
-    local __git_branch='`git branch 2> /dev/null | grep -e ^* | sed -E s/^\\\\\*\ \(.+\)$/\ \(\\\\\1\)\ /`'
+    #local __git_branch='`git branch 2> /dev/null | grep -e ^* | sed -E s/^\\\\\*\ \(.+\)$/\ \(\\\\\1\)\ /`'
+    local __git_branch='`git_prompt_info`'
     case $TERM in
         xterm*)
             ;;
@@ -28,9 +51,30 @@ function color_my_prompt {
 }
 color_my_prompt
 
-## source profile
+#==============================================================================
+# Settings for bash
+
+# enable some bash options
+shopt -s histverify
+shopt -s histappend
+HISTSIZE=100000
+HISTFILESIZE=100000
+PROMPT_COMMAND='history -a'
+
+#------------------------------------------------------------------------------
+# Some other settings
+
+# vi mode
+set -o vi
+
+# source profile
 if [ -r $HOME/.profile ]; then
     source $HOME/.profile
+fi
+
+# be confident that the terminal supports 256color
+if [[ $TERM == 'xterm' ]]; then
+    export TERM='xterm-256color'
 fi
 
 # input method
@@ -40,82 +84,66 @@ export XMODIFIERS="@im=fcitx"
 export QT_IM_MODULE=fcitx
 export GTK_IM_MODULE=fcitx
 DEPENDS="fcitx"
-#export GTK_IM_MODULE=xim
-# ibus setting
-# export GTK_IM_MODULE=ibus
-# export XMODIFIERS=@im=ibus
-# export QT_IM_MODULE=ibus
-# export GTK_IM_MODULE="scim-bridge"
-# export XMODIFIERS="@im=SCIM"
-# export QT_IM_MODULE="scim-bridge"
-# export XIM_PROGRAM="/usr/bin/scim -d"
-# export XIM="scim-bridge"
-# export XMODIFIERS=@im=yong
-# export GTK_IM_MODULE=yong
-# export QT_IM_MODULE=xim
 
-#set -o vi
 export EDITOR=vim
 export VISUAL=vim
 
-# be confident that the terminal supports 256color
-if [[ $TERM == 'xterm' ]]; then
-    export TERM='xterm-256color'
+PAGE=less
+
+# less command with color
+export LESS="-MRg"
+
+
+if [ "$(uname)" == "Darwin" ]; then
+    OS="Mac"
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+    OS="Linux"
+elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
+    OS="MinGW"
 fi
 
-# set to correct term for TMUX according to termcap info
-#if [[ $TMUX ]]; then
-    #if [[ $TERM =~ 256color ]]; then
-        #if infocmp xterm-screen-256color &>/dev/null; then
-            #export TERM='xterm-screen-256color'
-        #fi
-    #fi
-#fi
+#==============================================================================
+# Completion related
 
-# enhanced bash-completion
-if [ -f /usr/share/bash-completion/bash_completion ]; then
-    source /usr/share/bash-completion/bash_completion
-    # bind 'TAB:menu-complete'
-    # bind "set show-all-if-ambiguous on"
-fi
 
-# load git completion for bash
-if [ -f /usr/doc/git-*/contrib/completion/git-completion.bash ]; then
-    source /usr/doc/git-*/contrib/completion/git-completion.bash
-fi
+case $OS in
+    Mac)
+        if [ -f $(brew --prefix)/etc/bash_completion ]; then
+            . $(brew --prefix)/etc/bash_completion
+        fi
 
-# load completion for homebrew installed software
-if [ -d /usr/local/etc/bash_completion.d ]; then
-    source /usr/local/etc/bash_completion.d/git-completion.bash &> /dev/null
-    source /usr/local/etc/bash_completion.d/ag.bashcomp.sh &> /dev/null
-    source /usr/local/etc/bash_completion.d/npm &> /dev/null
-fi
+        ;;
+    Linux)
+        # enhanced bash-completion
+        if [ -f /usr/share/bash-completion/bash_completion ]; then
+            source /usr/share/bash-completion/bash_completion
+        fi
+        # load git completion for bash
+        if [ -f /usr/doc/git-*/contrib/completion/git-completion.bash ]; then
+            source /usr/doc/git-*/contrib/completion/git-completion.bash
+        fi
 
-# ubuntu completion
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
+        # ubuntu completion
+        if ! shopt -oq posix; then
+            if [ -f /usr/share/bash-completion/bash_completion ]; then
+                . /usr/share/bash-completion/bash_completion
+            elif [ -f /etc/bash_completion ]; then
+                . /etc/bash_completion
+            fi
+        fi
 
-#source /usr/doc/tmux-1.5/examples/bash_completion_tmux.sh
-
-# enable some bash options
-shopt -s histverify
-shopt -s histappend
-HISTSIZE=100000
-HISTFILESIZE=100000
-PROMPT_COMMAND='history -a'
+        ;;
+    MinGW)
+        ;;
+esac
 
 # udisk_functions
 if [ -f $HOME/bin/udisks_functions ]; then
     source $HOME/bin/udisks_functions
 fi
 
-# less command with color
-export LESS="-MRg"
+#==============================================================================
+# Aliases
 
 if hash gvim 2> /dev/null;then
     alias vim='gvim -v'
@@ -126,32 +154,32 @@ if hash nvim 2> /dev/null ;then
     alias vi='nvim'
 fi
 
-if [ "$(uname)" == "Darwin" ]; then
-    # Do something under Mac OS X platform
-    alias ls="ls -Gw"
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-    # Do something under Linux platform
-    # enable color support of ls and also add handy aliases
-    if [ -x /usr/bin/dircolors ]; then
-        test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-        alias ls='ls -B --color=auto'
-        alias dir='dir --color=auto'
-        alias vdir='vdir --color=auto'
 
+case $OS in
+    Mac)
+        # Do something under Mac OS X platform
+        alias ls="ls -Gw"
         alias grep='grep --color=auto'
         alias fgrep='fgrep --color=auto'
         alias egrep='egrep --color=auto'
-    fi
+        ;;
+    Linux)
+        # Do something under Linux platform
+        # enable color support of ls and also add handy aliases
+        if [ -x /usr/bin/dircolors ]; then
+            test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+            alias ls='ls -B --color=auto'
+            alias dir='dir --color=auto'
+            alias vdir='vdir --color=auto'
 
-elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
-    # Do somthing under MINGW
-    :
-fi
-
-
+            alias grep='grep --color=auto'
+            alias fgrep='fgrep --color=auto'
+            alias egrep='egrep --color=auto'
+        fi
+        ;;
+    MinGW)
+        ;;
+esac
 
 # alias
 alias sl='ls'
@@ -173,20 +201,22 @@ alias ........="cd ../../../../../../.."
 alias .........="cd ../../../../../../../.."
 alias ..........="cd ../../../../../../../../.."
 
-# turn off touchpad
-# synclient touchpadoff=1
-PAGE=less
-
 # alias for convenience
 alias psg='ps axu | grep'
 
 # alias for racket with readline support
 alias racket='LD_PRELOAD=/usr/lib64/libcurses.so racket'
 
+# pppoe shortcuts
+alias pt="sudo pppoe-start"
+alias pp="sudo pppoe-stop"
+
+# load additional aliases
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+#==============================================================================
 # utilities
 function hist() {
     history | awk '{ CMD[$2]++; count++;} END{ for (a in CMD) print CMD[a] " " CMD[a]/count*100 "% " a;}'  \
@@ -207,16 +237,13 @@ function move_to_trash() {
     done
 
 }
+
 function trash_empty() {
     /bin/rm -rI $HOME/.trash && mkdir $HOME/.trash && sync
 }
 
 alias rm=move_to_trash
 alias trash_empty=trash_empty
-
-# pppoe shortcuts
-alias pt="sudo pppoe-start"
-alias pp="sudo pppoe-stop"
 
 # integrate with python virtualenv
 function pac() {
@@ -271,6 +298,10 @@ source ~/.bookmarks
 
 # use polipo for proxy
 # you'll have to start polipo first
+function polipo_shadowsocks(){
+    polipo socksParentProxy=localhost:1080
+}
+
 function ppp() {
     export http_proxy=http://localhost:8123
     export https_proxy=https://localhost:8123
@@ -278,11 +309,12 @@ function ppp() {
     echo "exporting proxy settings for polipo done."
 }
 
-function polipo_shadowsocks(){
-    polipo socksParentProxy=localhost:1080
-}
+#------------------------------------------------------------------------------
+# FZF settings
 
-#----------  FZF settings --------------
+# load fzf if exist
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
 # Setting ag as the default source for fzf
 export FZF_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
 # To apply the command to CTRL-T as well
@@ -299,21 +331,26 @@ function v() {
   file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && vi "${file}" || return 1
 }
 
-#----------  Skim settings --------------
+#------------------------------------------------------------------------------
+# fasd settings
+
+# enable fasd
+if hash fasd 2> /dev/null; then
+    fasd_cache="$HOME/.fasd-init-bash"
+    if [ "$(command -v fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache" ]; then
+        fasd --init posix-alias bash-hook bash-ccomp bash-ccomp-install >| "$fasd_cache"
+    fi
+    source "$fasd_cache"
+    unset fasd_cache
+fi
+
+#------------------------------------------------------------------------------
+# skim settings
 export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
 
 #----------  Load other settings --------------
-
-if [ "$(uname)" == "Darwin" ]; then
-    if [ -f $HOME/.profile ]; then
-        source $HOME/.profile
-    fi
-fi
-
 if [ -f ~/.bashrc_local ]; then
     . ~/.bashrc_local
 fi
+
 set -o vi
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*

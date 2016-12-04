@@ -3,11 +3,32 @@
 
 #==============================================================================
 # zsh settings
+
+# Checks if working tree is dirty
+function parse_git_dirty() {
+    local STATUS=''
+    local FLAGS
+    FLAGS=('--porcelain' '--ignore-submodules=dirty' '--untracked-files=no')
+    STATUS=$(command git status ${FLAGS} 2> /dev/null | tail -n1)
+    if [[ -n $STATUS ]]; then
+        echo " *"
+    else
+        echo ""
+    fi
+}
+
+# output the status of the directory
+function git_prompt_info() {
+    ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
+        ref=$(command git rev-parse --short HEAD 2> /dev/null) || return 0
+    echo " (${ref#refs/heads/}$(parse_git_dirty))"
+}
+
 function color_my_prompt {
     local __num_of_jobs="%j"
     local __user_and_host="%F{154}%n@%m%f"
     local __cur_location="%F{012}%1~%f"
-    local __git_branch='%F{009}$(git symbolic-ref HEAD 2> /dev/null | cut -d/ -f3 | awk "{print \" (\"\$0\") \"}")%f'
+    local __git_branch='%F{009}$(git_prompt_info)%f'
     local __prompt_tail="%F{013}$%f"
     local __last_color="$reset_color"
     export PROMPT="[$__num_of_jobs][$__user_and_host $__cur_location]$__git_branch"$'\n'"$__prompt_tail$__last_color "
@@ -46,8 +67,8 @@ zstyle ':completion:*:cd:*' ignore-parents parent pwd
 
 # useful for path editing Ñ backward-delete-word, but with / as additional delimiter
 backward-delete-to-slash () {
-  local WORDCHARS=${WORDCHARS//\//}
-  zle .backward-delete-word
+local WORDCHARS=${WORDCHARS//\//}
+zle .backward-delete-word
 }
 zle -N backward-delete-to-slash
 
@@ -101,14 +122,14 @@ elif [[ "$(expr substr $(uname -s) 1 5)" == "Linux" ]]; then
     # Do something under Linux platform
     # enable color support of ls and also add handy aliases
     if [ -x /usr/bin/dircolors ]; then
-	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-	alias ls='ls -B --color=auto'
-	alias dir='dir --color=auto'
-	alias vdir='vdir --color=auto'
+        test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+        alias ls='ls -B --color=auto'
+        alias dir='dir --color=auto'
+        alias vdir='vdir --color=auto'
 
-	alias grep='grep --color=auto'
-	alias fgrep='fgrep --color=auto'
-	alias egrep='egrep --color=auto'
+        alias grep='grep --color=auto'
+        alias fgrep='fgrep --color=auto'
+        alias egrep='egrep --color=auto'
     fi
 
 elif [[ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]]; then
@@ -137,7 +158,7 @@ fi
 
 function hist() {
     history | awk '{ CMD[$2]++; count++;} END{ for (a in CMD) print CMD[a] " " CMD[a]/count*100 "% " a;}'  \
-    | grep -v "./" | column -c3 -s " " -t | sort -nr | nl | head -n10
+        | grep -v "./" | column -c3 -s " " -t | sort -nr | nl | head -n10
 }
 
 function move_to_trash() {
