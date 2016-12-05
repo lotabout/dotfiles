@@ -38,7 +38,7 @@ function color_my_prompt {
 setopt prompt_subst
 color_my_prompt
 
-#------------------------------------------------------------
+#============================================================
 # zsh options
 
 export HISTFILE=~/.zsh_history
@@ -52,7 +52,13 @@ setopt complete_in_word
 autoload -U compinit
 compinit
 
-# == copied from archwiki ==
+#------------------------------------------------------------
+# Completion
+
+# Use cache
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh/cache
+
 # allow approximate
 zstyle ':completion:*' completer _complete _match _approximate
 zstyle ':completion:*:match:*' original only
@@ -65,7 +71,7 @@ zstyle ':completion:*:kill:*' force-list always
 # cd not select parent dir
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
 
-# useful for path editing Ñ backward-delete-word, but with / as additional delimiter
+# useful for path editing, backward-delete-word, but with / as additional delimiter
 backward-delete-to-slash () {
 local WORDCHARS=${WORDCHARS//\//}
 zle .backward-delete-word
@@ -78,9 +84,15 @@ bindkey '\ep' insert-last-word # bind to Alt-p
 #==============================================================================
 # settings
 
+# vi mode
+set -o vi
+
 ## source profile
-if [ -r $HOME/.profile ]; then
-    source $HOME/.profile
+[[ -r $HOME/.profile ]] && source $HOME/.profile
+
+# be confident that the terminal supports 256color
+if [[ $TERM == 'xterm' ]]; then
+    export TERM='xterm-256color'
 fi
 
 # input method
@@ -91,51 +103,57 @@ export QT_IM_MODULE=fcitx
 export GTK_IM_MODULE=fcitx
 DEPENDS="fcitx"
 
-#set -o vi
 export EDITOR=vim
 export VISUAL=vim
-
-# be confident that the terminal supports 256color
-if [[ $TERM == 'xterm' ]]; then
-    export TERM='xterm-256color'
-fi
 
 # less command with color
 export LESS="-MRg"
 
+if [[ "$(uname)" == "Darwin" ]]; then
+    OS="Mac"
+elif [[ "$(expr substr $(uname -s) 1 5)" == "Linux" ]]; then
+    OS="Linux"
+elif [[ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]]; then
+    OS="MinGW"
+fi
+
+#==============================================================================
+
+#==============================================================================
+# Aliases
+
 if hash gvim 2> /dev/null;then
     alias vim='gvim -v'
-    alias vi='gvim -v'
 fi
 
+# prefer neovim over vim
 if hash nvim 2> /dev/null ;then
-    alias vi='nvim'
+    alias nvim='/usr/bin/nvim -u ~/.nvimrc'
+    alias vi='/usr/bin/nvim -u ~/.nvimrc'
 fi
 
-if [[ "$(uname)" == "Darwin" ]]; then
-    # Do something under Mac OS X platform
-    alias ls="ls -Gw"
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-elif [[ "$(expr substr $(uname -s) 1 5)" == "Linux" ]]; then
-    # Do something under Linux platform
-    # enable color support of ls and also add handy aliases
-    if [ -x /usr/bin/dircolors ]; then
-        test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-        alias ls='ls -B --color=auto'
-        alias dir='dir --color=auto'
-        alias vdir='vdir --color=auto'
-
+case $OS in
+    Mac)
+        alias ls="ls -Gw"
         alias grep='grep --color=auto'
         alias fgrep='fgrep --color=auto'
         alias egrep='egrep --color=auto'
-    fi
+        ;;
+    Linux)
+        if [ -x /usr/bin/dircolors ]; then
+            test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+            alias ls='ls -B --color=auto'
+            alias dir='dir --color=auto'
+            alias vdir='vdir --color=auto'
 
-elif [[ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]]; then
-    # Do somthing under MINGW
-    :
-fi
+            alias grep='grep --color=auto'
+            alias fgrep='fgrep --color=auto'
+            alias egrep='egrep --color=auto'
+        fi
+        ;;
+    MinGW)
+        ;;
+esac
 
 alias sl='ls'
 alias ll='ls -l'
@@ -145,17 +163,26 @@ alias l='ls -CF'
 alias emacs="emacs -nw"
 alias ec='emacsclient -t -a ""'
 
-# turn off touchpad
-# synclient touchpadoff=1
-PAGE=less
-
 # alias for convenience
 alias psg='ps axu | grep'
+alias cd..="cd .."
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
+alias .......="cd ../../../../../.."
+alias ........="cd ../../../../../../.."
+alias .........="cd ../../../../../../../.."
+alias ..........="cd ../../../../../../../../.."
 
 if [ -f ~/.zsh_aliases ]; then
     . ~/.zsh_aliases
 fi
 
+#==============================================================================
+# utilities
+#
 function hist() {
     history | awk '{ CMD[$2]++; count++;} END{ for (a in CMD) print CMD[a] " " CMD[a]/count*100 "% " a;}'  \
         | grep -v "./" | column -c3 -s " " -t | sort -nr | nl | head -n10
@@ -165,26 +192,51 @@ function move_to_trash() {
     if [ ! -d $HOME/.trash ]; then
         mkdir $HOME/.trash
     fi
-    mv "$@" $HOME/.trash
-}
-function trash_empty() {
-    /bin/rm -rI $HOME/.trash && mkdir $HOME/.trash && sync
+    for FILE in "$@";
+    do
+        # remove trailing slash
+        local mindtrailingslash=${FILE%/}
+        # remove preceding directory path
+        local dst=${mindtrailingslash##*/}
+        mv -- "$FILE" $HOME/.trash/"${dst}-$(date '+%Y-%m-%d-%T')"
+    done
+
 }
 
-alias rm=move_to_trash
-alias trash_empty=trash_empty
-
-# integrate with python virtualenv
 function pac() {
     # short for python activate
     localenv=$HOME/localenv
+
+    if [ "$1" ]; then
+        localenv=$localenv-$1
+    fi
+
     if [ -f $localenv/bin/activate ]; then
         source $localenv/bin/activate
     fi
 }
+
+function pac3() {
+    # short for python activate
+    localenv=$HOME/localenv-py3
+    if [ -f $localenv/bin/activate ]; then
+        source $localenv/bin/activate
+    fi
+}
+
 function pdc() {
     # short for python deactivate
     deactivate
+}
+
+
+# set operation
+function set_union () {
+   cat $1 $2 | sort | uniq
+}
+
+function set_difference () {
+   cat $1 $2 $2 | sort | uniq -u
 }
 
 # quick bookmark
@@ -202,25 +254,67 @@ alias m9='alias g9="cd `pwd`; mdump"'
 touch ~/.bookmarks
 source ~/.bookmarks
 
-if [[ "$(uname)" == "Darwin" ]]; then
-    if [ -f $HOME/.profile ]; then
-        source $HOME/.profile
-    fi
-fi
+# use polipo for proxy
+# you'll have to start polipo first
+function polipo_shadowsocks(){
+    polipo socksParentProxy=localhost:1080
+}
+
+function ppp() {
+    export http_proxy=http://localhost:8123
+    export https_proxy=https://localhost:8123
+    export socks_proxy=socks://localhost:8123
+    echo "exporting proxy settings for polipo done."
+}
+
+
+#------------------------------------------------------------------------------
+# FZF settings
+
+# load fzf if exist
+[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
+
+# Setting ag as the default source for fzf
+export FZF_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
+# To apply the command to CTRL-T as well
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+# integrate with fasd
+function j() {
+  local dir
+  dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
+}
+
+function v() {
+  local file
+  file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && vi "${file}" || return 1
+}
+
+#------------------------------------------------------------------------------
+# fasd settings
 
 # enable fasd
 if hash fasd 2> /dev/null; then
-    fasd_cache="$HOME/.fasd-init-bash"
+    fasd_cache="$HOME/.fasd-init-zsh"
     if [ "$(command -v fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache" ]; then
-        fasd --init posix-alias zsh-hook zsh-ccomp zsh-ccomp-install >| "$fasd_cache"
+        fasd --init posix-alias zsh-hook >| "$fasd_cache"
     fi
 
     source "$fasd_cache"
     unset fasd_cache
 fi
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+#------------------------------------------------------------------------------
+# skim settings
+export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
 
-if [ -f ~/.zshrc_local ]; then
-    . ~/.zshrc_local
+#==============================================================================
+# plugins
+AUTO_SUGGESTIONS=$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+[[ -r $AUTO_SUGGESTIONS ]] && source $AUTO_SUGGESTIONS
+
+#==============================================================================
+# load other settings
+if [[ -f ~/.zsh_local ]]; then
+    . ~/.zshrc-local
 fi
