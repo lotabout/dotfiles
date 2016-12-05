@@ -128,8 +128,8 @@ fi
 
 # prefer neovim over vim
 if hash nvim 2> /dev/null ;then
-    alias nvim='/usr/bin/nvim -u ~/.nvimrc'
-    alias vi='/usr/bin/nvim -u ~/.nvimrc'
+    alias nvim='nvim -u ~/.nvimrc'
+    alias vi='nvim -u ~/.nvimrc'
 fi
 
 case $OS in
