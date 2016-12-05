@@ -522,8 +522,12 @@ if package_manager == "vim-plug"
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
         Plug 'zchee/deoplete-jedi', {'for': 'python'}
+
+        Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
     else
         Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
+
+        Plug 'racer-rust/vim-racer', {'for': 'rust'}
     endif
 
     "------------------------------------------------------------------
@@ -537,7 +541,8 @@ if package_manager == "vim-plug"
     Plug 'lotabout/vim-ultisnippet-private'
 
     "Plug 'Syntastic' " syntax checker
-    Plug 'scrooloose/syntastic'
+    "Plug 'scrooloose/syntastic'
+    Plug 'w0rp/ale' " async version of Syntastic
 
     " Plug 'LaTeX-Suite-aka-Vim-LaTeX'
     " Plug 'jcf/vim-latex.git'
@@ -566,12 +571,10 @@ if package_manager == "vim-plug"
 
     Plug 'tpope/vim-fireplace', {'for': 'clojure'}
     Plug 'rust-lang/rust.vim', {'for': 'rust'}
-    Plug 'racer-rust/vim-racer', {'for': 'rust'}
 
     Plug 'vim-ruby/vim-ruby'
 
     " for markdown
-    Plug 'godlygeek/tabular'
     Plug 'plasticboy/vim-markdown'
 
     "------------------------------------------------------------------
@@ -908,6 +911,8 @@ endif
 if exists('g:plugs["vim-hardtime"]')
     nnoremap <silent> <leader>h :HardTimeToggle<CR>
 endif
+"----------------------------------------------------------------------
+
 "===============================================================================
 " self-added plugins && settigns
 
@@ -932,6 +937,7 @@ let g:enable_my_python_config = 1
 
 " racer : rust auto completion
 let $RUST_SRC_PATH = "/usr/local/src/rust/src/"
+let g:deoplete#sources#rust#racer_binary = expand("~/.cargo/bin/racer")
 
 "----------------------------------------------------------------------
 " markdown
