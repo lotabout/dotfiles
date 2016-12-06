@@ -315,6 +315,6 @@ AUTO_SUGGESTIONS=$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 #==============================================================================
 # load other settings
-if [[ -f ~/.zsh_local ]]; then
+if [[ -f ~/.zshrc-local ]]; then
     . ~/.zshrc-local
 fi
