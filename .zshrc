@@ -52,6 +52,9 @@ setopt complete_in_word
 autoload -U compinit
 compinit
 
+# enable extended glob
+setopt extendedglob
+
 #------------------------------------------------------------
 # Completion
 
@@ -156,7 +159,7 @@ case $OS in
 esac
 
 alias sl='ls'
-alias ll='ls -l'
+alias ll='ls -lh'
 alias l='ls -CF'
 #alias grep='grep --color=always'
 
@@ -166,15 +169,15 @@ alias ec='emacsclient -t -a ""'
 # alias for convenience
 alias psg='ps axu | grep'
 alias cd..="cd .."
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-alias ......="cd ../../../../.."
-alias .......="cd ../../../../../.."
-alias ........="cd ../../../../../../.."
-alias .........="cd ../../../../../../../.."
-alias ..........="cd ../../../../../../../../.."
+alias -g ..=".."
+alias -g ...="../.."
+alias -g ....="../../.."
+alias -g .....="../../../.."
+alias -g ......="../../../../.."
+alias -g .......="../../../../../.."
+alias -g ........="../../../../../../.."
+alias -g .........="../../../../../../../.."
+alias -g ..........="../../../../../../../../.."
 
 if [ -f ~/.zsh_aliases ]; then
     . ~/.zsh_aliases
@@ -202,6 +205,9 @@ function move_to_trash() {
     done
 
 }
+
+alias rm=move_to_trash
+alias trash_empty=trash_empty
 
 function pac() {
     # short for python activate
@@ -282,12 +288,12 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # integrate with fasd
 function j() {
   local dir
-  dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
+  dir="$(fasd -Rdl "$1" | sk +m)" && cd "${dir}" || return 1
 }
 
 function v() {
   local file
-  file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && vi "${file}" || return 1
+  file="$(fasd -Rfl "$1" | sk +m)" && vi "${file}" || return 1
 }
 
 #------------------------------------------------------------------------------
@@ -311,7 +317,10 @@ export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
 #==============================================================================
 # plugins
 AUTO_SUGGESTIONS=$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-[[ -r $AUTO_SUGGESTIONS ]] && source $AUTO_SUGGESTIONS
+if [[ -r $AUTO_SUGGESTIONS && $TERM =~ ".*256" ]]; then
+    source $AUTO_SUGGESTIONS
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=030'
+fi
 
 #==============================================================================
 # load other settings
