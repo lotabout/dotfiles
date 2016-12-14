@@ -596,6 +596,9 @@ endif
 " color scheme
 if has('gui_running')
     colorscheme solarized
+elseif &t_Co == 256
+    set background=dark
+    colorscheme solarized
 endif
 
 "----------------------------------------------------------------------
@@ -860,7 +863,8 @@ if exists('g:plugs["vim-airline"]')
     if has("gui_running")
         let g:airline_theme='solarized'
     else
-        let g:airline_theme='wombat'
+        "let g:airline_theme='wombat'
+        let g:airline_theme='solarized'
     endif
 
     " let g:airline#extensions#tabline#enabled = 1
