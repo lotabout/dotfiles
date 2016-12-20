@@ -88,6 +88,11 @@ DEPENDS="fcitx"
 export EDITOR=vim
 export VISUAL=vim
 
+if hash nvim 2> /dev/null ;then
+    export EDITOR=nvim
+    export VISUAL=nvim
+fi
+
 PAGE=less
 
 # less command with color
