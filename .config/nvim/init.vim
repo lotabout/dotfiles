@@ -435,15 +435,6 @@ let g:indentLine_char = "│"
 " settings for manually installed plugins
 
 "----------------------------------------------------------------------
-" BufExplorer
-
-" disable default keybinding
-noremap <Plug>NoBufExplorerHorizontalSplit :BufExplorerHorizontalSplit<CR>
-noremap <Plug>NoBufExplorerVerticalSplit :BufExplorerVerticalSplit<CR>
-
-noremap <silent> <C-e> :BufExplorer<CR>
-
-"----------------------------------------------------------------------
 " vimim
 
 "let fileencodings=ucs-bom,utf8,chinese,taiwan,ansi
@@ -453,8 +444,6 @@ if has ("win32")
 endif
 "set ambiwidth=double
 " let g:vimim_map='c-bslash'
-
-
 
 "===============================================================================
 " package manager settings
@@ -473,13 +462,9 @@ if package_manager == "vim-plug"
     Plug 'altercation/vim-colors-solarized'
 
     Plug 'moll/vim-bbye'
-    Plug 'surround.vim'
-    Plug 'repeat.vim'
     Plug 'junegunn/vim-easy-align'
     Plug 'ervandew/supertab'    " you'll need it
-    "Plug 'osyo-manga/vim-over'  " for substitution preview
     Plug 'easymotion/vim-easymotion'
-    "Plug 'haya14busa/incsearch.vim' " highlight all instances when search
 
     Plug 'Tagbar' " actually not used frequently
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -491,19 +476,15 @@ if package_manager == "vim-plug"
     Plug 'bling/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
 
-    Plug 'terryma/vim-expand-region'
+    "Plug 'terryma/vim-expand-region'
 
     Plug 'Chiel92/vim-autoformat' " enhance the format function (press '=' key)
-
-    "Plug 'MattesGroeger/vim-bookmarks'
 
     Plug 't9md/vim-choosewin'
 
     Plug 'sjl/gundo.vim'
 
     Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
-
-    Plug 'takac/vim-hardtime'
 
     "------------------------------------------------------------------
     " Integration with Linux environment
@@ -545,15 +526,7 @@ if package_manager == "vim-plug"
     " private snippets
     Plug 'lotabout/vim-ultisnippet-private'
 
-    "Plug 'Syntastic' " syntax checker
-    "Plug 'scrooloose/syntastic'
     Plug 'w0rp/ale' " async version of Syntastic
-
-    " Plug 'LaTeX-Suite-aka-Vim-LaTeX'
-    " Plug 'jcf/vim-latex.git'
-    " Plug 'rosenfeld/conque-term'
-    "Plug 'slimv.vim'
-    " Plug 'paredit.vim'
 
     " in replace of paredit.vim
     Plug 'vim-sexp', {'for': ['clojure', 'scheme']}
@@ -643,14 +616,6 @@ if exists('g:plugs["vim-easymotion"]')
 endif
 
 "----------------------------------------------------------------------
-" incsearch.vim
-if exists('g:plugs["incsearch.vim"]')
-    map /  <Plug>(incsearch-forward)
-    map ?  <Plug>(incsearch-backward)
-    map g/ <Plug>(incsearch-stay)
-endif
-
-"----------------------------------------------------------------------
 " slimux
 
 if exists('g:plugs["slimux"]')
@@ -718,15 +683,11 @@ let g:fakeclip_terminal_multiplexer_type = "tmux"
 "---------------------------------------------------------------------
 " UltiSnips
 
-let g:UltiSnipsSnippetsDir = "~/.vim/plugged/vim-ultisnippet-private/UltiSnips"
-
-"---------------------------------------------------------------------
-" ctrlp
-let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files']
-
-" use ctrlp-cmatcher for mathing items.
-" if you do not use it, disable the following line.
-let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
+if has('nvim')
+    let g:UltiSnipsSnippetsDir = "~/.config/nvim/plugged/vim-ultisnippet-private/UltiSnips"
+else
+    let g:UltiSnipsSnippetsDir = "~/.vim/plugged/vim-ultisnippet-private/UltiSnips"
+endif
 
 "---------------------------------------------------------------------
 " fzf.vim
@@ -766,22 +727,6 @@ if executable('sk')
     nmap <leader><tab> <plug>(fzf-maps-n)
     xmap <leader><tab> <plug>(fzf-maps-x)
     omap <leader><tab> <plug>(fzf-maps-o)
-endif
-
-"---------------------------------------------------------------------
-" vim-bookmarks
-if exists('g:plugs["vim-bookmarks"]')
-    "nmap <leader>i <Plug>BookmarkAnnotate
-    nmap mj <Plug>BookmarkNext
-    nmap mk <Plug>BookmarkPrev
-    nmap ml <Plug>BookmarkShowAll
-    nmap <F2> <Plug>BookmarkNext
-
-    " unmap for mkk/mjj
-    nmap <Plug>NoBookmarkMoveUp <Plug>BookmarkMoveUp
-    nmap <Plug>NoBookmarkMoveDown <Plug>BookmarkMoveDown
-
-    let g:bookmark_auto_save = 1
 endif
 
 "---------------------------------------------------------------------
@@ -887,12 +832,6 @@ if exists('g:plugs["vim-airline"]')
 
     "" Show just the filename
     "let g:airline#extensions#tabline#fnamemod = ':t'
-endif
-
-"---------------------------------------------------------------------
-" vim-argumentative
-if exists('g:plugs["vim-argumentative"]')
-    nmap >. <Plug>Argumentative_MoveRight
 endif
 
 "---------------------------------------------------------------------
