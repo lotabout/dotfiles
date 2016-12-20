@@ -504,6 +504,7 @@ if package_manager == "vim-plug"
     Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
 
     Plug 'takac/vim-hardtime'
+
     "------------------------------------------------------------------
     " Integration with Linux environment
     "------------------------------------------------------------------
@@ -993,6 +994,24 @@ if has('nvim')
                     \   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
                     \}
     endif
+
+    "- - - - - - - - - - - - - - - - - - - - - - - - -
+    " Custom yank ring, utilize numbered registers for yank too.
+    function! YankRing(event)
+        if len(a:event.regcontents) == 1 && len(a:event.regcontents[0]) <= 1
+            return
+        end
+        if a:event.regname == ''
+            " shfit the numbered registers
+            for reg in range(9, 2, -1)
+                call setreg(string(reg), getreg(string(reg-1)))
+            endfor
+            call setreg(1, a:event.regcontents)
+        endif
+    endfunction
+
+    " Register the TextYankPost event
+    au! TextYankPost * call YankRing(copy(v:event))
 
 else
     "--------------------------------------------------
