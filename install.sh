@@ -30,13 +30,13 @@ AUTO_LINK_FILES=(".config/nvim" ".bash_profile" ".zshrc" ".tmux.conf" ".ideavimr
 # add symlinks
 for FILE in "${AUTO_LINK_FILES[@]}"
 do
-    ln $DIR/$FILE $HOME/$FILE
+    ln -s $DIR/$FILE $HOME/$FILE
 done
 
 # Link indivisual ones
-ln $DIR/.bash_profile $HOME/.bashrc
-ln $DIR/.config/nvim/init.vim $HOME/.vimrc
-ln $DIR/.config/nvim $HOME/.vim
+ln -s $DIR/.bash_profile $HOME/.bashrc
+ln -s $DIR/.config/nvim/init.vim $HOME/.vimrc
+ln -s $DIR/.config/nvim $HOME/.vim
 
 #==============================================================================
 # zsh plugins
