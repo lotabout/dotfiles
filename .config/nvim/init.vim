@@ -937,7 +937,8 @@ if has('nvim')
     "- - - - - - - - - - - - - - - - - - - - - - - - -
     " Custom yank ring, utilize numbered registers for yank too.
     function! YankRing(event)
-        if len(a:event.regcontents) == 1 && len(a:event.regcontents[0]) <= 1
+        if (len(a:event.regcontents) == 1 && len(a:event.regcontents[0]) <= 1)
+                    \ || a:event.operator == 'd'
             return
         end
         if a:event.regname == ''
