@@ -17,11 +17,6 @@
 set encoding=utf-8
 scriptencoding utf-8
 
-" redirect runtime path to .vim, so that vim and neovim can share directories.
-if has('nvim')
-    set rtp+=~/.vim/
-endif
-
 " use FZF(https://github.com/junegunn/fzf) if it exists
 "if executable('fzf')
     "set rtp+=~/.fzf
@@ -466,7 +461,11 @@ endif
 let package_manager = "vim-plug"
 
 if package_manager == "vim-plug"
-    call plug#begin('~/.vim/plugged')
+    if has('nvim')
+        call plug#begin('~/.config/nvim/plugged')
+    else
+        call plug#begin('~/.vim/plugged')
+    endif
 
     "------------------------------------------------------------------
     " Enhance Basic functionality
@@ -977,7 +976,7 @@ if has('nvim')
     " mappings
 
     " Fast editing or sourcing vimrc file
-    nmap <silent> <leader>ee :tabnew<cr>:edit ~/.nvimrc<cr>
+    nmap <silent> <leader>ee :tabnew<cr>:edit ~/.config/nvim/init.vim<cr>
 
     tnoremap <C-h> <C-\><C-n>:TmuxNavigateLeft<cr>
     tnoremap <C-j> <C-\><C-n>:TmuxNavigateDown<cr>
