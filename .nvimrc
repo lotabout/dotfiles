@@ -106,6 +106,11 @@ set laststatus=2
 " set showtabline=2
 set completeopt=longest,menuone,preview
 
+" neovim >= 0.17, preview the substitution like :%s/foo/bar/g
+if exists('&inccommand')
+    set inccommand=nosplit
+endif
+
 "----------------------------------------------------------------------
 " Colors and Fonts
 
