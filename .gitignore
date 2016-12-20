@@ -5,18 +5,18 @@
 
 # ignore bundle directory of vim/neovim
 .vim/bundle
-.nvim/bundle
+.config/nvim/bundle
 .vim/plugged
-.nvim/plugged
-.nvim/.netrwhist
+.config/nvim/plugged
+.config/nvim/.netrwhist
 
 # ignore .emacs.d/* except emacs.d/elisp
 .emacs.d/*
 !.emacs.d/elisp
 
 # eclim related
-.nvim/eclim
-.nvim/plugin/eclim*
+.config/nvim/eclim
+.config/nvim/plugin/eclim*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -52,3 +52,7 @@ var/
 
 # qtile local config file
 .config/qtile-0.10/config.ini
+
+# fluxbox
+.fluxbox/
+bin/
