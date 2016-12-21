@@ -57,6 +57,7 @@ function VimIM_Wubi(findstart, keyboard)
     "首先必须要返回一个起始点, 从超始点到当前光标处, 即是需要
     "匹配的字符.
     "返回的结果, 会替换从起始点到当前光标处的字符.
+    "
 
 if a:findstart
     "主要通过 s:typeLen 来控制 <BS> <Enter> <Space> 这些键的行为
@@ -257,8 +258,8 @@ function s:Init()
     let b:save_lazyredraw = &lazyredraw
     set nolazyredraw "使用宏时是不是要重绘屏幕
 
-    let b:save_paste = &paste
-    set nopaste
+    "let b:save_paste = &paste
+    "set nopaste
 
 
     " ==========
@@ -316,7 +317,7 @@ function s:Exit()
     let &l:pumheight = b:save_pumheight
     let &l:cpo = b:save_cpo
     let &l:lazyredraw = b:save_lazyredraw
-    let &l:paste = b:save_paste
+    "let &l:paste = b:save_paste
 
     "还原光标彩色
     highlight! ICursor None
