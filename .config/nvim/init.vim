@@ -804,8 +804,8 @@ if exists('g:plugs["vimwiki"]')
     nmap <Plug>NoVimwiki2HTML <Plug>Vimwiki2HTML
 
     " provide search in vimwiki directly
-    au FileType vimwiki nmap <C-p> :Files <c-r>=VimwikiGet('path')<CR><CR>
-    au FileType vimwiki nmap <leader>/ :Ag <c-r>=VimwikiGet('path')<CR><CR>
+    au FileType vimwiki nmap <buffer> <C-p> :Files <c-r>=VimwikiGet('path')<CR><CR>
+    au FileType vimwiki nmap <buffer> <leader>/ :Ag <c-r>=VimwikiGet('path')<CR><CR>
 
     nmap <leader>` <Plug>VimwikiIndex
 endif
