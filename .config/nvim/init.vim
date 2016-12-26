@@ -699,7 +699,7 @@ if executable('fzf')
     nmap <C-p> :Files<CR>
 
     " Customized binding for AG
-    nnoremap <leader>/ :Ag<space>
+    nnoremap <leader>/ :Ag<CR>
 
     " Replace Bufexplore
     nmap <C-e> :Buffers<CR>
@@ -778,7 +778,7 @@ if exists('g:plugs["vimwiki"]')
         \ 'racket': 'racket'}
     let wiki_1.syntax = 'markdown'
     let wiki_1.ext = '.md'
-    let wiki_1.diary_rel_path = '../diary/'
+    "let wiki_1.diary_rel_path = '../diary/'
 
     let wiki_2 = {}
     let wiki_2.path = '~/Dropbox/wiki/vimwiki-private'
@@ -802,6 +802,10 @@ if exists('g:plugs["vimwiki"]')
     nmap <Plug>NoVimwikiDeleteLink <Plug>VimwikiDeleteLink
     nmap <Plug>NoVimwiki2HTMLBrowse <Plug>Vimwiki2HTMLBrowse
     nmap <Plug>NoVimwiki2HTML <Plug>Vimwiki2HTML
+
+    " provide search in vimwiki directly
+    au FileType vimwiki nmap <C-p> :Files <c-r>=VimwikiGet('path')<CR><CR>
+    au FileType vimwiki nmap <leader>/ :Ag <c-r>=VimwikiGet('path')<CR><CR>
 
     nmap <leader>` <Plug>VimwikiIndex
 endif
