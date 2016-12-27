@@ -116,7 +116,7 @@ syntax enable
 if has("gui_running")
     colorscheme zenburn
     "colorscheme obsidian
-    set guifont=Dejavu\ Sans\ Mono\ for\ Powerline\ 11,Dejavu\ Sans\ Mono\ 11
+    set guifont=Dejavu\ Sans\ Mono\ for\ Powerline\ 12,Dejavu\ Sans\ Mono\ 12
 elseif &t_Co == 256
     "colorscheme zenburn
     colorscheme obsidian
@@ -476,7 +476,7 @@ if package_manager == "vim-plug"
     Plug 'bling/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
 
-    "Plug 'terryma/vim-expand-region'
+    Plug 'terryma/vim-expand-region'
 
     Plug 'Chiel92/vim-autoformat' " enhance the format function (press '=' key)
 
@@ -802,12 +802,16 @@ if exists('g:plugs["vimwiki"]')
     nmap <Plug>NoVimwikiDeleteLink <Plug>VimwikiDeleteLink
     nmap <Plug>NoVimwiki2HTMLBrowse <Plug>Vimwiki2HTMLBrowse
     nmap <Plug>NoVimwiki2HTML <Plug>Vimwiki2HTML
+    nmap <Plug>NoVimwikiNormalizeLinkVisual <Plug>VimwikiNormalizeLinkVisual
+    nmap <Plug>NoVimwikiNormalizeLink <Plug>VimwikiNormalizeLink
 
     " provide search in vimwiki directly
     au FileType vimwiki nmap <buffer> <C-p> :Files <c-r>=VimwikiGet('path')<CR><CR>
     au FileType vimwiki nmap <buffer> <leader>/ :Ag <c-r>=VimwikiGet('path')<CR><CR>
 
     nmap <leader>` <Plug>VimwikiIndex
+
+    hi link VimwikiHR Comment
 endif
 
 "---------------------------------------------------------------------
