@@ -17,10 +17,11 @@
 set encoding=utf-8
 scriptencoding utf-8
 
-" use FZF(https://github.com/junegunn/fzf) if it exists
-"if executable('fzf')
-    "set rtp+=~/.fzf
-"endif
+if has('nvim')
+    let $VIMHOME = expand('~/.config/nvim/')
+else
+    let $VIMHOME = expand('~/.config/')
+endif
 
 " Use Vim settings instead of vi settings.
 set nocompatible
@@ -52,7 +53,6 @@ set relativenumber
 
 " don't treat numbers as octal when performing Ctrl-A and Ctrl-X
 set nrformats-=octal
-
 "----------------------------------------------------------------------
 " VIM user interface
 
@@ -450,11 +450,7 @@ endif
 let package_manager = "vim-plug"
 
 if package_manager == "vim-plug"
-    if has('nvim')
-        call plug#begin('~/.config/nvim/plugged')
-    else
-        call plug#begin('~/.vim/plugged')
-    endif
+    call plug#begin($VIMHOME . 'plugged')
 
     "------------------------------------------------------------------
     " Enhance Basic functionality
@@ -683,11 +679,7 @@ let g:fakeclip_terminal_multiplexer_type = "tmux"
 "---------------------------------------------------------------------
 " UltiSnips
 
-if has('nvim')
-    let g:UltiSnipsSnippetsDir = "~/.config/nvim/plugged/vim-ultisnippet-private/UltiSnips"
-else
-    let g:UltiSnipsSnippetsDir = "~/.vim/plugged/vim-ultisnippet-private/UltiSnips"
-endif
+    let g:UltiSnipsSnippetsDir = $VIMHOME . "plugged/vim-ultisnippet-private/UltiSnips"
 
 "---------------------------------------------------------------------
 " fzf.vim
@@ -718,7 +710,7 @@ if executable('sk')
     nmap <C-p> :Files<CR>
 
     " Customized binding for AG
-    nnoremap <leader>/ :Ag<space>
+    nnoremap <leader>/ :Ag<CR>
 
     " Replace Bufexplore
     nmap <C-e> :Buffers<CR>
@@ -812,6 +804,17 @@ if exists('g:plugs["vimwiki"]')
     nmap <leader>` <Plug>VimwikiIndex
 
     hi link VimwikiHR Comment
+
+    " integrate vimwiki with tagbar
+    let g:tagbar_type_vimwiki = {
+                \   'ctagstype':'vimwiki'
+                \ , 'kinds':['h:header']
+                \ , 'sro':'&&&'
+                \ , 'kind2scope':{'h':'header'}
+                \ , 'sort':0
+                \ , 'ctagsbin': $VIMHOME . '/scripts/vwtags.py'
+                \ , 'ctagsargs': 'markdown'
+                \ }
 endif
 
 "---------------------------------------------------------------------
