@@ -48,11 +48,9 @@ let g:mapleader = "\<Space>"
 " Show line number
 set nu
 
-" set relative number
-set relativenumber
-
 " don't treat numbers as octal when performing Ctrl-A and Ctrl-X
 set nrformats-=octal
+
 "----------------------------------------------------------------------
 " VIM user interface
 
@@ -222,15 +220,6 @@ noremap ` '
 " need vim-bbye
 nmap <leader>q :Bdelete<cr>
 
-function! MyBufferDelete ()
-    let s:totalnumber = len(filter(range(1,bufnr('$')),'buflisted(v:val)'))
-    if s:totalnumber > 1
-        bdelete
-    else
-        quit
-    end
-endfunction
-
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
@@ -341,15 +330,6 @@ if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
   runtime! macros/matchit.vim
 endif
 
-" grep, ignore some directories.
-set grepprg=grep\ -nrI\ --exclude-dir=target\ --exclude-dir=tmp\ --exclude=\"*.min.js\"\ --exclude=\"tags\"\ $*\ /dev/null
-
-" The Silver Searcher
-if executable('ag')
-    " Use ag over grep
-    set grepprg=ag\ --nogroup\ --nocolor\ --ignore-dir\ target\ --ignore-dir\ tmp\ --ignore\ \"*.min.js\"\ --ignore\ \"tags\"
-endif
-
 "----------------------------------------------------------------------
 " Extra Mappings
 
@@ -375,11 +355,11 @@ nmap <silent> ]l :lnext<CR>
 nmap <silent> [L :lfirst<CR>
 nmap <silent> ]L :llast<CR>
 
-" tag related
-nmap <silent> [t :tprev<CR>
-nmap <silent> ]t :tnext<CR>
-nmap <silent> [T :tfirst<CR>
-nmap <silent> ]T :tlast<CR>
+" tab related
+nmap <silent> [t :tabprev<CR>
+nmap <silent> ]t :tabnext<CR>
+nmap <silent> [T :tabfirst<CR>
+nmap <silent> ]T :tablast<CR>
 
 " disable highlight search for current search
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
@@ -530,7 +510,6 @@ if package_manager == "vim-plug"
 
     Plug 'https://github.com/wlangstroth/vim-racket', {'for': 'racket'}
 
-    Plug 'osyo-manga/vim-monster', {'do': 'gem install rcodetools --user-install', 'for': 'ruby'}
 
     Plug 'Rip-Rip/clang_complete', {'for': ['c', 'cpp']}
 
@@ -538,18 +517,18 @@ if package_manager == "vim-plug"
 
     " for javascript
     "Plug 'ternjs/tern_for_vim', {'for': 'javascript', 'do' : 'npm install'}
-    Plug 'ternjs/tern_for_vim', {'do' : 'npm install'}
     Plug 'pangloss/vim-javascript', {'for': 'javascript'}
-    Plug 'mxw/vim-jsx' " for react.js
-    Plug 'othree/javascript-libraries-syntax.vim'
+    "Plug 'mxw/vim-jsx' " for react.js
+    "Plug 'othree/javascript-libraries-syntax.vim'
 
     Plug 'tpope/vim-fireplace', {'for': 'clojure'}
     Plug 'rust-lang/rust.vim', {'for': 'rust'}
 
-    Plug 'vim-ruby/vim-ruby'
+    Plug 'osyo-manga/vim-monster', {'do': 'gem install rcodetools --user-install', 'for': 'ruby'}
+    Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
 
     " for markdown
-    Plug 'plasticboy/vim-markdown'
+    Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
 
     "------------------------------------------------------------------
     " Others
@@ -586,7 +565,9 @@ endif
 
 "----------------------------------------------------------------------
 " vim-easy-align
-xmap ga <Plug>(EasyAlign)
+if exists('g:plugs["vim-easy-align"]')
+    xmap ga <Plug>(EasyAlign)
+endif
 
 "----------------------------------------------------------------------
 " easymotion
@@ -602,10 +583,6 @@ if exists('g:plugs["vim-easymotion"]')
     vmap f <Plug>(easymotion-s)
     nmap F <Plug>(easymotion-F)
     vmap F <Plug>(easymotion-F)
-    nmap ; <Plug>(easymotion-next)
-    vmap ; <Plug>(easymotion-next)
-    nmap , <Plug>(easymotion-prev)
-    vmap , <Plug>(easymotion-prev)
     nmap <Leader>l <Plug>(easymotion-bd-jk)
     vmap <Leader>l <Plug>(easymotion-bd-jk)
     nmap <Space>. <Plug>(easymotion-repeat)
@@ -679,7 +656,7 @@ let g:fakeclip_terminal_multiplexer_type = "tmux"
 "---------------------------------------------------------------------
 " UltiSnips
 
-    let g:UltiSnipsSnippetsDir = $VIMHOME . "plugged/vim-ultisnippet-private/UltiSnips"
+let g:UltiSnipsSnippetsDir = $VIMHOME . "plugged/vim-ultisnippet-private/UltiSnips"
 
 "---------------------------------------------------------------------
 " fzf.vim
@@ -714,11 +691,6 @@ if executable('sk')
 
     " Replace Bufexplore
     nmap <C-e> :Buffers<CR>
-
-    " select mapping
-    nmap <leader><tab> <plug>(fzf-maps-n)
-    xmap <leader><tab> <plug>(fzf-maps-x)
-    omap <leader><tab> <plug>(fzf-maps-o)
 endif
 
 "---------------------------------------------------------------------
@@ -864,7 +836,7 @@ endif
 if exists('g:plugs["vim-choosewin"]')
     nmap - <Plug>(choosewin)
     let g:choosewin_blink_on_land  = 0 " don't blink at land
-    "let g:choosewin_overlay_enable = 1
+    let g:choosewin_overlay_enable = 1
 endif
 
 if exists('g:plugs["vim-hardtime"]')
