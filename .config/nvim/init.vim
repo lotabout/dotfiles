@@ -442,7 +442,7 @@ if package_manager == "vim-plug"
     Plug 'ervandew/supertab'    " you'll need it
     Plug 'easymotion/vim-easymotion'
 
-    Plug 'Tagbar' " actually not used frequently
+    Plug 'Tagbar'
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
     " for word wraps for japanese and chinese
@@ -458,9 +458,15 @@ if package_manager == "vim-plug"
 
     Plug 't9md/vim-choosewin'
 
-    Plug 'sjl/gundo.vim'
+    Plug 'sjl/gundo.vim', {'on': 'Gundo'}
 
     Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
+
+    Plug 'mhinz/vim-startify'
+
+    "Plug 'kana/vim-arpeggio' "Allow key chords
+
+    "Plug 'hecal3/vim-leader-guide'
 
     "------------------------------------------------------------------
     " Integration with Linux environment
@@ -496,7 +502,7 @@ if package_manager == "vim-plug"
     " Support more filetype specific feature
     "------------------------------------------------------------------
     Plug 'The-NERD-Commenter'
-    Plug 'UltiSnips'
+    Plug 'UltiSnips', {'on': []}
     Plug 'honza/vim-snippets'
 
     " private snippets
@@ -656,7 +662,15 @@ let g:fakeclip_terminal_multiplexer_type = "tmux"
 "---------------------------------------------------------------------
 " UltiSnips
 
-let g:UltiSnipsSnippetsDir = $VIMHOME . "plugged/vim-ultisnippet-private/UltiSnips"
+if exists("g:plugs['UltiSnips']")
+    let g:UltiSnipsSnippetsDir = $VIMHOME . "plugged/vim-ultisnippet-private/UltiSnips"
+    " load UltiSnips lazily
+    augroup load_ultisnip
+        autocmd!
+        autocmd InsertEnter * call plug#load('UltiSnips')
+                    \| autocmd! load_ultisnip
+    augroup END
+endif
 
 "---------------------------------------------------------------------
 " fzf.vim
@@ -671,7 +685,7 @@ if executable('fzf')
     nnoremap <leader>/ :Ag<CR>
 
     " Replace Bufexplore
-    nmap <C-e> :Buffers<CR>
+    nmap <leader>b :Buffers<CR>
 
     " select mapping
     nmap <leader><tab> <plug>(fzf-maps-n)
@@ -690,7 +704,7 @@ if executable('sk')
     nnoremap <leader>/ :Ag<CR>
 
     " Replace Bufexplore
-    nmap <C-e> :Buffers<CR>
+    nmap <leader>b :Buffers<CR>
 endif
 
 "---------------------------------------------------------------------
@@ -842,7 +856,20 @@ endif
 if exists('g:plugs["vim-hardtime"]')
     nnoremap <silent> <leader>h :HardTimeToggle<CR>
 endif
+
 "----------------------------------------------------------------------
+" vim-arpeggio
+if exists('g:plugs["vim-arpeggio"]')
+    " press jk at the same time in insert mode will trigger Esc
+    call arpeggio#map('ic', '', 0, 'jk', '<Esc>')
+endif
+
+"----------------------------------------------------------------------
+" vim-leader-guide
+if exists('g:plugs["vim-leader-guide"]')
+    nnoremap <silent> <leader> :<c-u>LeaderGuide '<Space>'<CR>
+    vnoremap <silent> <leader> :<c-u>LeaderGuideVisual '<Space>'<CR>
+endif
 
 "===============================================================================
 " self-added plugins && settigns
