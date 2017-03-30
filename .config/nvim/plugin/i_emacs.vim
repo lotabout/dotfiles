@@ -23,7 +23,7 @@ endif
 cmap <C-b> <Left>
 cmap <C-f> <Right>
 cnoremap <M-f> <S-Right>
-cnoremap <F-b> <S-Left>
+cnoremap <M-b> <S-Left>
 cmap <C-a> <Home>
 cmap <C-e> <End>
 
@@ -33,6 +33,7 @@ cmap <M-n> <Down>
 cmap <C-d> <Del>
 cnoremap <C-y> <C-r><C-o>"
 cnoremap <C-k> <C-f>d$<C-c><End>
+cnoremap <M-d> <C-o>de
 
 "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 " Insert mode mapping
@@ -44,8 +45,13 @@ imap <C-f> <Right>
 imap <C-a> <Home>
 imap <C-e> <End>
 
+inoremap <M-f> <S-Right>
+inoremap <M-b> <S-Left>
+
 " Editing
 imap <C-d> <Del>
+inoremap <M-d> <C-o>de
+inoremap <C-s> <C-o>n
 inoremap <silent> <C-k> <C-r>=<SID>KillLine()<CR>
 
 function! <SID>KillLine()

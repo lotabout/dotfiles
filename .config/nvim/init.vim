@@ -527,7 +527,10 @@ if package_manager == "vim-plug"
     "Plug 'mxw/vim-jsx' " for react.js
     "Plug 'othree/javascript-libraries-syntax.vim'
 
+    Plug 'guns/vim-clojure-static', {'for': 'clojure'}
     Plug 'tpope/vim-fireplace', {'for': 'clojure'}
+    Plug 'guns/vim-clojure-highlight', {'for': 'clojure'}
+
     Plug 'rust-lang/rust.vim', {'for': 'rust'}
 
     Plug 'osyo-manga/vim-monster', {'do': 'gem install rcodetools --user-install', 'for': 'ruby'}
@@ -607,6 +610,9 @@ if exists('g:plugs["slimux"]')
     let g:slimux_racket_keybindings=1
     let g:slimux_racket_leader=';'
     let g:slimux_racket_xrepl=1
+    let g:slimux_clojure_keybindings=1
+    let g:slimux_clojure_leader=';'
+    let g:slimux_clojure_xrepl=1
 endif
 
 "----------------------------------------------------------------------
@@ -685,7 +691,7 @@ if executable('fzf')
     nnoremap <leader>/ :Ag<CR>
 
     " Replace Bufexplore
-    nmap <leader>b :Buffers<CR>
+    nmap <C-e> :Buffers<CR>
 
     " select mapping
     nmap <leader><tab> <plug>(fzf-maps-n)
@@ -704,7 +710,7 @@ if executable('sk')
     nnoremap <leader>/ :Ag<CR>
 
     " Replace Bufexplore
-    nmap <leader>b :Buffers<CR>
+    nmap <C-e> :Buffers<CR>
 endif
 
 "---------------------------------------------------------------------
@@ -721,7 +727,7 @@ endif
 
 if exists('g:plugs["delimitMate"]')
     " not used
-    au FileType racket let b:delimitMate_quotes = "\""
+    au FileType racket,clojure let b:delimitMate_quotes = "\""
 endif
 
 
