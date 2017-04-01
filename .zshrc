@@ -277,17 +277,36 @@ function ppp() {
     echo "exporting proxy settings for polipo done."
 }
 
+# ftpane - switch pane (@george-b)
+function ftpane() {
+  local panes current_window current_pane target target_window target_pane
+  panes=$(tmux list-panes -s -F '#I:#P - #{pane_current_path} #{pane_current_command}')
+  current_pane=$(tmux display-message -p '#I:#P')
+  current_window=$(tmux display-message -p '#I')
+
+  target=$(echo "$panes" | grep -v "$current_pane" | sk -m) || return
+
+  target_window=$(echo $target | awk 'BEGIN{FS=":|-"} {print$1}')
+  target_pane=$(echo $target | awk 'BEGIN{FS=":|-"} {print$2}' | cut -c 1)
+
+  if [[ $current_window -eq $target_window ]]; then
+    tmux select-pane -t ${target_window}.${target_pane}
+  else
+    tmux select-pane -t ${target_window}.${target_pane} &&
+    tmux select-window -t $target_window
+  fi
+}
 
 #------------------------------------------------------------------------------
-# FZF settings
+# SKIM settings
 
 # load fzf if exist
-[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
+[[ -f ~/.skim.zsh ]] && source ~/.skim.zsh
 
-# Setting ag as the default source for fzf
-export FZF_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
+# Setting ag as the default source for skim
+export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
 # To apply the command to CTRL-T as well
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export SKIM_CTRL_T_COMMAND="$SKIM_DEFAULT_COMMAND"
 
 # integrate with fasd
 function j() {
@@ -313,10 +332,6 @@ if hash fasd 2> /dev/null; then
     source "$fasd_cache"
     unset fasd_cache
 fi
-
-#------------------------------------------------------------------------------
-# skim settings
-export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
 
 #==============================================================================
 # plugins
