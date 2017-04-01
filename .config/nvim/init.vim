@@ -251,8 +251,17 @@ nmap <leader>p "+p
 nmap <leader>P "+P
 
 " quick save
-nmap <leader>w :w<CR>
+nmap <leader>w :w<CR>:<C-u>nohlsearch<CR>
 
+" execute macro on every selected/visual lines
+xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
+
+function! ExecuteMacroOverVisualRange()
+  echo "@".getcmdline()
+  execute ":'<,'>normal @".nr2char(getchar())
+endfunction
+
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function! Zoom ()
     " check if is the zoomed state (tabnumber > 1 && window == 1)
     if tabpagenr('$') > 1 && tabpagewinnr(tabpagenr(), '$') == 1
@@ -271,6 +280,7 @@ endfunction
 
 nmap <leader>z :call Zoom()<CR>
 
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 " Interleave lines, do not support overlapping
 " Usage: 90, 100call Interleave(1)
 function! Interleave(where) range
@@ -300,14 +310,23 @@ endfunction
 command! -nargs=1 -range Interleave <line1>,<line2>call Interleave("<args>")
 vmap <leader>j :Interleave<space>
 
-
-" execute macro on every selected/visual lines
-xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
-
-function! ExecuteMacroOverVisualRange()
-  echo "@".getcmdline()
-  execute ":'<,'>normal @".nr2char(getchar())
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"Author: Tim Dahlin
+function!   QuickFixOpenAll()
+    if empty(getqflist())
+        return
+    endif
+    let s:prev_val = ""
+    for d in getqflist()
+        let s:curr_val = bufname(d.bufnr)
+        if (s:curr_val != s:prev_val)
+            exec "edit " . s:curr_val
+        endif
+        let s:prev_val = s:curr_val
+    endfor
 endfunction
+
+command! QuickFixOpenAll         call QuickFixOpenAll()
 
 "===============================================================================
 " Settings for Programming
@@ -467,6 +486,8 @@ if package_manager == "vim-plug"
     "Plug 'kana/vim-arpeggio' "Allow key chords
 
     "Plug 'hecal3/vim-leader-guide'
+
+    Plug 'vim-scripts/marvim' " save macros
 
     "------------------------------------------------------------------
     " Integration with Linux environment
