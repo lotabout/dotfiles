@@ -67,52 +67,87 @@
   :type 'bool
   :group 'sk)
 
-(defun sk/run (args exit-handler)
+(defun read-lines (filePath)
+  "Return a list of lines of a file at filePath."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (let ((lines (split-string (buffer-string) "\n" t)))
+      (if lines lines '()))))
+
+(defun sk/command (opts)
+  (let* ((optstr (alist-get 'options opts ""))
+	 (source (alist-get 'source opts))
+	 (source (cond
+		  ((and (not source) (getenv "SKIM_DEFAULT_COMMAND"))
+		   (let ((temp-file (make-temp-file "sk")))
+		     ;; append the default command
+		     (write-region (getenv "SKIM_DEFAULT_COMMAND") nil temp-file)
+		     (concat "sh " temp-file " 2>/dev/null")))
+		  ((and source (stringp) (string= source "none"))
+		   nil)
+		  (t source)))
+	 (prefix (cond
+		  ((not source) "")
+		  ((stringp source)
+		   (concat source "|"))
+		  ((listp source)
+		   (let ((temp-file (make-temp-file "sk")))
+		     (write-region (mapconcat 'identity source "\n") nil temp-file)
+		     (concat "cat " temp-file "|")))
+		  (t (throw 'sk/command "invalid source type")))))
+    (let ((output-file (make-temp-file "sk")))
+      `((command . ,(concat prefix sk/executable " " optstr " > " output-file))
+	(output-file . ,output-file)))))
+
+
+(defun sk/run (opts exit-handler)
   "run sk with arguments, call (exit-handler lines) after exit"
   (require 'term)
   (window-configuration-to-register :sk-windows)
-  (advice-add 'term-handle-exit :after (sk/wrap-after-term-handle-exit exit-handler))
 
-  (let ((buf (get-buffer-create "*sk*"))
-	(window-height (if sk/position-bottom (- sk/window-height) sk/window-height)))
-    (split-window-vertically window-height)
-    (when sk/position-bottom (other-window 1))
-    (if args
-	(apply 'make-term "sk" sk/executable nil (split-string args " "))
-      (make-term "sk" sk/executable))
-    (switch-to-buffer buf)
-    (linum-mode 0)
-    (set-window-margins nil 1)
+  (let* ((commands (sk/command (if (not (listp opts)) '() opts)))
+	 (command (alist-get 'command commands sk/executable))
+	 (output-file (alist-get 'output-file commands)))
+    (advice-add 'term-handle-exit :after (sk/wrap-after-term-handle-exit exit-handler output-file))
+    (let ((buf (get-buffer-create "*SKIM*"))
+	  (window-height (if sk/position-bottom (- sk/window-height) sk/window-height)))
+      (split-window-vertically window-height)
+      (when sk/position-bottom (other-window 1))
+      (make-term "SKIM" "sh" nil "-c" command)
+      (switch-to-buffer buf)
+      (linum-mode 0)
+      (set-window-margins nil 1)
 
-    ;; disable various settings known to cause artifacts, see #1 for more details
-    (setq-local scroll-margin 0)
-    (setq-local scroll-conservatively 0)
-    (setq-local term-suppress-hard-newline t) ;for paths wider than the window
-    (face-remap-add-relative 'mode-line '(:box nil))
+      ;; disable various settings known to cause artifacts, see #1 for more details
+      (setq-local scroll-margin 0)
+      (setq-local scroll-conservatively 0)
+      (setq-local term-suppress-hard-newline t) ;for paths wider than the window
+      (face-remap-add-relative 'mode-line '(:box nil))
 
-    (term-char-mode)
-    (setq mode-line-format (format "   SK  %s" default-directory))))
+      (term-char-mode)
+      (setq mode-line-format (format "   SK  %s" default-directory)))))
 
-(defun sk/wrap-after-term-handle-exit (callback)
+(defun sk/wrap-after-term-handle-exit (callback output-file)
   (defun handler (process-name msg)
-    (let* ((text (buffer-substring-no-properties (point-min) (point-max)))
-	   (lines (split-string text "\n" t "\s.*\s"))
-	   (pwd default-directory))
-      (kill-buffer "*sk*")
+    (let ((lines (if (file-readable-p output-file)
+		     (read-lines output-file)
+		   '()))
+	  (pwd default-directory))
+      (kill-buffer "*SKIM*")
       (jump-to-register :sk-windows)
       (let ((default-directory pwd))
 	(funcall callback lines))
       (advice-remove 'term-handle-exit #'handler)))
   #'handler)
 
-;;;---------------------------------------------------------------------------- 
+;;;----------------------------------------------------------------------------
 ;;; find file
 
 (defun sk/callback-find-file (lines)
-  (let* ((target (car (last (butlast lines 1))))
-	 (file (expand-file-name target)))
-    (when (file-exists-p file)
-      (find-file file))))
+  (when (car lines)
+    (let ((file (expand-file-name (car lines))))
+      (when (file-exists-p file)
+	(find-file file)))))
 
 ;;;###autoload
 (defun sk ()
@@ -123,16 +158,16 @@
 			       (projectile-project-root)
 			     (error
 			      default-directory))))
-    (sk/run "" #'sk/callback-find-file)))
+    (sk/run '() #'sk/callback-find-file)))
 
 ;;;###autoload
 (defun sk-directory (directory)
   "Starts a sk session at the specified directory."
   (interactive "D")
   (let ((default-directory directory))
-    (sk/run "" #'sk/callback-find-file)))
+    (sk/run '() #'sk/callback-find-file)))
 
-;;;---------------------------------------------------------------------------- 
+;;;----------------------------------------------------------------------------
 ;;; switch between buffers
 
 
