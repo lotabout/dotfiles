@@ -1,5 +1,7 @@
 #!/bin/env bash
-# require xdotool and dmenu
+# require wmctrl and dmenu
+
+set -x
 
 
 OFFSET_RE="([0-9]+)x([0-9]+)"
@@ -16,8 +18,10 @@ y=$((($screen_height - $dialog_height) / 2))
 # Note that xdotool will only search for regular expression
 # So we need to escape the names we got from getwindowname
 
-window_name=$(xdotool search --onlyvisible --name '.+' \
-    | xargs -I{} xdotool getwindowname '{}' \
+window_list=($(wmctrl -l))
+window_name=$(wmctrl -l \
+    | cut -d ' ' -f 5- \
+    | nl -w 2 -s '  ' \
     | dmenu -i -l 10 -fn 'WenQuanYi Micro Hei' -x $x -y $y -w $dialog_width \
-    | sed 's/[]\[\(\).\\]/\\&/g')
-xdotool search "$window_name" windowactivate
+    | cut -c 5-)
+wmctrl -a "$window_name"
