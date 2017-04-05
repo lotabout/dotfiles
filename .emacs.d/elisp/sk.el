@@ -75,13 +75,15 @@
       (if lines lines '()))))
 
 (defun sk/command (opts)
-  (let* ((optstr (alist-get 'option opts ""))
+  (let* ((temp-input nil)
+	 (optstr (alist-get 'option opts ""))
 	 (interactive? (alist-get 'interactive opts nil))
 	 (source (alist-get 'source opts))
 	 (source (cond
 		  ((and (not source) (getenv "SKIM_DEFAULT_COMMAND"))
 		   (let ((temp-file (make-temp-file "sk")))
 		     ;; append the default command
+		     (setq temp-input temp-file)
 		     (write-region (getenv "SKIM_DEFAULT_COMMAND") nil temp-file)
 		     (concat "sh " temp-file " 2>/dev/null")))
 		  ((and source (stringp) (string= source "none"))
@@ -94,11 +96,13 @@
 		   (concat source "|"))
 		  ((listp source)
 		   (let ((temp-file (make-temp-file "sk")))
+		     (setq temp-input temp-file)
 		     (write-region (mapconcat 'identity source "\n") nil temp-file)
 		     (concat "cat " temp-file "|")))
 		  (t (throw 'sk/command "invalid source type")))))
     (let ((output-file (make-temp-file "sk")))
       `((command . ,(concat prefix sk/executable " " sk/args " " optstr " > " output-file))
+	(temp-input . ,temp-input)
 	(output-file . ,output-file)))))
 
 
@@ -110,7 +114,7 @@
   (let* ((commands (sk/command (if (not (listp opts)) '() opts)))
 	 (command (alist-get 'command commands sk/executable))
 	 (output-file (alist-get 'output-file commands)))
-    (advice-add 'term-handle-exit :after (sk/wrap-after-term-handle-exit exit-handler output-file))
+    (advice-add 'term-handle-exit :after (sk/wrap-after-term-handle-exit exit-handler commands))
     (let ((buf (get-buffer-create "*SKIM*"))
 	  (window-height (if sk/position-bottom (- sk/window-height) sk/window-height)))
       (split-window-vertically window-height)
@@ -129,16 +133,24 @@
       (term-char-mode)
       (setq mode-line-format (format "   SK  %s" default-directory)))))
 
-(defun sk/wrap-after-term-handle-exit (callback output-file)
+(defun sk/wrap-after-term-handle-exit (callback commands)
   (defun handler (process-name msg)
-    (let ((lines (if (file-readable-p output-file)
-		     (read-lines output-file)
-		   '()))
+    (let ((temp-input (alist-get 'temp-input commands))
+	  (output-file (alist-get 'output-file commands))
 	  (pwd default-directory))
       (kill-buffer "*SKIM*")
       (jump-to-register :sk-windows)
-      (let ((default-directory pwd))
-	(funcall callback lines))
+
+      (when (file-readable-p output-file)
+	(let ((lines (read-lines output-file))
+	      (default-directory pwd))
+	  (funcall callback lines)))
+
+      (when (and temp-input (file-exists-p temp-input))
+	(delete-file temp-input))
+      (when (and output-file (file-exists-p output-file))
+	(delete-file output-file))
+
       (advice-remove 'term-handle-exit #'handler)))
   #'handler)
 
@@ -175,10 +187,13 @@
   "^\\(.+?\\):\\([1-9][0-9]*\\):\\([1-9][0-9]*\\):"
   "A regexp pattern that parses `filename:line_num:column_num`")
 
+(defvar ag-search-finish-hook nil)
+
 (defun ag/finished-hook (buffer how-finished)
   "once finished, open the first file."
   (with-current-buffer buffer
-    (compile-goto-error)))
+    (compile-goto-error)
+    (run-hooks 'ag-search-finish-hook)))
 
 (define-compilation-mode ag-mode "SKIM-Ag"
   "Ag results compilation mode"
@@ -198,6 +213,10 @@
       ;; write the lines into a temporary file
       (write-region (mapconcat 'identity lines "\n") nil ag-result)
       (let ((compilation-auto-jump-to-first-error t))
+	(defun on-finish ()
+	  (delete-file ag-result)
+	  (remove-hook 'ag-search-finish-hook #'on-finish))
+	(add-hook 'ag-search-finish-hook #'on-finish)
 	(compilation-start (concat "cat " ag-result) #'ag-mode)))))
 
 ;;;###autoload
