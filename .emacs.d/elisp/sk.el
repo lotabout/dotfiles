@@ -75,7 +75,8 @@
       (if lines lines '()))))
 
 (defun sk/command (opts)
-  (let* ((optstr (alist-get 'options opts ""))
+  (let* ((optstr (alist-get 'option opts ""))
+	 (interactive? (alist-get 'interactive opts nil))
 	 (source (alist-get 'source opts))
 	 (source (cond
 		  ((and (not source) (getenv "SKIM_DEFAULT_COMMAND"))
@@ -87,6 +88,7 @@
 		   nil)
 		  (t source)))
 	 (prefix (cond
+		  (interactive? "")
 		  ((not source) "")
 		  ((stringp source)
 		   (concat source "|"))
@@ -168,8 +170,51 @@
     (sk/run '() #'sk/callback-find-file)))
 
 ;;;----------------------------------------------------------------------------
-;;; switch between buffers
+;;; Integration with AG
 
+(defvar ag/file-column-pattern-nogroup
+  "^\\(.+?\\):\\([1-9][0-9]*\\):\\([1-9][0-9]*\\):"
+  "A regexp pattern that parses `filename:line_num:column_num`")
+
+(defun ag/finished-hook (buffer how-finished)
+  "once finished, open the first file."
+  (with-current-buffer buffer
+    (compile-goto-error)))
+
+(define-compilation-mode ag-mode "SKIM-Ag"
+  "Ag results compilation mode"
+  (set (make-local-variable 'compilation-error-regexp-alist)
+       `((,ag/file-column-pattern-nogroup 1 2)))
+  (set (make-local-variable 'compilation-finish-functions)
+       #'ag/finished-hook))
+
+(define-key ag-mode-map (kbd "q") '(lambda () (interactive)
+				     (let (kill-buffer-query-functions) (kill-buffer))))
+(define-key ag-mode-map (kbd "p") #'compilation-previous-error)
+(define-key ag-mode-map (kbd "n") #'compilation-next-error)
+
+(defun sk/callback-show-ag-matches (lines)
+  (when (car lines)
+    (let ((ag-result (make-temp-file "sk")))
+      ;; write the lines into a temporary file
+      (write-region (mapconcat 'identity lines "\n") nil ag-result)
+      (let ((compilation-auto-jump-to-first-error t))
+	(compilation-start (concat "cat " ag-result) #'ag-mode)))))
+
+;;;###autoload
+(defun ag ()
+  "Run SK with ag"
+  (interactive)
+  (let ((default-directory (condition-case err
+			       (projectile-project-root)
+			     (error
+			      default-directory))))
+    (sk/run '((interactive . t)
+	      (option . "--ansi -i -m -c 'ag --color --column \"{}\"'"))
+	    #'sk/callback-show-ag-matches)))
+
+;;;----------------------------------------------------------------------------
+;;; switch between buffers
 
 (provide 'sk)
 ;;; sk.el ends here

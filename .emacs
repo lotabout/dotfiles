@@ -82,7 +82,7 @@
     (when window-system
       (progn
 	;; English Font
-	(set-default-font "DejaVu Sans Mono-10")
+	(set-default-font "DejaVu Sans Mono-11")
 	;; Chinese Font
 	(dolist (charset '(kana han symbol cjk-misc bopomofo))
 	  (set-fontset-font (frame-parameter nil 'font)
@@ -93,7 +93,7 @@
 ;; turn on save place so that when opening a file, the cursor will be at the last position.
 (if (>= emacs-major-version 25)
     (save-place-mode 1)
-  (do
+  (progn
       (require 'saveplace)
       (setq-default save-place t)))
 
@@ -344,6 +344,14 @@ Optional argument ARG indicates that any cache should be flushed."
   (neo-buffer--refresh t))
 
 ;;;----------------------------------------------------------------------------
+;;; projectile
+(use-package projectile
+  :ensure t
+  :config
+  (projectile-global-mode t)
+  :diminish projectile-mode)
+
+;;;----------------------------------------------------------------------------
 ;;; multi-eshell
 (use-package multi-eshell
   :ensure t
@@ -569,7 +577,8 @@ Optional argument ARG indicates that any cache should be flushed."
 (use-package sk
   :config
   (progn
-     (define-key evil-normal-state-map (kbd "C-p") 'sk))) 
+    (define-key evil-normal-state-map (kbd "C-p") 'sk)
+    (evil-leader/set-key "/" 'ag)))
 
 ;;;============================================================================
 ;;; Filetype specified configuration
