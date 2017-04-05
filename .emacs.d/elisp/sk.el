@@ -57,7 +57,7 @@
   :type 'string
   :group 'sk)
 
-(defcustom sk/args "--color 16"
+(defcustom sk/args "--color 16 --margin 1,1,0,0"
   "Additional arguments to pass into sk."
   :type 'string
   :group 'sk)
@@ -98,7 +98,7 @@
 		     (concat "cat " temp-file "|")))
 		  (t (throw 'sk/command "invalid source type")))))
     (let ((output-file (make-temp-file "sk")))
-      `((command . ,(concat prefix sk/executable " " optstr " > " output-file))
+      `((command . ,(concat prefix sk/executable " " sk/args " " optstr " > " output-file))
 	(output-file . ,output-file)))))
 
 
@@ -155,8 +155,7 @@
 (defun sk ()
   "Starts a sk session."
   (interactive)
-  (let ((args "")
-	(default-directory (condition-case err
+  (let ((default-directory (condition-case err
 			       (projectile-project-root)
 			     (error
 			      default-directory))))
