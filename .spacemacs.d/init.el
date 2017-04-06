@@ -27,10 +27,11 @@ values."
    ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '()
+   dotspacemacs-configuration-layer-path '("~/.spacemacs.d/private")
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     vimscript
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -40,15 +41,21 @@ values."
      auto-completion
      ;; better-defaults
      emacs-lisp
-     ;; git
+     git
      ;; markdown
      org
+     (journal :variables
+              org-journal-dir "~/Dropbox/wiki/org/diary"
+              org-journal-file-format "%Y%m%d.org"
+              org-journal-hide-entries-p nil)
      (shell :variables
+            shell-default-shell 'eshell
             shell-default-height 30
             shell-default-position 'bottom)
      ;; spell-checking
      ;; syntax-checking
      ;; version-control
+     sk
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -301,10 +308,16 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
- (setq configuration-layer--elpa-archives
-     '(("melpa-cn" . "http://elpa.emacs-china.org/melpa/")
-       ("org-cn"   . "http://elpa.emacs-china.org/org/")
-       ("gnu-cn"   . "http://elpa.emacs-china.org/gnu/"))))
+
+  ;; China elpa mirror
+  (setq configuration-layer--elpa-archives
+        '(("melpa-cn" . "http://elpa.emacs-china.org/melpa/")
+          ("org-cn"   . "http://elpa.emacs-china.org/org/")
+          ("gnu-cn"   . "http://elpa.emacs-china.org/gnu/")))
+
+  ;; custom packages
+  (add-to-list 'load-path "~/.spacemacs.d/elisp")
+ )
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -313,6 +326,12 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+
+  (define-key evil-normal-state-map (kbd "C-e") 'helm-buffers-list)
+  (global-set-key (kbd "M-k") #'windmove-up)
+  (global-set-key (kbd "M-j") #'windmove-down)
+  (global-set-key (kbd "M-l") #'windmove-right)
+  (global-set-key (kbd "M-h") #'windmove-left)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
