@@ -363,6 +363,8 @@ Optional argument ARG indicates that any cache should be flushed."
 ;;; projectile
 (use-package projectile
   :ensure t
+  :init
+  (customize-set-variable 'projectile-keymap-prefix "")
   :config
   (projectile-global-mode t)
   :diminish projectile-mode)
@@ -606,7 +608,34 @@ Optional argument ARG indicates that any cache should be flushed."
   :config
   (progn
     (spaceline-spacemacs-theme)
+    (setq spaceline-workspace-numbers-unicode t)
+    (setq spaceline-window-numbers-unicode t)
     (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)))
+
+;;;----------------------------------------------------------------------------
+;;; window-numbering: jump to window with number
+(use-package winum
+  :ensure t
+  :init
+  (progn
+    (setq winum-keymap nil))
+  :config
+  (progn
+    ;; <leader> <num>
+    (evil-leader/set-key
+      "0" 'winum-select-window-0
+      "1" 'winum-select-window-1
+      "2" 'winum-select-window-2
+      "3" 'winum-select-window-3
+      "4" 'winum-select-window-4
+      "5" 'winum-select-window-5
+      "6" 'winum-select-window-6
+      "7" 'winum-select-window-7
+      "8" 'winum-select-window-8
+      "9" 'winum-select-window-9)
+
+    (setq winum-auto-setup-mode-line nil)
+    (winum-mode)))
 
 ;;;============================================================================
 ;;; Filetype specified configuration
