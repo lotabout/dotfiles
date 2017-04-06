@@ -17,6 +17,8 @@
       (package-refresh-contents)
       (package-install 'use-package)))
 (require 'use-package)
+(use-package diminish
+  :ensure t)
 
 ;;; color theme
 (use-package zenburn-theme
@@ -76,7 +78,10 @@
     (use-package exec-path-from-shell
       :ensure t
       :config
-      (exec-path-from-shell-initialize))))
+      (exec-path-from-shell-initialize))
+
+    (set-default-font "Source Code Pro-14")
+    ))
  ((string-equal system-type "gnu/linux")
   (progn
     (when window-system
@@ -263,6 +268,7 @@
 ;;; undo tree
 (use-package undo-tree
   :ensure t
+  :diminish undo-tree-mode
   :init
   (progn
     (setq undo-tree-auto-save-history t
@@ -299,7 +305,17 @@
     (define-key persp-key-map (kbd "i") #'persp-import-buffers)
     (define-key persp-key-map (kbd "q") #'persp-remove-buffer)
     (define-key persp-key-map (kbd "w") #'persp-save-state-to-file)
-    (define-key persp-key-map (kbd "l") #'persp-load-state-from-file)))
+    (define-key persp-key-map (kbd "l") #'persp-load-state-from-file)
+    (define-key persp-key-map (kbd "SPC") #'zoom-window-zoom)))
+
+(use-package zoom-window
+  :ensure t
+  :commands zoom-window-zoom
+  :config
+  (progn
+
+    (custom-set-variables '(zoom-window-use-persp t)
+			  '(zoom-window-mode-line-color "cyan4"))))
 
 ;;;----------------------------------------------------------------------------
 ;;; NeoTree -- NERD-tree for emacs
@@ -441,6 +457,7 @@ Optional argument ARG indicates that any cache should be flushed."
 ;;; yasnippet
 (use-package yasnippet
   :ensure t
+  :diminish yas-minor-mode
   :commands (yas-global-mode yas-minor-mode)
   :init
   (progn
@@ -580,6 +597,17 @@ Optional argument ARG indicates that any cache should be flushed."
     (define-key evil-normal-state-map (kbd "C-p") 'sk)
     (evil-leader/set-key "/" 'ag)))
 
+;;;-----------------------------------------------------------------------------
+;;; spaceline for modeline
+(use-package spaceline-config
+  :ensure spaceline
+  :init
+  (setq ns-use-srgb-colorspace nil)
+  :config
+  (progn
+    (spaceline-spacemacs-theme)
+    (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)))
+
 ;;;============================================================================
 ;;; Filetype specified configuration
 
@@ -647,7 +675,7 @@ Optional argument ARG indicates that any cache should be flushed."
 ;; ; Enable literal links
 ;; (defun turn-on-literal-links ()
 ;;   "enable literal links."
-;;   (interactive)
+
 ;;   (org-remove-from-invisibility-spec '(org-link))
 ;;   (org-restart-font-lock))
 
@@ -793,91 +821,6 @@ Optional argument ARG indicates that any cache should be flushed."
   ;; http://shreevatsa.wordpress.com/2006/10/22/emacs-copypaste-and-x/
   ;; http://www.mail-archive.com/help-gnu-emacs@gnu.org/msg03577.html
  ))
-
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; 2. Change the looking of modeline
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-;;; Helper function
-(defun evil-generate-mode-line-tag (&optional state)
-  "Generate the evil mode-line tag for STATE."
-  (let ((tag (evil-state-property state :tag t)))
-    ;; prepare mode-line: add tooltip
-    (if (stringp tag)
-        (propertize tag
-		    'face 'font-lock-preprocessor-face
-                    'help-echo (evil-state-property state :name)
-                    'mouse-face 'mode-line-highlight)
-      tag)))
-;; set tags for evil state to fit this new modline
-(set (evil-state-property 'normal :tag) "N")
-(set (evil-state-property 'insert :tag) "I")
-(set (evil-state-property 'visual :tag) "V")
-(set (evil-state-property 'operator :tag) "O")
-(set (evil-state-property 'replace :tag) "R")
-(set (evil-state-property 'motion :tag) "M")
-(set (evil-state-property 'emacs :tag) "E")
-
-(setq-default mode-line-format
-  (list
-
-    ;; the buffer name; the file name as a tool tip
-    '(:eval (propertize "%b " 'face 'font-lock-keyword-face
-        'help-echo (buffer-file-name)))
-
-    ;; was this buffer modified since the last save?
-    '(:eval (if (buffer-modified-p)
-	      "[+] "
-	      ""))
-
-    ;; line and column
-    "<" ;; '%02' to set to 2 chars at least; prevents flickering
-      (propertize "%02l" 'face 'font-lock-type-face) ","
-      (propertize "%02c" 'face 'font-lock-type-face)
-    "> "
-
-    "[" ;; Display mode of evil
-    '(:eval (evil-generate-mode-line-tag evil-state))
-
-    ;; is this buffer read-only?
-    '(:eval (if buffer-read-only
-              (propertize "R"
-                             'face 'font-lock-type-face
-                             'help-echo "Buffer is read-only")
-	      "-"))
-    "] "
-
-    ;; the current major mode for the buffer.
-    "["
-
-    '(:eval (propertize "%m" 'face 'font-lock-string-face
-              'help-echo buffer-file-coding-system))
-    "] "
-
-    ;; relative position, size of file
-    "["
-    (propertize "%p" 'face 'font-lock-constant-face) ;; % above top
-    "/"
-    (propertize "%I" 'face 'font-lock-constant-face) ;; size
-    "] "
-
-    ;; ;; elscreen modeline
-    ;; '(:eval elscreen-e21-mode-line-string)
-    ;; perspective modline
-    ;; '(:eval persp-modestring)
-    '(:eval persp-lighter)
-
-    ;; add the time, with the date and the emacs uptime in the tooltip
-    '(:eval (propertize (format-time-string " %H:%M")
-              'help-echo
-              (concat (format-time-string "%c; ")
-                      (emacs-uptime "Uptime:%hh"))))
-    " --"
-    ;; i don't want to see minor-modes; but if you want, uncomment this:
-    ;; minor-mode-alist  ;; list of minor modes
-    "%-" ;; fill with '-'
-    ))
-(force-mode-line-update t)
 
 ;============================================================
 ; Settings by Emacs Groups
