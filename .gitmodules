@@ -1,0 +1,6 @@
+[submodule ".config/awesome-3.5/alttab"]
+	path = .config/awesome-3.5/alttab
+	url = https://github.com/jorenheit/awesome_alttab.git
+[submodule ".config/awesome-3.5/revelation"]
+	path = .config/awesome-3.5/revelation
+	url = https://github.com/guotsuan/awesome-revelation
