@@ -3,7 +3,8 @@
 (defun eshell/clear ()
   (interactive)
   (let ((inhibit-read-only t))
-    (erase-buffer)))
+    (erase-buffer))
+  (eshell-send-input))
 
 (defun eshell/emacs (&rest args)
   "Open a file in emacs. Some habits die hard."

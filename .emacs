@@ -230,6 +230,10 @@
   :ensure t
   :defer t)
 
+(use-package evil-matchit
+  :ensure t
+  :defer t)
+
 (use-package evil-paredit
   :ensure t
   :defer t
@@ -296,8 +300,8 @@
     (customize-set-variable 'persp-auto-resume-time 0)	; disable auto-resume
 
     (define-key persp-key-map (kbd "c") #'persp-switch)
-    (define-key persp-key-map (kbd "n") #'persp-switch)
-    (define-key persp-key-map (kbd "p") #'persp-switch)
+    (define-key persp-key-map (kbd "n") #'persp-next)
+    (define-key persp-key-map (kbd "p") #'persp-prev)
     (define-key persp-key-map (kbd "r") #'persp-rename)
     (define-key persp-key-map (kbd "k") #'persp-kill)
     (define-key persp-key-map (kbd "a") #'persp-add-buffer)
@@ -308,14 +312,25 @@
     (define-key persp-key-map (kbd "l") #'persp-load-state-from-file)
     (define-key persp-key-map (kbd "SPC") #'zoom-window-zoom)))
 
+;;;----------------------------------------------------------------------------
+;;; zoom current window temporarily
 (use-package zoom-window
   :ensure t
   :commands zoom-window-zoom
   :config
   (progn
-
     (custom-set-variables '(zoom-window-use-persp t)
 			  '(zoom-window-mode-line-color "cyan4"))))
+
+;;;----------------------------------------------------------------------------
+;;; projectile
+(use-package projectile
+  :ensure t
+  :init
+  (customize-set-variable 'projectile-keymap-prefix "")
+  :config
+  (projectile-global-mode t)
+  :diminish projectile-mode)
 
 ;;;----------------------------------------------------------------------------
 ;;; NeoTree -- NERD-tree for emacs
@@ -358,16 +373,6 @@ Optional argument ARG indicates that any cache should be flushed."
   (interactive "P")
   (neotree-expand-node-descendants arg)
   (neo-buffer--refresh t))
-
-;;;----------------------------------------------------------------------------
-;;; projectile
-(use-package projectile
-  :ensure t
-  :init
-  (customize-set-variable 'projectile-keymap-prefix "")
-  :config
-  (projectile-global-mode t)
-  :diminish projectile-mode)
 
 ;;;----------------------------------------------------------------------------
 ;;; multi-eshell
@@ -447,6 +452,13 @@ Optional argument ARG indicates that any cache should be flushed."
 	       (when (fboundp 'persp-add-buffer)
 		 (persp-add-buffer (current-buffer))))
       (switch-to-buffer b))))
+
+;; Terminal buffer configuration.
+(when (= emacs-major-version 24)
+  (defun my-term-mode-hook ()
+    ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=20611
+    (setq bidi-paragraph-direction 'left-to-right))
+  (add-hook 'term-mode-hook 'my-term-mode-hook))
 
 ;;;----------------------------------------------------------------------------
 ;;; which key
@@ -786,9 +798,9 @@ Optional argument ARG indicates that any cache should be flushed."
   ;; 防止EIM直接上词
   (eim-set-option 'max-length 8))
 
-(use-package eim-extra
-  :defer t
-  :bind ((";" . eim-insert-ascii-char)))
+;; (use-package eim-extra
+;;   :defer t
+;;   :bind ((";" . eim-insert-ascii-char)))
 
 (register-input-method
  "eim-wb" "euc-cn" 'eim-use-package
