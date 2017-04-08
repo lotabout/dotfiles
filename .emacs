@@ -3,20 +3,30 @@
 
 ;;; package archive
 (when (>= emacs-major-version 24)
-  (setq package-archives '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-			   ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
-			   ("org" . "http://orgmode.org/elpa/")))
+  (setq package-archives '(("org" . "http://orgmode.org/elpa/")
+			   ("gnu"   . "http://elpa.emacs-china.org/gnu/")
+			   ("melpa" . "http://elpa.emacs-china.org/melpa/")
+			   ))
   (package-initialize))
 
 ;;; custom scripts
 (add-to-list 'load-path "~/.emacs.d/elisp")
 
+(defvar my-packages '(use-package org))
+
 ;;; load use-package for package management
-(if (not (package-installed-p 'use-package))
-    (progn
-      (package-refresh-contents)
-      (package-install 'use-package)))
+(let* ((package--builtins '())
+       (missing (cl-remove-if 'package-installed-p my-packages)))
+  (when missing
+    (package-refresh-contents)
+    (mapc 'package-install missing)))
+;; (if (not (package-installed-p 'use-package))
+;;     (progn
+;;       (package-refresh-contents)
+;;       (package-install 'use-package)))
 (require 'use-package)
+
+;;; to diminish minor modes
 (use-package diminish
   :ensure t)
 
@@ -43,7 +53,7 @@
 	  (lambda ()
 	    (hl-line-mode 1)
 	    ;; TODO: get color from color theme
-	    (set-face-background 'hl-line "gray25")))
+	    (set-face-background 'hl-line "gray28")))
 
 ;;; Show matched parents
 (show-paren-mode t)
@@ -145,15 +155,22 @@
 
 	(evil-leader/set-leader "SPC")
 
-	;; key bindings
+	;; disable leader prefix keys for modes
+        (customize-set-variable 'evil-leader/no-prefix-mode-rx
+                                '("calendar-mode" "magit-.*-mode" "org-agenda-mode"))
 
+	;; key bindings
 	(evil-leader/set-key
 	  "l" 'ace-jump-line-mode
 
-	  "<SPC>" 'delete-trailing-whitespace
+	  "q" 'kill-buffer
+	  "w" 'save-buffer
+	  "f" 'find-file
+
+	  "cc" 'evilnc-comment-or-uncomment-lines
 
 	  ;; remove Ctrl-M
-	  "m" '(lambda () (interactive) (region-replace "" ""))
+	  "m" '(lambda () (interactive) (region-replace "" ""))
 
 	  ;; collapse blank lines
 	  "<RET>" '(lambda () (interactive) (region-replace "^\n\\{2,\\}" "\n"))
@@ -201,6 +218,8 @@
 						      (redraw-frame)))
 
      (define-key evil-normal-state-map (kbd "f") 'ace-jump-char-mode)
+
+     (define-key evil-normal-state-map (kbd "SPC TAB") 'evil-switch-to-windows-last-buffer)
 
     ;; disable evil in these modes
     (setq evil-emacs-state-modes
@@ -649,6 +668,13 @@ Optional argument ARG indicates that any cache should be flushed."
     (setq winum-auto-setup-mode-line nil)
     (winum-mode)))
 
+;;;-----------------------------------------------------------------------------
+;;; Magit
+(use-package magit
+  :ensure t
+  :config
+  (progn))
+
 ;;;============================================================================
 ;;; Filetype specified configuration
 
@@ -678,102 +704,97 @@ Optional argument ARG indicates that any cache should be flushed."
 ;;; org mode
 
 (use-package org
-  :ensure org-plus-contrib
+  ;; :ensure org-plus-contrib
+  :ensure t
   :mode (("\\.org$" . org-mode))
+  :after evil-leader
+  :init
+  (progn
+    ;; completion
+    (defun my-org-mode-hook ()
+      (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+    (add-hook 'org-mode-hook #'my-org-mode-hook)
+
+    ;; global key binding
+    (define-prefix-command 'org-global-key-map)
+    (define-key org-global-key-map "l" 'org-store-link)
+    (define-key org-global-key-map "c" 'org-capture)
+    (define-key org-global-key-map "a" 'org-agenda)
+    (define-key org-global-key-map "b" 'org-iswitchb)
+
+    ;; delete trailing whitespace, since the <SPC><SPC> is already occupied,
+    ;; define the key here
+    (define-key org-global-key-map " " 'delete-trailing-whitespace)
+
+    (evil-leader/set-key
+      "<SPC>" 'org-global-key-map)
+    )
   :config
   (progn
     (use-package evil-org :ensure t)
-    (setq org-directory "~/Dropbox/wiki/org")))
+    (setq org-directory "~/Dropbox/wiki/org")
+    (setq org-export-coding-system 'utf-8)
+
+    (setq org-todo-keywords
+	  '((sequence "TODO" "WAITING" "|" "DONE" "CANCELED")))
+
+    ;; Add timestamp then the status is changed to "DONE"
+    (setq org-log-done 'time)
+
+    ;; settings for org mode capture
+    (setq org-default-notes-file (concat org-directory "/notes.org"))
+
+    ;; test capture templates
+    (setq org-capture-templates
+	  '(("t" "Todo" entry (file+headline (concat org-directory "/todo.org") "Tasks")
+	     "* TODO %^{Brief Description} %^g\n%?\nAdded: %U")
+	    ("j" "Journal" entry (file+datetree (concat org-directory "/journal.org"))
+	     "* %<%H:%M> %?\n  %i\n  %a")
+	    ("l" "Link" plain (file (concat org-directory "/links.org"))
+	     "- %?\n\n")
+	    ("n" "Note" entry (file (concat org-directory "/notes.org") "New Notes")
+	     "** %?\nAdded:%u\n")))
+
+    (setq org-refile-targets '(("todo.org" :maxlevel . 1)
+			       ("someday.org" :level . 1)
+			       ("done.org" :level . 1)))
+
+    ;; setup agenda
+    (setq org-agenda-files `(,(concat org-directory "/todo.org")
+			     ,(concat org-directory "/journal.org")))
+    (setq org-agenda-custom-commands
+	  '(("D" "Daily Action List"
+	     ((agenda "" ((org-agenda-ndays 1)
+			  (org-agenda-sorting-strategy
+			   '((agenda time-up priority-down tag-up)))
+			  (org-deadline-warning-days 0)))))))
+
+    ;; setup keys for agenda view
+    (add-hook 'org-agenda-mode-hook
+	      (lambda ()
+		(define-key org-agenda-keymap (kbd "j") 'org-agenda-next-line)
+		(define-key org-agenda-keymap (kbd "k") 'org-agenda-previous-line)
+		(define-key org-agenda-keymap (kbd "c") 'org-agenda-columns)))
+
+    ;; babel settings
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (sh . t)
+       (python . t)
+       (C . t)
+       (awk . t)
+       (ditaa . t)
+       (gnuplot . t)
+       (latex . t)
+       (scheme . t)))
+    ))
 
 (use-package org-bullets
   :ensure t
   :commands (org-bullets-mode)
   :init
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
-(use-package org-journal
-  :ensure t
-  :bind (("C-c C-j" . org-journal-new-entry))
-  :commands (org-journal-read-entry)
-  :init
-  (progn
-    (custom-set-variables
-     '(org-journal-dir "~/Dropbox/wiki/org/diary")
-     '(org-journal-file-format "%Y%m%d.org")
-     '(org-journal-hide-entries-p nil))))
-
-;; (setq org-directory "~/org")
-
-;; ;;; load org wiki settings (not loading this if on windows)
-;; (if (not (eq system-type 'windows-nt))
-;;     (require 'org-projects)
-;;     )
-
-;; (with-eval-after-load "org"
-;;   ;;; evil-org-mode
-;;   (require 'evil-org))
-
-;; ; Enable literal links
-;; (defun turn-on-literal-links ()
-;;   "enable literal links."
-
-;;   (org-remove-from-invisibility-spec '(org-link))
-;;   (org-restart-font-lock))
-
-;; (add-hook 'org-mode-hook 'turn-on-literal-links)
-
-;; (define-key global-map "\C-cl" 'org-store-link)
-;; (define-key global-map "\C-ca" 'org-agenda)
-;; (define-key global-map "\C-cb" 'org-iswitchb)
-
-;; ;;; settings for org mode capture
-;; (setq org-default-notes-file (concat org-directory "/notes.org"))
-;; (define-key global-map "\C-cc" 'org-capture)
-
-;; ;;; test capture templates
-;; (setq org-capture-templates
-;;       '(("t" "Todo" entry (file+headline "~/org/newgtd.org" "Tasks")
-;;          "* TODO %^{Brief Description} %^g\n%?\nAdded: %U")
-;;         ("j" "Journal" entry (file+datetree "~/org/journal.org")
-;; 	 "* %?\nEntered on %U\n  %i\n  %a")
-;; 	("l" "Link" plain (file (concat org-directory "/links.org"))
-;;          "- %?\n %x\n")
-;; 	("n" "Note" entry (file (concat org-directory "/notes.org"))
-;;          "**  %?\n%x\nAdded:%U\n")))
-
-;; (setq org-refile-targets '(("newgtd.org" :maxlevel . 1)
-;; 			   ("someday.org" :level . 1)
-;;                            ("done.org" :level . 1)))
-
-;; ;;; setup agenda
-;; (setq org-agenda-files `(,(concat org-directory "/newgtd.org")))
-;; (setq org-agenda-custom-commands
-;;       '(("H" "Office and Home Lists"
-;; 	 ((agenda)
-;; 	  (tags-todo "OFFICE")
-;; 	  (tags-todo "HOME")
-;; 	  (tags-todo "COMPUTER")
-;; 	  (tags-todo "DVD")
-;; 	  (tags-todo "READING")))
-;; 	("D" "Daily Action List"
-;; 	 ((agenda "" ((org-agenda-ndays 1)
-;; 		      (org-agenda-sorting-strategy
-;; 		       '((agenda time-up priority-down tag-up)))
-;; 		      (org-deadline-warning-days 0)))))))
-
-;; ;;; babel settings
-;; (org-babel-do-load-languages
-;;  'org-babel-load-languages
-;;  '((emacs-lisp . t)
-;;    (sh . t)
-;;    (python . t)
-;;    (C . t)
-;;    (awk . t)
-;;    (ditaa . t)
-;;    (gnuplot . t)
-;;    (latex . t)
-;;    (matlab . t)
-;;    (scheme . t)))
 
 ;;;----------------------------------------------------------------------------
 ;;; eim -- Chinese wubi input method
@@ -875,6 +896,7 @@ Optional argument ARG indicates that any cache should be flushed."
  '(fci-rule-color "#383838")
  '(inhibit-startup-screen t)
  '(ns-command-modifier (quote meta))
+ '(org-agenda-files (quote ("~/org/todo.org")))
  '(org-journal-dir "~/Dropbox/wiki/org/diary")
  '(org-journal-file-format "%Y%m%d.org")
  '(org-journal-hide-entries-p nil)

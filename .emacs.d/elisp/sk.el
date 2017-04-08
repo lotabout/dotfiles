@@ -67,6 +67,12 @@
   :type 'bool
   :group 'sk)
 
+(defcustom sk/ag-command "ag --color --column"
+  "Ag command to invoke for sk, could be rg, ack, or grep"
+  :type 'string
+  :group 'sk)
+
+;;;============================================================================ 
 (defun read-lines (filePath)
   "Return a list of lines of a file at filePath."
   (with-temp-buffer
@@ -227,8 +233,16 @@
 			       (projectile-project-root)
 			     (error
 			      default-directory))))
-    (sk/run '((interactive . t)
-	      (option . "--ansi -i -m -c 'ag --color --column \"{}\"'"))
+    (sk/run `((interactive . t)
+	      (option . ,(concat "--ansi -i -m -c '" sk/ag-command " \"{}\"'")))
+	    #'sk/callback-show-ag-matches)))
+;;;###autoload
+(defun ag-directory (directory)
+  "Starts a sk session at the specified directory."
+  (interactive "D")
+  (let ((default-directory directory))
+    (sk/run `((interactive . t)
+	      (option . ,(concat "--ansi -i -m -c '" sk/ag-command " \"{}\"'")))
 	    #'sk/callback-show-ag-matches)))
 
 ;;;----------------------------------------------------------------------------
