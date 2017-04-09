@@ -317,16 +317,22 @@
 
 ;;;----------------------------------------------------------------------------
 ;;; undo tree
-(use-package undo-tree
+;; (use-package undo-tree
+;;   :ensure t
+;;   :diminish undo-tree-mode
+;;   :init
+;;   (progn
+;;     (setq undo-tree-auto-save-history t
+;;          undo-tree-history-directory-alist
+;;          `(("." . "~/.emacs-undo")))
+;;     (unless (file-exists-p "~/.emacs-undo")
+;;       (make-directory "~/.emacs-undo"))))
+(use-package undohist
   :ensure t
-  :diminish undo-tree-mode
   :init
-  (progn
-    (setq undo-tree-auto-save-history t
-         undo-tree-history-directory-alist
-         `(("." . "~/.emacs-undo")))
-    (unless (file-exists-p "~/.emacs-undo")
-      (make-directory "~/.emacs-undo"))))
+  (customize-set-variable 'undohist-directory "~/.emacs-undo")
+  :config
+  (undohist-initialize))
 
 ;;;----------------------------------------------------------------------------
 ;;; persp-mode / perspective
@@ -1008,7 +1014,7 @@ Optional argument ARG indicates that any cache should be flushed."
  '(flycheck-check-syntax-automatically (quote (save mode-enabled)))
  '(package-selected-packages
    (quote
-    (cider markdown-mode popwin flycheck zoom-window zenburn-theme yasnippet winum window-numbering which-key virtualenvwrapper use-package spaceline smex projectile persp-mode org-evil org-bullets neotree multi-term multi-eshell magit fill-column-indicator exec-path-from-shell evil-visualstar evil-search-highlight-persist evil-paredit evil-org evil-numbers evil-nerd-commenter evil-matchit emmet-mode company auctex ace-jump-mode))))
+    (undohist cider markdown-mode popwin flycheck zoom-window zenburn-theme yasnippet winum window-numbering which-key virtualenvwrapper use-package spaceline smex projectile persp-mode org-evil org-bullets neotree multi-term multi-eshell magit fill-column-indicator exec-path-from-shell evil-visualstar evil-search-highlight-persist evil-paredit evil-org evil-numbers evil-nerd-commenter evil-matchit emmet-mode company auctex ace-jump-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
