@@ -67,7 +67,7 @@
 
 (setq ring-bell-function 'ignore)
 
-(setq default-major-mode 'text-mode)
+(setq major-mode 'text-mode)
 
 ;;; backup directory
 (setq backup-directory-alist `(("." . "~/.emacs-backup"))
@@ -76,6 +76,10 @@
       kept-new-versions 6
       kept-old-versions 2
       version-control t)
+
+;;; Tab behavior
+(setq-default indent-tabs-mode nil)
+(electric-indent-mode 1)
 
 ;;; OS specific default.
 (cond
@@ -97,7 +101,7 @@
     (when window-system
       (progn
 	;; English Font
-	(set-default-font "DejaVu Sans Mono-11")
+	(set-frame-font "DejaVu Sans Mono-11")
 	;; Chinese Font
 	(dolist (charset '(kana han symbol cjk-misc bopomofo))
 	  (set-fontset-font (frame-parameter nil 'font)
@@ -232,6 +236,7 @@
 ;;; helper functions
 
 (defun evil-paste-select ()
+  "Visual select the pasted content."
   (interactive)
   (let ((begin (nth 3 evil-last-paste))
 	(end (- (nth 4 evil-last-paste) 1)))
@@ -253,17 +258,33 @@
   :ensure t
   :defer t)
 
-(use-package evil-paredit
+;; (use-package evil-paredit
+;;   :ensure t
+;;   :defer t
+;;   :init
+;;   (progn
+;;     (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+;;     (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+;;     (add-hook 'scheme-mode-hook 'paredit-mode)
+;;     (add-hook 'scheme-mode-hook 'evil-paredit-mode)
+;;     (add-hook 'clojure-mode-hook 'paredit-mode)
+;;     (add-hook 'clojure-mode-hook 'evil-paredit-mode)))
+
+(use-package smartparens
   :ensure t
+  :diminish smartparens-mode
+  :config
+  (progn
+    (require 'smartparens-config)
+    (smartparens-global-mode 1)))
+
+(use-package evil-smartparens
+  :ensure t
+  :commands evil-smartparens-mode
+  :diminish evil-smartparens-mode
   :defer t
   :init
-  (progn
-    (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-    (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-    (add-hook 'scheme-mode-hook 'paredit-mode)
-    (add-hook 'scheme-mode-hook 'evil-paredit-mode)
-    (add-hook 'clojure-mode-hook 'paredit-mode)
-    (add-hook 'clojure-mode-hook 'evil-paredit-mode)))
+  (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode))
 
 (use-package evil-search-highlight-persist
   :ensure t
@@ -388,7 +409,7 @@ Optional argument ARG indicates that any cache should be flushed."
         (neotree-expand-node-descendants node)))))
 
 (defun neotree-open-directory-recursively (&optional arg)
-  "Expand a directory recursively"
+  "Expand a directory recursively."
   (interactive "P")
   (neotree-expand-node-descendants arg)
   (neo-buffer--refresh t))
@@ -483,6 +504,7 @@ Optional argument ARG indicates that any cache should be flushed."
 ;;; which key
 (use-package which-key
   :ensure t
+  :diminish which-key-mode
   :init
   (which-key-mode))
 
@@ -515,6 +537,7 @@ Optional argument ARG indicates that any cache should be flushed."
     (define-key yas-keymap (kbd "TAB") nil)))
 
 (defun yas-escape ()
+  "Return to evil normal mode when escape from yas mode."
   (interactive)
   (yas-abort-snippet)
   (evil-force-normal-state))
@@ -571,12 +594,12 @@ Optional argument ARG indicates that any cache should be flushed."
   :init
   (progn
     (add-hook 'python-mode-hook (lambda ()
-				  (venv-workon "localenv"))))
+				  (venv-workon "localenv-py3"))))
   :config
   (progn
     (venv-initialize-interactive-shells) ;; if you want interactive shell support
     (venv-initialize-eshell) ;; if you want eshell support
-    (setq venv-location '("~/localenv"))))
+    (setq venv-location '("~/localenv-py3"))))
 
 ;;;----------------------------------------------------------------------------
 ;;; auctex
@@ -675,30 +698,42 @@ Optional argument ARG indicates that any cache should be flushed."
   :config
   (progn))
 
+;;;-----------------------------------------------------------------------------
+;;; hydrda, Free from typing the same prefixk eys
+(use-package hydra
+  :ensure t)
+
+;;;-----------------------------------------------------------------------------
+;;; flycheck
+(use-package flycheck
+  :ensure t
+  :diminish flycheck-mode
+  :commands (flycheck-mode)
+  :init
+  (progn
+    (add-hook 'prog-mode-hook 'flycheck-mode))
+  :config
+  (progn
+    (custom-set-variables
+     '(flycheck-check-syntax-automatically (quote (save mode-enabled))))
+    (defhydra hydra-flycheck-error (flycheck-mode-map "C-c !")
+      "navigate through errors"
+      ("n" flycheck-next-error)
+      ("p" flycheck-previous-error))
+    ))
+
+;;;-----------------------------------------------------------------------------
+;;; popwin, manages special buffers as pop up windows
+(use-package popwin
+  :ensure popwin
+  :config
+  (progn
+    (push '("*ag*" :noselect t) popwin:special-display-config)
+    (push '("*Warnings*" :noselect t) popwin:special-display-config)
+    (popwin-mode 1)))
+
 ;;;============================================================================
 ;;; Filetype specified configuration
-
-;;;-----------------------------------------------------------------------------
-; c mode
-(add-hook 'c-mode-common-hook
-	  '(lambda ()
-	     (c-set-style "K&R")
-	     (setq c-basic-offset 4)))
-
-;;;-----------------------------------------------------------------------------
-;;; Python mode
-
-(setq
- python-shell-interpreter "ipython"
- python-shell-interpreter-args ""
- python-shell-prompt-regexp "In \\[[0-9]+\\]: "
- python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
- python-shell-completion-setup-code
-   "from IPython.core.completerlib import module_completion"
- python-shell-completion-module-string-code
-   "';'.join(module_completion('''%s'''))\n"
- python-shell-completion-string-code
-   "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
 ;;;-----------------------------------------------------------------------------
 ;;; org mode
@@ -752,8 +787,12 @@ Optional argument ARG indicates that any cache should be flushed."
 	     "* %<%H:%M> %?\n  %i\n  %a")
 	    ("l" "Link" plain (file (concat org-directory "/links.org"))
 	     "- %?\n\n")
-	    ("n" "Note" entry (file (concat org-directory "/notes.org") "New Notes")
-	     "** %?\nAdded:%u\n")))
+	    ("n" "Note" entry (file (concat org-directory "/notes.org") "Notes")
+	     "** %?\nAdded:%u\n")
+	    ("i" "Idea" entry (file (concat org-directory "/notes.org") "Ideas")
+	     "** %?\nAdded:%u\n")
+	    ("c" "Code Snippets" entry (file (concat org-directory "/notes.org") "Code Snippets")
+	     "** %\nAdded:%u\n#+begin_src %^{Language}\n%x#+end_src\n")))
 
     (setq org-refile-targets '(("todo.org" :maxlevel . 1)
 			       ("someday.org" :level . 1)
@@ -797,6 +836,66 @@ Optional argument ARG indicates that any cache should be flushed."
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
 ;;;----------------------------------------------------------------------------
+;;; markdown mode
+(use-package markdown-mode
+  :ensure t
+  :mode (("\\.md$" . markdown-mode)))
+
+;;;-----------------------------------------------------------------------------
+; c mode
+(add-hook 'c-mode-common-hook
+	  '(lambda ()
+	     (c-set-style "K&R")
+	     (setq c-basic-offset 4)))
+
+;;;----------------------------------------------------------------------------
+;;; REPL
+;; (use-package eval-in-repl
+;;   :ensure t
+;;   :defer t)
+
+;;;-----------------------------------------------------------------------------
+;;; Python mode
+
+(use-package python
+  :ensure t
+  :mode (("\\.py" . python-mode))
+  :init
+  :config
+  (progn
+    (setq python-shell-interpreter "ipython"
+          python-shell-interpreter-args "--simple-prompt -i"
+          python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+          python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+          python-shell-completion-setup-code
+            "from IPython.core.completerlib import module_completion"
+          python-shell-completion-module-string-code
+            "';'.join(module_completion('''%s'''))\n"
+          python-shell-completion-string-code
+          "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+
+    (push '("*Python*" :noselect t) popwin:special-display-config)
+
+    ;; change the key binding for eval in region
+    (evil-define-key 'visual python-mode-map
+      "\C-c\C-c" 'python-shell-send-region)
+    (evil-leader/set-key-for-mode 'python-mode
+      "'" 'python-shell-switch-to-shell)))
+
+;;; completion
+(use-package company-jedi
+  :ensure t
+  :mode (("\\.py" . python-mode))
+  :init
+  (progn
+    (defun my/python-mode-hook ()
+      (add-to-list 'company-backends 'company-jedi))
+    (add-hook 'python-mode-hook 'my/python-mode-hook)))
+
+;;;============================================================================
+;;; Additional packages
+
+;;;----------------------------------------------------------------------------
 ;;; eim -- Chinese wubi input method
 
 (add-to-list 'load-path "~/.emacs.d/elisp/eim")
@@ -819,10 +918,6 @@ Optional argument ARG indicates that any cache should be flushed."
   ;; 防止EIM直接上词
   (eim-set-option 'max-length 8))
 
-;; (use-package eim-extra
-;;   :defer t
-;;   :bind ((";" . eim-insert-ascii-char)))
-
 (register-input-method
  "eim-wb" "euc-cn" 'eim-use-package
  "五笔" "汉字五笔输入法" "wb.txt")
@@ -836,15 +931,10 @@ Optional argument ARG indicates that any cache should be flushed."
 (setq default-input-method "eim-wb")
 
 ;;;============================================================================
-;;; packages
-
-;============================================================
 ; Additional Hacks
-;============================================================
 
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-; 1. Enable copy-paste with X clipboard (need xsel)
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+;;;----------------------------------------------------------------------------
+;;; Enable copy-paste with X clipboard (need xsel)
 
 ;; http://hugoheden.wordpress.com/2009/03/08/copypaste-with-emacs-in-terminal/
 ;; I prefer using the "clipboard" selection (the one the
@@ -878,48 +968,25 @@ Optional argument ARG indicates that any cache should be flushed."
 	xsel-output )))
   ;; Attach callbacks to hooks
   (setq interprogram-cut-function 'xsel-cut-function)
-  (setq interprogram-paste-function 'xsel-paste-function)
+
   ;; Idea from
   ;; http://shreevatsa.wordpress.com/2006/10/22/emacs-copypaste-and-x/
   ;; http://www.mail-archive.com/help-gnu-emacs@gnu.org/msg03577.html
  ))
 
-;============================================================
-; Settings by Emacs Groups
-;============================================================
+;;;============================================================================
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(evil-toggle-key "C-`")
- '(fci-rule-color "#383838")
- '(inhibit-startup-screen t)
- '(ns-command-modifier (quote meta))
- '(org-agenda-files (quote ("~/org/todo.org")))
- '(org-journal-dir "~/Dropbox/wiki/org/diary")
- '(org-journal-file-format "%Y%m%d.org")
- '(org-journal-hide-entries-p nil)
+ '(flycheck-check-syntax-automatically (quote (save mode-enabled)))
  '(package-selected-packages
    (quote
-    (fill-column-indicator yasnippet virtualenvwrapper use-package smex persp-mode neotree evil-visualstar evil-search-highlight-persist evil-paredit evil-numbers evil-nerd-commenter evil-matchit evil-leader company auctex ace-jump-mode)))
- '(persp-auto-resume-time 0)
- '(persp-auto-save-opt 0)
- '(persp-nil-name "main")
- '(scheme-program-name "racket"))
+    (markdown-mode popwin flycheck zoom-window zenburn-theme yasnippet winum window-numbering which-key virtualenvwrapper use-package spaceline smex projectile persp-mode org-evil org-bullets neotree multi-term multi-eshell magit fill-column-indicator exec-path-from-shell evil-visualstar evil-search-highlight-persist evil-paredit evil-org evil-numbers evil-nerd-commenter evil-matchit emmet-mode company auctex ace-jump-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(evil-search-highlight-persist-highlight-face ((t (:background "red")))))
-(put 'dired-find-alternate-file 'disabled nil)
-
-;; (package-selected-packages
-;;    (quote
-;;     (use-package yasnippet virtualenvwrapper smex persp-mode neotree multi-term multi-eshell markdown-mode magit js2-mode irony idomenu htmlize helm expand-region evil-visualstar evil-surround evil-search-highlight-persist evil-paredit evil-org evil-numbers evil-nerd-commenter evil-matchit evil-leader evil-iedit-state emmet-mode emacs-eclim company cider ace-jump-mode)))
- ;; '(company-backends
- ;;   (quote
- ;;    (company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-ropemacs company-cmake company-capf
- ;; 		  (company-dabbrev-code company-gtags company-etags company-keywords)
- ;; 		  company-oddmuse company-files)))
+ )
