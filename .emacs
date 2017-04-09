@@ -62,12 +62,11 @@
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
 ;;; disable splash screen and minibuffer messages on startup
+(setq inhibit-startup-screen 1)
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-echo-area-message t)
 
 (setq ring-bell-function 'ignore)
-
-(setq major-mode 'text-mode)
 
 ;;; backup directory
 (setq backup-directory-alist `(("." . "~/.emacs-backup"))
@@ -120,11 +119,17 @@
 (setq scroll-conservatively 1)
 (setq scroll-step 1)
 
+;;; disable message of ad-redefinition
+(setq ad-redefinition-action 'accept)
+
 ;;; Utilities
 (unless (fboundp 'with-eval-after-load)
   (defmacro with-eval-after-load (file &rest body)
     (declare (indent 1) (debug t))
     `(eval-after-load ,file '(progn ,@body))))
+
+;; use y/n instead of yes/no
+(fset 'yes-or-no-p 'y-or-n-p)
 
 (require 'utility-functions)
 
@@ -170,6 +175,7 @@
 	  "q" 'kill-buffer
 	  "w" 'save-buffer
 	  "f" 'find-file
+          "b" 'switch-to-buffer
 
 	  "cc" 'evilnc-comment-or-uncomment-lines
 
@@ -222,6 +228,7 @@
 						      (redraw-frame)))
 
      (define-key evil-normal-state-map (kbd "f") 'ace-jump-char-mode)
+     (define-key evil-normal-state-map (kbd "C-e") 'switch-to-buffer)
 
      (define-key evil-normal-state-map (kbd "SPC TAB") 'evil-switch-to-windows-last-buffer)
 
@@ -730,6 +737,7 @@ Optional argument ARG indicates that any cache should be flushed."
   (progn
     (push '("*ag*" :noselect t) popwin:special-display-config)
     (push '("*Warnings*" :noselect t) popwin:special-display-config)
+    (push '("*Help*") popwin:special-display-config)
     (popwin-mode 1)))
 
 ;;;============================================================================
@@ -848,12 +856,6 @@ Optional argument ARG indicates that any cache should be flushed."
 	     (c-set-style "K&R")
 	     (setq c-basic-offset 4)))
 
-;;;----------------------------------------------------------------------------
-;;; REPL
-;; (use-package eval-in-repl
-;;   :ensure t
-;;   :defer t)
-
 ;;;-----------------------------------------------------------------------------
 ;;; Python mode
 
@@ -880,7 +882,11 @@ Optional argument ARG indicates that any cache should be flushed."
     (evil-define-key 'visual python-mode-map
       "\C-c\C-c" 'python-shell-send-region)
     (evil-leader/set-key-for-mode 'python-mode
-      "'" 'python-shell-switch-to-shell)))
+      "'" 'python-shell-switch-to-shell)
+
+    (add-hook 'python-mode-hook
+              '(lambda ()
+                 (local-set-key (kbd "<C-return>") 'python-shell-send-defun)))))
 
 ;;; completion
 (use-package company-jedi
@@ -891,6 +897,25 @@ Optional argument ARG indicates that any cache should be flushed."
     (defun my/python-mode-hook ()
       (add-to-list 'company-backends 'company-jedi))
     (add-hook 'python-mode-hook 'my/python-mode-hook)))
+
+;;;-----------------------------------------------------------------------------
+;;; clojure
+(use-package clojure-mode
+  :ensure t
+  :mode (("\\.clj" . clojure-mode)
+         ("\\.cljs" . clojurescript-mode))
+  :config
+  (progn
+    (evil-leader/set-key-for-mode 'clojure-mode
+      "'" 'cider-switch-to-repl-buffer)
+    (evil-leader/set-key-for-mode 'clojurescript-mode
+      "'" 'cider-switch-to-repl-buffer)
+    (push '("\*.*cider-repl.*\*" :regexp t :noselect t) popwin:special-display-config)))
+
+;;; completion
+(use-package cider
+  :ensure t
+  :commands cider-jack-in)
 
 ;;;============================================================================
 ;;; Additional packages
@@ -983,7 +1008,7 @@ Optional argument ARG indicates that any cache should be flushed."
  '(flycheck-check-syntax-automatically (quote (save mode-enabled)))
  '(package-selected-packages
    (quote
-    (markdown-mode popwin flycheck zoom-window zenburn-theme yasnippet winum window-numbering which-key virtualenvwrapper use-package spaceline smex projectile persp-mode org-evil org-bullets neotree multi-term multi-eshell magit fill-column-indicator exec-path-from-shell evil-visualstar evil-search-highlight-persist evil-paredit evil-org evil-numbers evil-nerd-commenter evil-matchit emmet-mode company auctex ace-jump-mode))))
+    (cider markdown-mode popwin flycheck zoom-window zenburn-theme yasnippet winum window-numbering which-key virtualenvwrapper use-package spaceline smex projectile persp-mode org-evil org-bullets neotree multi-term multi-eshell magit fill-column-indicator exec-path-from-shell evil-visualstar evil-search-highlight-persist evil-paredit evil-org evil-numbers evil-nerd-commenter evil-matchit emmet-mode company auctex ace-jump-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
