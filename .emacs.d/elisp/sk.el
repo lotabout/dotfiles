@@ -92,7 +92,7 @@
 		     (setq temp-input temp-file)
 		     (write-region (getenv "SKIM_DEFAULT_COMMAND") nil temp-file)
 		     (concat "sh " temp-file " 2>/dev/null")))
-		  ((and source (stringp) (string= source "none"))
+		  ((and (stringp source) (string= source "none"))
 		   nil)
 		  (t source)))
 	 (prefix (cond
@@ -148,10 +148,14 @@
       (jump-to-register :sk-windows)
 
       (when (file-readable-p output-file)
-	(let ((lines (read-lines output-file))
-	      (default-directory pwd))
-	  (funcall callback lines)))
+	(let ((lines (read-lines output-file)))
+          (if (string= default-directory pwd)
+              (funcall callback lines)
+            (let ((default-directory pwd))
+              ;; restore default directory
+              (funcall callback lines)))))
 
+      ;; clear temporary files
       (when (and temp-input (file-exists-p temp-input))
 	(delete-file temp-input))
       (when (and output-file (file-exists-p output-file))

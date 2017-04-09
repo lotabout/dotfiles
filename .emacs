@@ -316,6 +316,14 @@
 	 ("M-X" . smex-major-mode-commands)) )
 
 ;;;----------------------------------------------------------------------------
+;;; ido mode
+(use-package ido
+  :config
+  (setq ido-enable-flex-matching t)
+  (ido-everywhere t)
+  (ido-mode 1))
+
+;;;----------------------------------------------------------------------------
 ;;; undo tree
 ;; (use-package undo-tree
 ;;   :ensure t
@@ -438,7 +446,7 @@ Optional argument ARG indicates that any cache should be flushed."
     (setq multi-eshell-name "*eshell*"))
   :config
   (progn
-    (use-package eshell-functions)
+    (use-package init-eshell)
     (add-hook 'eshell-mode-hook
 	      '(lambda()
 		 (local-set-key "\C-cn" 'multi-eshell-switch-to-next-live-shell)
@@ -1014,7 +1022,7 @@ Optional argument ARG indicates that any cache should be flushed."
  '(flycheck-check-syntax-automatically (quote (save mode-enabled)))
  '(package-selected-packages
    (quote
-    (undohist cider markdown-mode popwin flycheck zoom-window zenburn-theme yasnippet winum window-numbering which-key virtualenvwrapper use-package spaceline smex projectile persp-mode org-evil org-bullets neotree multi-term multi-eshell magit fill-column-indicator exec-path-from-shell evil-visualstar evil-search-highlight-persist evil-paredit evil-org evil-numbers evil-nerd-commenter evil-matchit emmet-mode company auctex ace-jump-mode))))
+    (fasd undohist cider markdown-mode popwin flycheck zoom-window zenburn-theme yasnippet winum window-numbering which-key virtualenvwrapper use-package spaceline smex projectile persp-mode org-evil org-bullets neotree multi-term multi-eshell magit fill-column-indicator exec-path-from-shell evil-visualstar evil-search-highlight-persist evil-paredit evil-org evil-numbers evil-nerd-commenter evil-matchit emmet-mode company auctex ace-jump-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
