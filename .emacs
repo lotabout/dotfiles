@@ -14,9 +14,13 @@
 
 (defvar my-packages '(use-package org))
 
+(defun my-remove-if-not (predicate sequence)
+  (delq nil (mapcar (lambda (x) (and (not (funcall predicate x)) x)) sequence)))
+
 ;;; load use-package for package management
 (let* ((package--builtins '())
-       (missing (cl-remove-if 'package-installed-p my-packages)))
+       (missing (my-remove-if-not #'package-installed-p my-packages)))
+  (print missing)
   (when missing
     (package-refresh-contents)
     (mapc 'package-install missing)))
@@ -160,13 +164,7 @@
       :init (global-evil-leader-mode)
       :config
       (progn
-	(setq evil-leader/in-all-states t)
-
 	(evil-leader/set-leader "SPC")
-
-	;; disable leader prefix keys for modes
-        (customize-set-variable 'evil-leader/no-prefix-mode-rx
-                                '("calendar-mode" "magit-.*-mode" "org-agenda-mode"))
 
 	;; key bindings
 	(evil-leader/set-key
@@ -190,7 +188,6 @@
 	  "nf" 'neotree-find
 
 	  )))
-
     ;; enable evil by default
     (evil-mode 1))
 
@@ -228,7 +225,6 @@
 						      (redraw-frame)))
 
      (define-key evil-normal-state-map (kbd "f") 'ace-jump-char-mode)
-     (define-key evil-normal-state-map (kbd "C-e") 'switch-to-buffer)
 
      (define-key evil-normal-state-map (kbd "SPC TAB") 'evil-switch-to-windows-last-buffer)
 
@@ -240,6 +236,7 @@
 		    eclim-project-mode)))
      ))
 
+
 ;;; helper functions
 
 (defun evil-paste-select ()
@@ -248,6 +245,12 @@
   (let ((begin (nth 3 evil-last-paste))
 	(end (- (nth 4 evil-last-paste) 1)))
     (evil-visual-select begin end)))
+
+(use-package evil-evilified-state
+  :config
+  (progn
+    ;; evilify some modes which are not specified directly in .emacs
+    ))
 
 (use-package evil-visualstar
   :ensure t
@@ -693,10 +696,11 @@ Optional argument ARG indicates that any cache should be flushed."
   :ensure t
   :init
   (progn
-    (setq winum-keymap nil))
+    (setq winum-keymap nil)
+    ;; <leader> <num>
+    )
   :config
   (progn
-    ;; <leader> <num>
     (evil-leader/set-key
       "0" 'winum-select-window-0
       "1" 'winum-select-window-1
@@ -716,8 +720,11 @@ Optional argument ARG indicates that any cache should be flushed."
 ;;; Magit
 (use-package magit
   :ensure t
-  :config
-  (progn))
+  :defer t
+  :init
+  (progn
+    (use-package evil-magit
+      :ensure t)))
 
 ;;;-----------------------------------------------------------------------------
 ;;; hydrda, Free from typing the same prefixk eys
@@ -785,6 +792,7 @@ Optional argument ARG indicates that any cache should be flushed."
 
     (evil-leader/set-key
       "<SPC>" 'org-global-key-map)
+
     )
   :config
   (progn
@@ -850,6 +858,26 @@ Optional argument ARG indicates that any cache should be flushed."
        (latex . t)
        (scheme . t)))
     ))
+
+(use-package org-agenda
+  :defer t
+  :config
+  (progn
+    (setq org-agenda-restore-windows-after-quit t)
+
+    ;; evilify org-agenda-mode
+    (evilified-state-evilify-map org-agenda-mode-map
+      :mode org-agenda-mode
+      :bindings
+      "j" 'org-agenda-next-line
+      "k" 'org-agenda-previous-line
+      (kbd "M-j") 'org-agenda-next-item
+      (kbd "M-k") 'org-agenda-previous-item
+      (kbd "M-h") 'org-agenda-earlier
+      (kbd "M-l") 'org-agenda-later
+      (kbd "gd") 'org-agenda-toggle-time-grid
+      (kbd "gr") 'org-agenda-redo
+      (kbd "M-RET") 'org-agenda-show-and-scroll-up)))
 
 (use-package org-bullets
   :ensure t
@@ -968,6 +996,15 @@ Optional argument ARG indicates that any cache should be flushed."
  "五笔拼音" "汉字五笔拼音输入法" "wbpy.txt")
 
 (setq default-input-method "eim-wb")
+
+;;;----------------------------------------------------------------------------
+;; Calendar mode
+(use-package calendar-mode
+  :commands calendar-mode
+  :init
+  (progn
+    (evilified-state-evilify-map calendar-mode-map
+      :mode calendar-mode)))
 
 ;;;============================================================================
 ; Additional Hacks
