@@ -831,22 +831,22 @@ Optional argument ARG indicates that any cache should be flushed."
 
     ;; test capture templates
     (setq org-capture-templates
-	  '(("t" "Todo" entry (file+headline (concat org-directory "/todo.org") "Tasks")
-	     "* TODO %^{Brief Description} %^g\n%?\nAdded: %U")
-	    ("j" "Journal" entry (file+datetree (concat org-directory "/journal.org"))
-	     "* %<%H:%M> %?\n  %i\n  %a")
+	  '(("j" "Journal" entry (file+datetree (concat org-directory "/journal.org"))
+	     "* TODO %<%H:%M> %?\nSCHEDULED: %t  %i\n  %a" :clock-in t :clock-resume t)
 	    ("l" "Link" plain (file (concat org-directory "/links.org"))
-	     "- %?\n\n")
-	    ("n" "Note" entry (file (concat org-directory "/notes.org") "Notes")
-	     "** %?\nAdded:%u\n")
-	    ("i" "Idea" entry (file (concat org-directory "/notes.org") "Ideas")
-	     "** %?\nAdded:%u\n")
-	    ("c" "Code Snippets" entry (file (concat org-directory "/notes.org") "Code Snippets")
-	     "** %\nAdded:%u\n#+begin_src %^{Language}\n%x#+end_src\n")))
+	     "- %?\n\n"
+             :clock-in t :clock-resume t)
+	    ("n" "Note" entry (file+headline (concat org-directory "/notes.org") "Unhandled")
+	     "* %?\n\n"
+             :clock-in t :clock-resume t)
+	    ("i" "Idea" entry (file+headline (concat org-directory "/notes.org") "Ideas")
+	     "* %?\n\n"
+             :clock-in t :clock-resume t)
+	    ("c" "Code Snippets" entry (file+headline (concat org-directory "/notes.org") "Code Snippets")
+	     "* %\n  #+begin_src %^{Language}\n%x#+end_src\n"
+             :clock-in t :clock-resume t)))
 
-    (setq org-refile-targets '(("todo.org" :maxlevel . 1)
-			       ("someday.org" :level . 1)
-			       ("done.org" :level . 1)))
+    (setq org-refile-targets '(("notes.org" :maxlevel . 3)))
 
     ;; babel settings
     (org-babel-do-load-languages
@@ -869,8 +869,7 @@ Optional argument ARG indicates that any cache should be flushed."
     (setq org-agenda-restore-windows-after-quit t)
 
     ;; setup agenda
-    (setq org-agenda-files `(,(concat org-directory "/todo.org")
-			     ,(concat org-directory "/journal.org")))
+    (setq org-agenda-files `(,(concat org-directory "/journal.org")))
     (setq org-agenda-custom-commands
 	  '(("D" "Daily Action List"
 	     ((agenda "" ((org-agenda-ndays 1)
