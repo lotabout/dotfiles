@@ -1,44 +1,34 @@
 ;==============================================================================
 ;;; General settings
 
-;;; package archive
-(when (>= emacs-major-version 24)
-  (setq package-archives '(("org" . "http://orgmode.org/elpa/")
-			   ("gnu"   . "http://elpa.emacs-china.org/gnu/")
-			   ("melpa" . "http://elpa.emacs-china.org/melpa/")
-			   ))
-  (package-initialize))
-
 ;;; custom scripts
 (add-to-list 'load-path "~/.emacs.d/elisp")
 
+;; package archive
+(when (>= emacs-major-version 24)
+  (setq package-archives '(("org" . "http://orgmode.org/elpa/")
+                           ("gnu"   . "http://elpa.emacs-china.org/gnu/")
+                           ("melpa" . "http://elpa.emacs-china.org/melpa/")
+                           ))
+  (package-initialize))
 (defvar my-packages '(use-package org))
 
 (defun my-remove-if-not (predicate sequence)
   (delq nil (mapcar (lambda (x) (and (not (funcall predicate x)) x)) sequence)))
 
-;;; load use-package for package management
+;; load use-package for package management
 (let* ((package--builtins '())
        (missing (my-remove-if-not #'package-installed-p my-packages)))
   (print missing)
   (when missing
     (package-refresh-contents)
     (mapc 'package-install missing)))
-;; (if (not (package-installed-p 'use-package))
-;;     (progn
-;;       (package-refresh-contents)
-;;       (package-install 'use-package)))
-(require 'use-package)
 
-;;; to diminish minor modes
-(use-package diminish
-  :ensure t)
+(eval-when-compile
+  (require 'use-package))
 
-;;; color theme
-(use-package zenburn-theme
-  :ensure t
-  :config
-  (load-theme 'zenburn t))
+(require 'diminish)
+(require 'bind-key)
 
 ;------------------------------------------------------------------------------
 ;;; general settings
@@ -90,13 +80,6 @@
   (progn
     ;; Use Meta as Alt in OSX
     (customize-set-variable 'ns-command-modifier 'meta)
-
-    ;; set up PATH
-    (use-package exec-path-from-shell
-      :ensure t
-      :config
-      (exec-path-from-shell-initialize))
-
     (set-default-font "Source Code Pro-14")
     ))
  ((string-equal system-type "gnu/linux")
@@ -111,6 +94,14 @@
 			    charset
 			    (font-spec :family "WenQuanYi Micro Hei Mono")))
 	(setq face-font-rescale-alist '(("WenQuanYi Micro Hei Mono" . 1.2))))))))
+
+
+;; set up PATH
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns))
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize))
 
 ;; turn on save place so that when opening a file, the cursor will be at the last position.
 (if (>= emacs-major-version 25)
@@ -137,6 +128,12 @@
 
 (require 'utility-functions)
 
+;;; color theme
+(use-package zenburn-theme
+  :ensure t
+  :config
+  (load-theme 'zenburn t))
+
 ;-----------------------------------------------------------------------------
 ; Global key bindings
 
@@ -161,81 +158,63 @@
     ;; evil-leader
     (use-package evil-leader
       :ensure t
-      :init (global-evil-leader-mode)
       :config
       (progn
+        (global-evil-leader-mode)
 	(evil-leader/set-leader "SPC")
 
-	;; key bindings
 	(evil-leader/set-key
-	  "l" 'ace-jump-line-mode
-
 	  "q" 'kill-buffer
 	  "w" 'save-buffer
 	  "f" 'find-file
           "b" 'switch-to-buffer
-
-	  "cc" 'evilnc-comment-or-uncomment-lines
 
 	  ;; remove Ctrl-M
 	  "m" '(lambda () (interactive) (region-replace "" ""))
 
 	  ;; collapse blank lines
 	  "<RET>" '(lambda () (interactive) (region-replace "^\n\\{2,\\}" "\n"))
-
-	  ;; neotree
-	  "ne" 'neotree-toggle
-	  "nf" 'neotree-find
-
-	  )))
-    ;; enable evil by default
-    (evil-mode 1))
+	  ))))
 
   :config
   (progn
-     (global-evil-matchit-mode 1)
-     (global-evil-visualstar-mode 1)
-     (global-evil-search-highlight-persist t)
-     (customize-set-variable 'evil-toggle-key "C-`")
+    ;; enable evil by default
+    (evil-mode 1)
+    (global-evil-visualstar-mode 1)
+    (global-evil-search-highlight-persist t)
+    (customize-set-variable 'evil-toggle-key "C-`")
 
-     ;; disable evil mode for some major modes
-     (evil-set-initial-state 'calendar-mode 'emacs)
-     (evil-set-initial-state 'term-mode 'emacs)
+    ;; disable evil mode for some major modes
+    (evil-set-initial-state 'calendar-mode 'emacs)
+    (evil-set-initial-state 'term-mode 'emacs)
 
-     ;; key bindings
-     (define-key evil-insert-state-map (kbd "C-a") nil)
-     (define-key evil-insert-state-map (kbd "C-d") nil)
-     (define-key evil-insert-state-map (kbd "C-e") nil)
-     (define-key evil-insert-state-map (kbd "C-k") nil)
-     (define-key evil-insert-state-map (kbd "C-y") nil)
+    ;; key bindings
+    (define-key evil-insert-state-map (kbd "C-a") nil)
+    (define-key evil-insert-state-map (kbd "C-d") nil)
+    (define-key evil-insert-state-map (kbd "C-e") nil)
+    (define-key evil-insert-state-map (kbd "C-k") nil)
+    (define-key evil-insert-state-map (kbd "C-y") nil)
 
-     (define-key evil-normal-state-map (kbd "[b") 'evil-prev-buffer)
-     (define-key evil-normal-state-map (kbd "]b") 'evil-next-buffer)
+    (define-key evil-normal-state-map (kbd "[b") 'evil-prev-buffer)
+    (define-key evil-normal-state-map (kbd "]b") 'evil-next-buffer)
 
-     (define-key evil-normal-state-map "gp" 'evil-paste-select)
+    (define-key evil-normal-state-map "gp" 'evil-paste-select)
 
-     ;; evil-number
-     (define-key evil-normal-state-map (kbd "C-c +") 'evil-numbers/inc-at-pt)
-     (define-key evil-normal-state-map (kbd "C-c -") 'evil-numbers/dec-at-pt)
+    ;; clear screen and highlight
+    (define-key evil-normal-state-map (kbd "C-d") '(lambda ()
+                                                     (interactive)
+                                                     (evil-search-highlight-persist-remove-all)
+                                                     (redraw-frame)))
 
-     ;; clear screen and highlight
-     (define-key evil-normal-state-map (kbd "C-d") '(lambda ()
-						      (interactive)
-						      (evil-search-highlight-persist-remove-all)
-						      (redraw-frame)))
-
-     (define-key evil-normal-state-map (kbd "f") 'ace-jump-char-mode)
-
-     (define-key evil-normal-state-map (kbd "SPC TAB") 'evil-switch-to-windows-last-buffer)
+    (define-key evil-normal-state-map (kbd "SPC TAB") 'evil-switch-to-windows-last-buffer)
 
     ;; disable evil in these modes
     (setq evil-emacs-state-modes
-	  (append evil-emacs-state-modes
+          (append evil-emacs-state-modes
 		  '(cider-repl-mode
 		    cider-stacktrace-mode
-		    eclim-project-mode)))
-     ))
-
+		    eclim-project-mode))))
+  :diminish undo-tree-mode)
 
 ;;; helper functions
 
@@ -246,11 +225,7 @@
 	(end (- (nth 4 evil-last-paste) 1)))
     (evil-visual-select begin end)))
 
-(use-package evil-evilified-state
-  :config
-  (progn
-    ;; evilify some modes which are not specified directly in .emacs
-    ))
+(use-package evil-evilified-state)
 
 (use-package evil-visualstar
   :ensure t
@@ -258,15 +233,23 @@
 
 (use-package evil-nerd-commenter
   :ensure t
-  :commands evilnc-comment-or-uncomment-lines)
+  :commands evilnc-comment-or-uncomment-lines
+  :init
+  (evil-leader/set-key "cc" 'evilnc-comment-or-uncomment-lines))
 
 (use-package evil-numbers
   :ensure t
-  :defer t)
+  :defer t
+  :init
+  (define-key evil-normal-state-map (kbd "C-c +") 'evil-numbers/inc-at-pt)
+  (define-key evil-normal-state-map (kbd "C-c -") 'evil-numbers/dec-at-pt))
+
 
 (use-package evil-matchit
   :ensure t
-  :defer t)
+  :commands global-evil-matchit-mode
+  :init
+  (global-evil-matchit-mode 1))
 
 ;; (use-package evil-paredit
 ;;   :ensure t
@@ -298,7 +281,10 @@
 
 (use-package evil-search-highlight-persist
   :ensure t
-  :defer t)
+  :defer t
+  :config
+  (custom-set-faces
+     `(evil-search-highlight-persist-highlight-face ((t (:inherit isearch))))))
 
 (use-package evil-matchit
   :ensure t
@@ -308,7 +294,10 @@
 ;;; ace-jump -- i.e easymotion for vim
 (use-package ace-jump-mode
   :ensure t
-  :commands ac-jump-mode)
+  :commands ac-jump-mode
+  :init
+  (define-key evil-normal-state-map (kbd "f") 'ace-jump-char-mode)
+  (evil-leader/set-key "l" 'ace-jump-line-mode))
 
 ;;;----------------------------------------------------------------------------
 ;;; smex
@@ -327,17 +316,7 @@
   (ido-mode 1))
 
 ;;;----------------------------------------------------------------------------
-;;; undo tree
-;; (use-package undo-tree
-;;   :ensure t
-;;   :diminish undo-tree-mode
-;;   :init
-;;   (progn
-;;     (setq undo-tree-auto-save-history t
-;;          undo-tree-history-directory-alist
-;;          `(("." . "~/.emacs-undo")))
-;;     (unless (file-exists-p "~/.emacs-undo")
-;;       (make-directory "~/.emacs-undo"))))
+;; save undo history
 (use-package undohist
   :ensure t
   :init
@@ -389,12 +368,35 @@
 ;;;----------------------------------------------------------------------------
 ;;; projectile
 (use-package projectile
-  :ensure t
+  :commands (projectile-ack
+             projectile-ag
+             projectile-compile-project
+             projectile-dired
+             projectile-find-dir
+             projectile-find-file
+             projectile-find-tag
+             projectile-test-project
+             projectile-grep
+             projectile-invalidate-cache
+             projectile-kill-buffers
+             projectile-multi-occur
+             projectile-project-p
+             projectile-project-root
+             projectile-recentf
+             projectile-regenerate-tags
+             projectile-replace
+             projectile-replace-regexp
+             projectile-run-async-shell-command-in-root
+             projectile-run-shell-command-in-root
+             projectile-switch-project
+             projectile-switch-to-buffer
+             projectile-vc)
   :init
   (customize-set-variable 'projectile-keymap-prefix "")
   :config
   (projectile-global-mode t)
   :diminish projectile-mode)
+
 
 ;;;----------------------------------------------------------------------------
 ;;; NeoTree -- NERD-tree for emacs
@@ -402,24 +404,27 @@
   :ensure t
   :commands (neotree-toggle neotree-find)
   :bind ("<f8>" . neotree-toggle)
+  :init
+  (evil-leader/set-key
+    "ne" 'neotree-toggle
+    "nf" 'neotree-find)
   :config
-  (add-hook 'neotree-mode-hook
-	    (lambda ()
-	      (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter)
-	      (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter)
-	      (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
-	      (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)
-	      (define-key evil-normal-state-local-map (kbd "o") 'neotree-enter)
-	      (define-key evil-normal-state-local-map (kbd "j") 'neotree-next-line)
-	      (define-key evil-normal-state-local-map (kbd "k") 'neotree-previous-line)
-	      (define-key evil-normal-state-local-map (kbd "M") 'neotree-create-node)
-	      (define-key evil-normal-state-local-map (kbd "R") 'neotree-rename-node)
-	      (define-key evil-normal-state-local-map (kbd "D") 'neotree-delete-node)
-	      (define-key evil-normal-state-local-map (kbd "r") 'neotree-refresh)
-	      (define-key evil-normal-state-local-map (kbd "C") 'neotree-change-root)
-	      (define-key evil-normal-state-local-map (kbd "U") 'neotree-change-root)
-	      (define-key evil-normal-state-local-map (kbd "O") 'neotree-open-directory-recursively)
-	      (define-key evil-normal-state-local-map (kbd "H") 'neotree-hidden-file-toggle))))
+  (evil-define-key 'normal neotree-mode-map
+    (kbd "TAB") 'neotree-enter
+    (kbd "SPC") 'neotree-enter
+    (kbd "q") 'neotree-hide
+    (kbd "RET") 'neotree-enter
+    (kbd "o") 'neotree-enter
+    (kbd "j") 'neotree-next-line
+    (kbd "k") 'neotree-previous-line
+    (kbd "M") 'neotree-create-node
+    (kbd "R") 'neotree-rename-node
+    (kbd "D") 'neotree-delete-node
+    (kbd "r") 'neotree-refresh
+    (kbd "C") 'neotree-change-root
+    (kbd "U") 'neotree-change-root
+    (kbd "O") 'neotree-open-directory-recursively
+    (kbd "H") 'neotree-hidden-file-toggle)) 
 
 (defun neotree-expand-node-descendants (&optional arg)
   "Expand the line under the cursor and all descendants.
@@ -496,13 +501,13 @@ Optional argument ARG indicates that any cache should be flushed."
     (if (eq 'term-mode (with-current-buffer (car l) major-mode))
 	(car l)(last-term-buffer (cdr l)))))
 
-(defun get-term()
-  "Switch to the term buffer last used, or create a new one if non exists, or if the current buffer is already a term"
-  (interactive)
-  (let ((b (last-term-buffer (buffer-list))))
-    (if (or (not b) (eq 'term-mode major-mode))
-	(multi-term)
-      (switch-to-buffer b))))
+;; (defun get-term()
+;;   "Switch to the term buffer last used, or create a new one if non exists, or if the current buffer is already a term"
+;;   (interactive)
+;;   (let ((b (last-term-buffer (buffer-list))))
+;;     (if (or (not b) (eq 'term-mode major-mode))
+;; 	(multi-term)
+;;       (switch-to-buffer b))))
 
 (defun get-term()
   "Switch to the term buffer last used, or create a new one if non exists, or if the current buffer is already a term"
@@ -547,7 +552,8 @@ Optional argument ARG indicates that any cache should be flushed."
 
     ;; enable yasnippet for several minor modes
     (add-hook 'prog-mode-hook #'yas-minor-mode)
-    (add-hook 'org-mode-hook #'yas-minor-mode))
+    (add-hook 'org-mode-hook #'yas-minor-mode)
+    )
   :config
   (progn
     (yas-reload-all)
@@ -598,14 +604,14 @@ Optional argument ARG indicates that any cache should be flushed."
         (if (looking-at "->") t nil)))))
 
 (defun do-yas-expand ()
-  (let ((yas/fallback-behavior 'return-nil))
-    (yas/expand)))
+  (let ((yas-maybe-expand 'return-nil))
+    (yas-expand)))
 
 (defun tab-indent-or-complete ()
   (interactive)
   (if (minibufferp)
       (minibuffer-complete)
-    (if (or (not yas/minor-mode)
+    (if (or (not yas-minor-mode)
             (null (do-yas-expand)))
         (if (check-expansion)
             (company-complete-common)
@@ -615,6 +621,7 @@ Optional argument ARG indicates that any cache should be flushed."
 ;;; virtualenvwrapper
 (use-package virtualenvwrapper
   :ensure t
+  :defer t
   :init
   (progn
     (add-hook 'python-mode-hook (lambda ()
@@ -630,6 +637,7 @@ Optional argument ARG indicates that any cache should be flushed."
 
 (use-package tex
   :ensure auctex
+  :defer t
   :config
   (progn
     (setq TeX-view-program-list
@@ -671,10 +679,18 @@ Optional argument ARG indicates that any cache should be flushed."
 
 ;;;-----------------------------------------------------------------------------
 ;;; sk/fzf
+
 (use-package sk
-  :config
+  :commands (sk sk-directory)
+  :init
   (progn
     (define-key evil-normal-state-map (kbd "C-p") 'sk)
+    ))
+
+(use-package sk-extra
+  :commands (ag ag-directory)
+  :init
+  (progn
     (evil-leader/set-key "/" 'ag)))
 
 ;;;-----------------------------------------------------------------------------
@@ -721,7 +737,7 @@ Optional argument ARG indicates that any cache should be flushed."
 (use-package magit
   :ensure t
   :defer t
-  :init
+  :config
   (progn
     (use-package evil-magit
       :ensure t)))
@@ -770,8 +786,8 @@ Optional argument ARG indicates that any cache should be flushed."
 (use-package org
   ;; :ensure org-plus-contrib
   :ensure t
+  :defer t
   :mode (("\\.org$" . org-mode))
-  :after evil-leader
   :init
   (progn
     ;; completion
@@ -779,7 +795,7 @@ Optional argument ARG indicates that any cache should be flushed."
       (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
     (add-hook 'org-mode-hook #'my-org-mode-hook)
 
-    ;; global key binding
+    ;; global key binding for org-mode, which is loaded lazily
     (define-prefix-command 'org-global-key-map)
     (define-key org-global-key-map "l" 'org-store-link)
     (define-key org-global-key-map "c" 'org-capture)
@@ -790,13 +806,17 @@ Optional argument ARG indicates that any cache should be flushed."
     ;; define the key here
     (define-key org-global-key-map " " 'delete-trailing-whitespace)
 
-    (evil-leader/set-key
-      "<SPC>" 'org-global-key-map)
-
-    )
+    (evil-leader/set-key "<SPC>" 'org-global-key-map))
   :config
   (progn
-    (use-package evil-org :ensure t)
+    (use-package evil-org
+      :ensure t
+      :config
+      (progn
+        (evil-define-key 'normal evil-org-mode-map
+          "O" 'evil-open-above
+          "J" 'evil-join
+          "H" 'evil-window-top)))
     (setq org-directory "~/Dropbox/wiki/org")
     (setq org-export-coding-system 'utf-8)
 
@@ -828,23 +848,6 @@ Optional argument ARG indicates that any cache should be flushed."
 			       ("someday.org" :level . 1)
 			       ("done.org" :level . 1)))
 
-    ;; setup agenda
-    (setq org-agenda-files `(,(concat org-directory "/todo.org")
-			     ,(concat org-directory "/journal.org")))
-    (setq org-agenda-custom-commands
-	  '(("D" "Daily Action List"
-	     ((agenda "" ((org-agenda-ndays 1)
-			  (org-agenda-sorting-strategy
-			   '((agenda time-up priority-down tag-up)))
-			  (org-deadline-warning-days 0)))))))
-
-    ;; setup keys for agenda view
-    (add-hook 'org-agenda-mode-hook
-	      (lambda ()
-		(define-key org-agenda-keymap (kbd "j") 'org-agenda-next-line)
-		(define-key org-agenda-keymap (kbd "k") 'org-agenda-previous-line)
-		(define-key org-agenda-keymap (kbd "c") 'org-agenda-columns)))
-
     ;; babel settings
     (org-babel-do-load-languages
      'org-babel-load-languages
@@ -865,25 +868,38 @@ Optional argument ARG indicates that any cache should be flushed."
   (progn
     (setq org-agenda-restore-windows-after-quit t)
 
+    ;; setup agenda
+    (setq org-agenda-files `(,(concat org-directory "/todo.org")
+			     ,(concat org-directory "/journal.org")))
+    (setq org-agenda-custom-commands
+	  '(("D" "Daily Action List"
+	     ((agenda "" ((org-agenda-ndays 1)
+			  (org-agenda-sorting-strategy
+			   '((agenda time-up priority-down tag-up)))
+			  (org-deadline-warning-days 0)))))))
+
     ;; evilify org-agenda-mode
     (evilified-state-evilify-map org-agenda-mode-map
       :mode org-agenda-mode
       :bindings
       "j" 'org-agenda-next-line
       "k" 'org-agenda-previous-line
+      "c" 'org-agenda-columns
       (kbd "M-j") 'org-agenda-next-item
       (kbd "M-k") 'org-agenda-previous-item
       (kbd "M-h") 'org-agenda-earlier
       (kbd "M-l") 'org-agenda-later
       (kbd "gd") 'org-agenda-toggle-time-grid
       (kbd "gr") 'org-agenda-redo
-      (kbd "M-RET") 'org-agenda-show-and-scroll-up)))
+      (kbd "M-RET") 'org-agenda-show-and-scroll-up) 
+    ))
 
-(use-package org-bullets
-  :ensure t
-  :commands (org-bullets-mode)
-  :init
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+;; (use-package org-bullets
+;;   :ensure t
+;;   :commands (org-bullets-mode)
+;;   :defer t
+;;   :init
+;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
 ;;;----------------------------------------------------------------------------
 ;;; markdown mode
@@ -913,8 +929,6 @@ Optional argument ARG indicates that any cache should be flushed."
           python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
           python-shell-completion-setup-code
             "from IPython.core.completerlib import module_completion"
-          python-shell-completion-module-string-code
-            "';'.join(module_completion('''%s'''))\n"
           python-shell-completion-string-code
           "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
@@ -999,9 +1013,9 @@ Optional argument ARG indicates that any cache should be flushed."
 
 ;;;----------------------------------------------------------------------------
 ;; Calendar mode
-(use-package calendar-mode
+(use-package calendar
   :commands calendar-mode
-  :init
+  :config
   (progn
     (evilified-state-evilify-map calendar-mode-map
       :mode calendar-mode)))
@@ -1016,7 +1030,7 @@ Optional argument ARG indicates that any cache should be flushed."
 ;; I prefer using the "clipboard" selection (the one the
 ;; typically is used by c-c/c-v) before the primary selection
 ;; (that uses mouse-select/middle-button-click)
-(setq x-select-enable-clipboard t)
+(setq select-enable-clipboard t)
 
 ;; If emacs is run in a terminal, the clipboard- functions have no
 ;; effect. Instead, we use of xsel, see
@@ -1051,18 +1065,4 @@ Optional argument ARG indicates that any cache should be flushed."
  ))
 
 ;;;============================================================================
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(flycheck-check-syntax-automatically (quote (save mode-enabled)))
- '(package-selected-packages
-   (quote
-    (fasd undohist cider markdown-mode popwin flycheck zoom-window zenburn-theme yasnippet winum window-numbering which-key virtualenvwrapper use-package spaceline smex projectile persp-mode org-evil org-bullets neotree multi-term multi-eshell magit fill-column-indicator exec-path-from-shell evil-visualstar evil-search-highlight-persist evil-paredit evil-org evil-numbers evil-nerd-commenter evil-matchit emmet-mode company auctex ace-jump-mode))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; variables for customize-groups (auto saved)
