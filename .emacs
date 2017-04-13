@@ -424,7 +424,7 @@
     (kbd "C") 'neotree-change-root
     (kbd "U") 'neotree-change-root
     (kbd "O") 'neotree-open-directory-recursively
-    (kbd "H") 'neotree-hidden-file-toggle)) 
+    (kbd "H") 'neotree-hidden-file-toggle))
 
 (defun neotree-expand-node-descendants (&optional arg)
   "Expand the line under the cursor and all descendants.
@@ -890,15 +890,41 @@ Optional argument ARG indicates that any cache should be flushed."
       (kbd "M-l") 'org-agenda-later
       (kbd "gd") 'org-agenda-toggle-time-grid
       (kbd "gr") 'org-agenda-redo
-      (kbd "M-RET") 'org-agenda-show-and-scroll-up) 
+      (kbd "M-RET") 'org-agenda-show-and-scroll-up)
     ))
 
-;; (use-package org-bullets
-;;   :ensure t
-;;   :commands (org-bullets-mode)
-;;   :defer t
-;;   :init
-;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+(use-package org-bullets
+  :ensure t
+  :commands (org-bullets-mode)
+  :defer t
+  :init
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+(defun notify-linux (title message &optional timeout)
+  (call-process "notify-send"
+                nil 0 nil
+                "-t" (if timeout (number-to-string timeout) "3000")
+                title
+                message
+                ))
+
+(use-package org-pomodoro
+  :ensure t
+  :commands (org-pomodoro)
+  :defer t
+  :config
+  (add-hook 'org-pomodoro-finished-hoo
+            (lambda ()
+              (notify-linux "Pomodoro completed!" "Time for a break." (* 5 60 1000))))
+  (add-hook 'org-pomodoro-break-finished-hook
+            (lambda ()
+              (notify-linux "Pomodoro Short Break Finished" "Ready for Another?")))
+  (add-hook 'org-pomodoro-long-break-finished-hook
+            (lambda ()
+              (notify-linux "Pomodoro Long Break Finished" "Ready for Another?")))
+  (add-hook 'org-pomodoro-killed-hook
+            (lambda ()
+              (notify-linux "Pomodoro Killed" "One does not simply kill a pomodoro!"))))
 
 ;;;----------------------------------------------------------------------------
 ;;; markdown mode
