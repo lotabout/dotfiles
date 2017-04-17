@@ -90,7 +90,7 @@
 		   (let ((temp-file (make-temp-file "sk")))
 		     ;; append the default command
 		     (setq temp-input temp-file)
-		     (write-region (getenv "SKIM_DEFAULT_COMMAND") nil temp-file)
+		     (write-region (getenv "SKIM_DEFAULT_COMMAND") nil temp-file nil 'inhibit-message)
 		     (concat "sh " temp-file " 2>/dev/null")))
 		  ((and (stringp source) (string= source "none"))
 		   nil)
@@ -103,7 +103,7 @@
 		  ((listp source)
 		   (let ((temp-file (make-temp-file "sk")))
 		     (setq temp-input temp-file)
-		     (write-region (mapconcat 'identity source "\n") nil temp-file)
+		     (write-region (mapconcat 'identity source "\n") nil temp-file nil 'inhibit-message)
 		     (concat "cat " temp-file "|")))
 		  (t (throw 'sk/command "invalid source type")))))
     (let ((output-file (make-temp-file "sk")))

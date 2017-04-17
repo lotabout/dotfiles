@@ -75,7 +75,7 @@
   (when (car lines)
     (let ((ag-result (make-temp-file "sk")))
       ;; write the lines into a temporary file
-      (write-region (mapconcat 'identity lines "\n") nil ag-result)
+      (write-region (mapconcat 'identity lines "\n") nil ag-result nil 'inhibit-message)
       (let ((compilation-auto-jump-to-first-error t))
 	(defun on-finish ()
 	  (delete-file ag-result)
