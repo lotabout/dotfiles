@@ -459,7 +459,7 @@ if package_manager == "vim-plug"
     Plug 'moll/vim-bbye'
     Plug 'junegunn/vim-easy-align'
     Plug 'ervandew/supertab'    " you'll need it
-    Plug 'easymotion/vim-easymotion'
+    Plug 'easymotion/vim-easymotion', {'on': ['<Plug>(easymotion-s)', '<Plug>(easymotion-F)', '<Plug>(easymotion-bd-jk)']}
 
     Plug 'Tagbar'
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -492,7 +492,7 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     " Integration with Linux environment
     "------------------------------------------------------------------
-    Plug 'lotabout/slimux'
+    Plug 'lotabout/slimux', {'on': ['SlimuxREPLSendLine', 'SlimuxREPLSendSelection']}
     Plug 'fakeclip'
 
     Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
