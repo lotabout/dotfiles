@@ -360,6 +360,8 @@
 (use-package zoom-window
   :ensure t
   :commands zoom-window-zoom
+  :init
+  (evil-leader/set-key "z" 'zoom-window-zoom)
   :config
   (progn
     (custom-set-variables '(zoom-window-use-persp t)
@@ -488,26 +490,18 @@ Optional argument ARG indicates that any cache should be flushed."
   :init
   (progn
     (setq multi-term-program "/bin/zsh")
-    (setq term-unbind-key-list '("C-SPC" "C-z" "C-x" "C-c" "C-h" "C-y" "M-x" "M-:")))
+    (setq term-unbind-key-list '("C-x" "C-h" "M-x" "M-:")))
 
   :config
   (progn
-     (add-to-list 'term-bind-key-alist '("C-c n" . multi-term-next))
-     (add-to-list 'term-bind-key-alist '("C-c p" . multi-term-prev))))
+    (add-to-list 'term-bind-key-alist '("C-c n" . multi-term-next))
+    (add-to-list 'term-bind-key-alist '("C-c p" . multi-term-prev))))
 
 (defun last-term-buffer (l)
   "Return most recently used term buffer."
   (when l
     (if (eq 'term-mode (with-current-buffer (car l) major-mode))
 	(car l)(last-term-buffer (cdr l)))))
-
-;; (defun get-term()
-;;   "Switch to the term buffer last used, or create a new one if non exists, or if the current buffer is already a term"
-;;   (interactive)
-;;   (let ((b (last-term-buffer (buffer-list))))
-;;     (if (or (not b) (eq 'term-mode major-mode))
-;; 	(multi-term)
-;;       (switch-to-buffer b))))
 
 (defun get-term()
   "Switch to the term buffer last used, or create a new one if non exists, or if the current buffer is already a term"
@@ -816,12 +810,36 @@ Optional argument ARG indicates that any cache should be flushed."
         (evil-define-key 'normal evil-org-mode-map
           "O" 'evil-open-above
           "J" 'evil-join
-          "H" 'evil-window-top)))
+          "H" 'evil-window-top
+          ;; for terminal
+          "\t" 'org-cycle)))
     (setq org-directory "~/Dropbox/wiki/org")
     (setq org-export-coding-system 'utf-8)
 
+    (setq org-use-fast-todo-selection t)
     (setq org-todo-keywords
-	  '((sequence "TODO" "WAITING" "|" "DONE" "CANCELED")))
+          '((sequence "TODO(t)" "DOING(i)" "|" "DONE(d)")
+            (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING")))
+
+    (setq org-todo-keyword-faces
+          '(("TODO" :foreground "red" :weight bold)
+            ("DOING" :foreground "blue" :weight bold)
+            ("DONE" :foreground "forest green" :weight bold)
+            ("WAITING" :foreground "orange" :weight bold)
+            ("HOLD" :foreground "magenta" :weight bold)
+            ("CANCELLED" :foreground "forest green" :weight bold)
+            ("MEETING" :foreground "forest green" :weight bold)
+            ("PHONE" :foreground "forest green" :weight bold)))
+
+    ;; TODO state triggers
+    (setq org-todo-state-tags-triggers
+          '(("CANCELLED" ("CANCELLED" . t))
+            ("WAITING" ("WAITING" . t))
+            ("HOLD" ("WAITING") ("HOLD" . t))
+            (done ("WAITING") ("HOLD"))
+            ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+            ("DOING" ("WAITING") ("CANCELLED") ("HOLD"))
+            ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
 
     ;; Add timestamp then the status is changed to "DONE"
     (setq org-log-done 'time)
@@ -913,7 +931,8 @@ Optional argument ARG indicates that any cache should be flushed."
   :commands (org-pomodoro)
   :defer t
   :config
-  (add-hook 'org-pomodoro-finished-hoo
+  (setq org-pomodoro-long-break-length 10)
+  (add-hook 'org-pomodoro-finished-hook
             (lambda ()
               (notify-linux "Pomodoro completed!" "Time for a break." (* 5 60 1000))))
   (add-hook 'org-pomodoro-break-finished-hook
@@ -1048,6 +1067,29 @@ Optional argument ARG indicates that any cache should be flushed."
 ;;;============================================================================
 ; Additional Hacks
 
+;;-----------------------------------------------------------------------------
+;; copy file path
+(defun clip-file-path-from-project-root ()
+  "Put the current file name on the clipboard"
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      (file-name-directory default-directory)
+                    (buffer-file-name)))
+        (root (condition-case nil
+                  (projectile-project-root)
+                (error ""))))
+    (when filename
+      (kill-new (replace-regexp-in-string (concat "^" (regexp-quote root)) "" filename)))))
+
+(defun clip-file-path-full ()
+  "Put the current file name on the clipboard"
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      (file-name-directory default-directory)
+                    (buffer-file-name))))
+    (when filename
+      (kill-new filename))))
+
 ;;;----------------------------------------------------------------------------
 ;;; Enable copy-paste with X clipboard (need xsel)
 
@@ -1083,6 +1125,7 @@ Optional argument ARG indicates that any cache should be flushed."
 	xsel-output )))
   ;; Attach callbacks to hooks
   (setq interprogram-cut-function 'xsel-cut-function)
+  (setq interprogram-paste-function 'xsel-paste-function)
 
   ;; Idea from
   ;; http://shreevatsa.wordpress.com/2006/10/22/emacs-copypaste-and-x/
