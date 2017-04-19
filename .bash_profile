@@ -353,6 +353,29 @@ fi
 # skim settings
 export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
 
+#------------------------------------------------------------------------------
+# used by emacs term mode, change the default-directory.
+# https://www.emacswiki.org/emacs/AnsiTermHints#toc5
+# It seems that this has some problems, so use zsh instead
+function set-eterm-dir {
+    echo -e "\033AnSiTu" "$LOGNAME" # $LOGNAME is more portable than using whoami.
+    echo -e "\033AnSiTc" "$(pwd)"
+    if [ $(uname) = "SunOS" ]; then
+        # The -f option does something else on SunOS and is not needed anyway.
+        hostname_options="";
+    else
+        hostname_options="-f";
+    fi
+    echo -e "\033AnSiTh" "$(hostname $hostname_options)" # Using the -f option can
+    # cause problems on some OSes.
+    history -a # Write history to disk.
+}
+
+# Track directory, username, and cwd for remote logons.
+if [ "$TERM" = "eterm-color" ]; then
+    PROMPT_COMMAND=set-eterm-dir
+fi
+
 #----------  Load other settings --------------
 if [ -f ~/.bashrc_local ]; then
     . ~/.bashrc_local

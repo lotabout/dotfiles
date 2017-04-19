@@ -333,6 +333,30 @@ if hash fasd 2> /dev/null; then
     unset fasd_cache
 fi
 
+#------------------------------------------------------------------------------
+# used by emacs term mode, change the default-directory.
+# https://www.emacswiki.org/emacs/AnsiTermHints#toc5
+function eterm-update {
+    # Only set the full hostname for ssh sessions.
+    if [[ -n "$SSH_CONNECTION" ]]; then
+        # For ssh connections, use the hostname (it is assumed here
+        # that there is an ssh alias on the connecting machine that has
+        # the same name as the ssh alias).
+        echo -e "\033AnSiTh" "$(hostname)"
+    else
+        # For local sessions, use the full host name so tramp will know
+        # that the path is not remote.
+        echo -e "\033AnSiTh" "$(hostname -f)"
+    fi
+
+    echo -e "\033AnSiTu" "$LOGNAME" # $LOGNAME is more portable than using whoami.
+    echo -e "\033AnSiTc" "$(pwd)"
+}
+
+function chpwd {
+    eterm-update
+}
+
 #==============================================================================
 # plugins
 AUTO_SUGGESTIONS=$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
