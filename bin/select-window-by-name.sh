@@ -3,7 +3,6 @@
 
 set -x
 
-
 OFFSET_RE="([0-9]+)x([0-9]+)"
 screen_size=($(xdpyinfo | sed -nr "s/^.*dimensions: *$OFFSET_RE.*$/\1 \2/p"))
 
@@ -24,4 +23,7 @@ window_name=$(wmctrl -l \
     | nl -w 2 -s '  ' \
     | dmenu -i -l 10 -fn 'WenQuanYi Micro Hei' -x $x -y $y -w $dialog_width \
     | cut -c 5-)
-wmctrl -a "$window_name"
+
+if [[ "$window_name" != "" ]]; then
+    wmctrl -a "$window_name"
+fi
