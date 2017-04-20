@@ -491,7 +491,6 @@ Optional argument ARG indicates that any cache should be flushed."
   (progn
     (setq multi-term-program "/bin/zsh")
     (setq term-unbind-key-list '("C-x" "C-h" "M-x" "M-:")))
-
   :config
   (progn
     (add-to-list 'term-bind-key-alist '("C-c n" . multi-term-next))
@@ -770,6 +769,12 @@ Optional argument ARG indicates that any cache should be flushed."
     (push '("*Warnings*" :noselect t) popwin:special-display-config)
     (push '("*Help*") popwin:special-display-config)
     (popwin-mode 1)))
+
+;;;-----------------------------------------------------------------------------
+(use-package tramp
+  :init
+  ;; somehow scp and ssh won't work
+  (setq tramp-default-method "sshx"))
 
 ;;;============================================================================
 ;;; Filetype specified configuration

@@ -1,6 +1,8 @@
 # turn off bell
 # set bell-style none
 
+[ $TERM = "dumb" ] && PS1='$ ' && return
+
 #==============================================================================
 # zsh settings
 
@@ -336,7 +338,11 @@ fi
 #------------------------------------------------------------------------------
 # used by emacs term mode, change the default-directory.
 # https://www.emacswiki.org/emacs/AnsiTermHints#toc5
+# Somehow the order for output matters! logname > pwd > hostname
+# Otherwise, there will be "Tramp" errors.
 function eterm-update {
+    echo -e "\033AnSiTu" "$LOGNAME"
+    echo -e "\033AnSiTc" "$(pwd)"
     # Only set the full hostname for ssh sessions.
     if [[ -n "$SSH_CONNECTION" ]]; then
         # For ssh connections, use the hostname (it is assumed here
@@ -348,14 +354,14 @@ function eterm-update {
         # that the path is not remote.
         echo -e "\033AnSiTh" "$(hostname -f)"
     fi
-
-    echo -e "\033AnSiTu" "$LOGNAME" # $LOGNAME is more portable than using whoami.
-    echo -e "\033AnSiTc" "$(pwd)"
 }
 
-function chpwd {
-    eterm-update
-}
+if [[ $TERM =~ eterm ]]; then
+    function chpwd {
+        eterm-update
+    }
+    cd "$(pwd)"
+fi
 
 #==============================================================================
 # plugins
