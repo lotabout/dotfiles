@@ -850,7 +850,7 @@ Optional argument ARG indicates that any cache should be flushed."
     (setq org-log-done 'time)
 
     ;; settings for org mode capture
-    (setq org-default-notes-file (concat org-directory "/notes.org"))
+    (setq org-default-notes-file (concat org-directory "/journal.org"))
 
     ;; test capture templates
     (setq org-capture-templates
@@ -859,17 +859,17 @@ Optional argument ARG indicates that any cache should be flushed."
 	    ("l" "Link" plain (file (concat org-directory "/links.org"))
 	     "- %?\n\n"
              :clock-in t :clock-resume t)
-	    ("n" "Note" entry (file+headline (concat org-directory "/notes.org") "Unhandled")
+	    ("n" "Note" entry (file+headline (concat org-directory "/journal.org") "Unhandled")
 	     "* %?\n\n"
              :clock-in t :clock-resume t)
-	    ("i" "Idea" entry (file+headline (concat org-directory "/notes.org") "Ideas")
+	    ("i" "Idea" entry (file+headline (concat org-directory "/journal.org") "Ideas")
 	     "* %?\n\n"
              :clock-in t :clock-resume t)
-	    ("c" "Code Snippets" entry (file+headline (concat org-directory "/notes.org") "Code Snippets")
+	    ("c" "Code Snippets" entry (file+headline (concat org-directory "/journal.org") "Code Snippets")
 	     "* %\n  #+begin_src %^{Language}\n%x#+end_src\n"
              :clock-in t :clock-resume t)))
 
-    (setq org-refile-targets '(("notes.org" :maxlevel . 3)))
+    (setq org-refile-targets '(("journal.org" :maxlevel . 3)))
 
     ;; babel settings
     (org-babel-do-load-languages
@@ -1021,6 +1021,24 @@ Optional argument ARG indicates that any cache should be flushed."
 (use-package cider
   :ensure t
   :commands cider-jack-in)
+
+;;;-----------------------------------------------------------------------------
+;; racket mode
+(use-package racket-mode
+  :ensure t
+  :mode (("\\.rkt" . racket-mode)
+         ("\\.rktl" . racket-mode))
+  :config
+  (progn
+    (push '("*Racket REPL*" :noselect t) popwin:special-display-config)
+    (evil-leader/set-key-for-mode 'racket-mode
+      "'" 'racket-repl)
+
+    ;; overwrite the get-type method, I think it is too slow, and useless.
+    (defun racket--get-type (str))
+
+    (define-key racket-mode-map (kbd "<C-return>") 'racket-send-definition)
+    (define-key racket-mode-map (kbd "C-x C-e") 'racket-send-last-sexp)))
 
 ;;;============================================================================
 ;;; Additional packages
