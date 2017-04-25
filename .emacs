@@ -490,7 +490,7 @@ Optional argument ARG indicates that any cache should be flushed."
   :init
   (progn
     (setq multi-term-program "/bin/zsh")
-    (setq term-unbind-key-list '("C-x" "C-h" "M-x" "M-:")))
+    (setq term-unbind-key-list '("C-x" "C-c" "C-h" "M-x" "M-:")))
   :config
   (progn
     (add-to-list 'term-bind-key-alist '("C-c n" . multi-term-next))
@@ -674,11 +674,10 @@ Optional argument ARG indicates that any cache should be flushed."
 ;;; sk/fzf
 
 (use-package sk
-  :commands (sk sk-directory)
+  :commands (sk sk-directory sk/run)
   :init
   (progn
-    (define-key evil-normal-state-map (kbd "C-p") 'sk)
-    ))
+    (define-key evil-normal-state-map (kbd "C-p") 'sk)))
 
 (use-package sk-extra
   :commands (ag ag-directory)

@@ -40,6 +40,7 @@ PWD is not in a git repo (or the git command is not found)."
 (setq eshell-prompt-function
       (lambda ()
         (concat
+         "[" (getenv "USER") "@" (getenv "LOGNAME") " "
          ((lambda (p-lst)
             (if (> (length p-lst) 3)
                 (concat
@@ -55,8 +56,12 @@ PWD is not in a git repo (or the git command is not found)."
                          p-lst
                          "/")))
           (split-string (pwd-repl-home (eshell/pwd)) "/"))
+         "]"
          (or (curr-dir-git-branch-string (eshell/pwd)))
-         (if (= (user-uid) 0) " # " " $ "))))
+         (if (= (user-uid) 0) "\n# " "\n$ "))))
+
+;; I use two line prompt, this is for eshell to parse the prompt correctly
+(setq eshell-prompt-regexp "^[^#$]*[#$] ")
 
 ;;;-----------------------------------------------------------------------------
 ;; Git Completion
@@ -119,8 +124,7 @@ PWD is not in a git repo (or the git command is not found)."
 (defun eshell/clear ()
   (interactive)
   (let ((inhibit-read-only t))
-    (erase-buffer))
-  (eshell-send-input))
+    (erase-buffer)))
 
 (defun eshell/emacs (&rest args)
   "Open a file in emacs. Some habits die hard."
@@ -147,6 +151,8 @@ PWD is not in a git repo (or the git command is not found)."
 	  (goto-line line))
       (find-file (pop args)))))
 
+;; --------------------------------------------------
+;; fasd integration
 (defun eshell/j ()
   "Invoke fasd and navigate to corresponding directory"
   (defun callback (lines)
@@ -156,6 +162,11 @@ PWD is not in a git repo (or the git command is not found)."
         (eshell-send-input))))
   (sk/run `((source . ,(split-string (shell-command-to-string "fasd -Rdl") "\n")))
           #'callback))
+
+(add-hook 'eshell-directory-change-hook
+          '(lambda ()
+             (start-process "fasd" nil
+                            "sh" "-c" (concat "eval \"fasd --proc \"\"" default-directory "\"\"\" >> \"/dev/null\" 2>&1"))))
 
 (provide 'init-eshell)
 ;;; init-eshell ends here
