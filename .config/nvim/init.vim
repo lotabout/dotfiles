@@ -457,7 +457,7 @@ if package_manager == "vim-plug"
     Plug 'altercation/vim-colors-solarized'
 
     Plug 'moll/vim-bbye'
-    Plug 'junegunn/vim-easy-align'
+    Plug 'junegunn/vim-easy-align', {'on': '<Plug>(EasyAlign)'}
     Plug 'ervandew/supertab'    " you'll need it
     Plug 'easymotion/vim-easymotion', {'on': ['<Plug>(easymotion-s)', '<Plug>(easymotion-F)', '<Plug>(easymotion-bd-jk)']}
 
@@ -489,10 +489,13 @@ if package_manager == "vim-plug"
 
     Plug 'vim-scripts/marvim' " save macros
 
+    Plug 'kana/vim-textobj-user'
+
     "------------------------------------------------------------------
     " Integration with Linux environment
     "------------------------------------------------------------------
-    Plug 'lotabout/slimux', {'on': ['SlimuxREPLSendLine', 'SlimuxREPLSendSelection']}
+    Plug 'lotabout/slimux', {'on': ['SlimuxREPLSendLine', 'SlimuxREPLSendSelection'],
+                \ 'for': 'python'}
     Plug 'fakeclip'
 
     Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
@@ -532,15 +535,17 @@ if package_manager == "vim-plug"
     Plug 'w0rp/ale' " async version of Syntastic
 
     " in replace of paredit.vim
-    Plug 'vim-sexp', {'for': ['clojure', 'scheme']}
-    Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': ['clojure', 'scheme']}
+    Plug 'vim-sexp', {'for': ['clojure', 'scheme', 'racket']}
+    Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': ['clojure', 'scheme', 'racket']}
 
     Plug 'https://github.com/wlangstroth/vim-racket', {'for': 'racket'}
-
 
     Plug 'Rip-Rip/clang_complete', {'for': ['c', 'cpp']}
 
     Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript-jsx']}
+
+
+    Plug 'bps/vim-textobj-python', {'for': 'python'}
 
     " for javascript
     "Plug 'ternjs/tern_for_vim', {'for': 'javascript', 'do' : 'npm install'}
@@ -712,7 +717,7 @@ if executable('fzf')
     nnoremap <leader>/ :Ag<CR>
 
     " Replace Bufexplore
-    nmap <C-e> :Buffers<CR>
+    nmap <leader>b :Buffers<CR>
 
     " select mapping
     nmap <leader><tab> <plug>(fzf-maps-n)
@@ -731,7 +736,7 @@ if executable('sk')
     nnoremap <leader>/ :Ag<CR>
 
     " Replace Bufexplore
-    nmap <C-e> :Buffers<CR>
+    nmap <leader>b :Buffers<CR>
 endif
 
 "---------------------------------------------------------------------
