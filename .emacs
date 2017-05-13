@@ -9,6 +9,8 @@
   (setq package-archives '(("org" . "http://orgmode.org/elpa/")
                            ("gnu"   . "http://elpa.emacs-china.org/gnu/")
                            ("melpa" . "http://elpa.emacs-china.org/melpa/")
+                           ;("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+                           ;("melpa" . "https://melpa.org/packages/")
                            ))
   (package-initialize))
 (defvar my-packages '(use-package org))
@@ -47,7 +49,8 @@
 	  (lambda ()
 	    (hl-line-mode 1)
 	    ;; TODO: get color from color theme
-	    (set-face-background 'hl-line "gray28")))
+            ;;(set-face-background 'hl-line "gray28")
+            ))
 
 ;;; Show matched parents
 (show-paren-mode t)
@@ -128,7 +131,7 @@
 
 (require 'utility-functions)
 
-;;; color theme
+;; color theme
 (use-package zenburn-theme
   :ensure t
   :config
@@ -174,7 +177,8 @@
 
 	  ;; collapse blank lines
 	  "<RET>" '(lambda () (interactive) (region-replace "^\n\\{2,\\}" "\n"))
-	  ))))
+
+          " " 'delete-trailing-whitespace))))
 
   :config
   (progn
@@ -301,19 +305,19 @@
 
 ;;;----------------------------------------------------------------------------
 ;;; smex
-(use-package smex
-  :ensure t
-  :config (smex-initialize)
-  :bind (("M-x" . smex)
-	 ("M-X" . smex-major-mode-commands)) )
+;; (use-package smex
+;;   :ensure t
+;;   :config (smex-initialize)
+;;   :bind (("M-x" . smex)
+;; 	 ("M-X" . smex-major-mode-commands)) )
 
 ;;;----------------------------------------------------------------------------
 ;;; ido mode
-(use-package ido
-  :config
-  (setq ido-enable-flex-matching t)
-  (ido-everywhere t)
-  (ido-mode 1))
+;; (use-package ido
+;;   :config
+;;   (setq ido-enable-flex-matching t)
+;;   (ido-everywhere t)
+;;   (ido-mode 1))
 
 ;;;----------------------------------------------------------------------------
 ;; save undo history
@@ -480,7 +484,8 @@ Optional argument ARG indicates that any cache should be flushed."
 	(progn (multi-eshell 1)
 	       (when (fboundp 'persp-add-buffer)
 		 (persp-add-buffer (current-buffer))))
-      (switch-to-buffer b))))
+      (progn (switch-to-buffer b)
+             (evil-insert-state)))))
 
 ;;;----------------------------------------------------------------------------
 ;;; multi-term
@@ -545,8 +550,7 @@ Optional argument ARG indicates that any cache should be flushed."
 
     ;; enable yasnippet for several minor modes
     (add-hook 'prog-mode-hook #'yas-minor-mode)
-    (add-hook 'org-mode-hook #'yas-minor-mode)
-    )
+    (add-hook 'org-mode-hook #'yas-minor-mode))
   :config
   (progn
     (yas-reload-all)
@@ -677,7 +681,11 @@ Optional argument ARG indicates that any cache should be flushed."
   :commands (sk sk-directory sk/run)
   :init
   (progn
-    (define-key evil-normal-state-map (kbd "C-p") 'sk)))
+    (define-key evil-normal-state-map (kbd "C-p") 'sk)
+
+    ;; use C-p in eshell
+    (evil-define-key 'insert eshell-mode-map
+      (kbd "C-p") 'sk)))
 
 (use-package sk-extra
   :commands (ag ag-directory)
@@ -735,6 +743,23 @@ Optional argument ARG indicates that any cache should be flushed."
       :ensure t)))
 
 ;;;-----------------------------------------------------------------------------
+(use-package ivy
+  :ensure t
+  :diminish ivy-mode
+  :config
+  (ivy-mode 1))
+
+(use-package swiper
+  :ensure t
+  :config
+  (global-set-key (kbd "C-s") 'swiper))
+
+(use-package counsel
+  :ensure t
+  :config
+  (global-set-key (kbd "M-x") 'counsel-M-x))
+
+;;;-----------------------------------------------------------------------------
 ;;; hydrda, Free from typing the same prefixk eys
 (use-package hydra
   :ensure t)
@@ -767,6 +792,7 @@ Optional argument ARG indicates that any cache should be flushed."
     (push '("*ag*" :noselect t) popwin:special-display-config)
     (push '("*Warnings*" :noselect t) popwin:special-display-config)
     (push '("*Help*") popwin:special-display-config)
+
     (popwin-mode 1)))
 
 ;;;-----------------------------------------------------------------------------
@@ -793,18 +819,12 @@ Optional argument ARG indicates that any cache should be flushed."
       (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
     (add-hook 'org-mode-hook #'my-org-mode-hook)
 
-    ;; global key binding for org-mode, which is loaded lazily
-    (define-prefix-command 'org-global-key-map)
-    (define-key org-global-key-map "l" 'org-store-link)
-    (define-key org-global-key-map "c" 'org-capture)
-    (define-key org-global-key-map "a" 'org-agenda)
-    (define-key org-global-key-map "b" 'org-iswitchb)
+    (global-set-key "\C-cl" 'org-store-link)
+    (global-set-key "\C-ca" 'org-agenda)
+    (global-set-key "\C-cc" 'org-capture)
+    (global-set-key "\C-cb" 'org-iswitchb)
 
-    ;; delete trailing whitespace, since the <SPC><SPC> is already occupied,
-    ;; define the key here
-    (define-key org-global-key-map " " 'delete-trailing-whitespace)
-
-    (evil-leader/set-key "<SPC>" 'org-global-key-map))
+    )
   :config
   (progn
     (use-package evil-org
@@ -1003,6 +1023,12 @@ Optional argument ARG indicates that any cache should be flushed."
     (add-hook 'python-mode-hook 'my/python-mode-hook)))
 
 ;;;-----------------------------------------------------------------------------
+;; hy mode
+(use-package hy-mode
+  :ensure t
+  :mode (("\\.hy" . hy-mode)))
+
+;;;-----------------------------------------------------------------------------
 ;;; clojure
 (use-package clojure-mode
   :ensure t
@@ -1085,6 +1111,10 @@ Optional argument ARG indicates that any cache should be flushed."
   (progn
     (evilified-state-evilify-map calendar-mode-map
       :mode calendar-mode)))
+
+;;;----------------------------------------------------------------------------
+(use-package yaml-mode
+  :mode (("\\.yaml" . yaml-mode)))
 
 ;;;============================================================================
 ; Additional Hacks
