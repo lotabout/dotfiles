@@ -228,6 +228,7 @@ autocmd BufReadPost *
      \ if line("'\"") > 0 && line("'\"") <= line("$") |
      \   exe "normal! g`\"" |
      \ endif
+au FileType crontab setlocal backupcopy=yes
 
 "----------------------------------------------------------------------
 " Misc Maps & Functions(for convenience)
@@ -461,11 +462,11 @@ if package_manager == "vim-plug"
     Plug 'ervandew/supertab'    " you'll need it
     Plug 'easymotion/vim-easymotion', {'on': ['<Plug>(easymotion-s)', '<Plug>(easymotion-F)', '<Plug>(easymotion-bd-jk)']}
 
-    Plug 'Tagbar'
+    Plug 'majutsushi/tagbar'
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
     " for word wraps for japanese and chinese
-    Plug 'autofmt'
+    Plug 'vim-jp/autofmt'
 
     " powerline alternative; for better status line
     Plug 'bling/vim-airline'
@@ -496,7 +497,7 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     Plug 'lotabout/slimux', {'on': ['SlimuxREPLSendLine', 'SlimuxREPLSendSelection'],
                 \ 'for': 'python'}
-    Plug 'fakeclip'
+    Plug 'kana/vim-fakeclip'
 
     Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
     Plug 'lotabout/skim.vim'
@@ -506,9 +507,9 @@ if package_manager == "vim-plug"
     Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 
     " work with git
-    Plug 'fugitive.vim'
+    Plug 'tpope/vim-fugitive'
 
-    Plug 'DirDiff.vim'
+    Plug 'will133/vim-dirdiff'
 
     " Completion
     if has('nvim')
@@ -525,8 +526,8 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     " Support more filetype specific feature
     "------------------------------------------------------------------
-    Plug 'The-NERD-Commenter'
-    Plug 'UltiSnips', {'on': []}
+    Plug 'scrooloose/nerdcommenter'
+    Plug 'SirVer/ultisnips', {'on': []}
     Plug 'honza/vim-snippets'
 
     " private snippets
@@ -535,7 +536,7 @@ if package_manager == "vim-plug"
     Plug 'w0rp/ale' " async version of Syntastic
 
     " in replace of paredit.vim
-    Plug 'vim-sexp', {'for': ['clojure', 'scheme', 'racket']}
+    Plug 'guns/vim-sexp', {'for': ['clojure', 'scheme', 'racket']}
     Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': ['clojure', 'scheme', 'racket']}
 
     Plug 'https://github.com/wlangstroth/vim-racket', {'for': 'racket'}
