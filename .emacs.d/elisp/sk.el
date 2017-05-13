@@ -67,11 +67,6 @@
   :type 'bool
   :group 'sk)
 
-(defcustom sk/ag-command "ag --color --column"
-  "Ag command to invoke for sk, could be rg, ack, or grep"
-  :type 'string
-  :group 'sk)
-
 ;;;============================================================================ 
 (defun read-lines (filePath)
   "Return a list of lines of a file at filePath."

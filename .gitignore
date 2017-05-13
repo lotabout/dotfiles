@@ -13,6 +13,7 @@
 # ignore .emacs.d/* except emacs.d/elisp
 .emacs.d/*
 !.emacs.d/elisp
+*.elc
 
 # eclim related
 .config/nvim/eclim

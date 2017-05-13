@@ -47,6 +47,11 @@
 ;;;----------------------------------------------------------------------------
 ;;; Integration with AG
 
+(defcustom sk/ag-command "ag --color --column"
+  "Ag command to invoke for sk, could be rg, ack, or grep"
+  :type 'string
+  :group 'sk)
+
 (defvar ag/file-column-pattern-nogroup
   "^\\(.+?\\):\\([1-9][0-9]*\\):\\([1-9][0-9]*\\):"
   "A regexp pattern that parses `filename:line_num:column_num`")
@@ -92,7 +97,8 @@
 			     (error
 			      default-directory))))
     (sk/run `((interactive . t)
-	      (option . ,(concat "--ansi -i -m -c '" sk/ag-command " \"{}\"'")))
+	      (option . ,(concat "--ansi -i -m -c '" sk/ag-command " \"{}\"' "
+                                 "--bind alt-a:select-all,alt-d:deselect-all")))
 	    #'sk/callback-show-ag-matches)))
 ;;;###autoload
 (defun ag-directory (directory)
@@ -100,7 +106,8 @@
   (interactive "D")
   (let ((default-directory directory))
     (sk/run `((interactive . t)
-	      (option . ,(concat "--ansi -i -m -c '" sk/ag-command " \"{}\"'")))
+	      (option . ,(concat "--ansi -i -m -c '" sk/ag-command " \"{}\"' "
+                                 "--bind alt-a:select-all,alt-d:deselect-all")))
 	    #'sk/callback-show-ag-matches)))
 
 (provide 'sk-extra)

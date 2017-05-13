@@ -8,8 +8,8 @@
 (when (>= emacs-major-version 24)
   (setq package-archives '(("org" . "http://orgmode.org/elpa/")
                            ("gnu"   . "http://elpa.emacs-china.org/gnu/")
-                           ("melpa" . "http://elpa.emacs-china.org/melpa/")
-                           ;("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+                           ;("melpa" . "http://elpa.emacs-china.org/melpa/")
+                           ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
                            ;("melpa" . "https://melpa.org/packages/")
                            ))
   (package-initialize))
@@ -255,17 +255,19 @@
   :init
   (global-evil-matchit-mode 1))
 
-;; (use-package evil-paredit
-;;   :ensure t
-;;   :defer t
-;;   :init
-;;   (progn
-;;     (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-;;     (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-;;     (add-hook 'scheme-mode-hook 'paredit-mode)
-;;     (add-hook 'scheme-mode-hook 'evil-paredit-mode)
-;;     (add-hook 'clojure-mode-hook 'paredit-mode)
-;;     (add-hook 'clojure-mode-hook 'evil-paredit-mode)))
+(use-package evil-paredit
+  :ensure t
+  :defer t
+  :init
+  (progn
+    (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+    (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
+    (add-hook 'scheme-mode-hook 'paredit-mode)
+    (add-hook 'scheme-mode-hook 'evil-paredit-mode)
+    (add-hook 'clojure-mode-hook 'paredit-mode)
+    (add-hook 'clojure-mode-hook 'evil-paredit-mode)
+    (add-hook 'racket-mode-hook 'paredit-mode)
+    (add-hook 'racket-mode-hook 'evil-paredit-mode)))
 
 (use-package smartparens
   :ensure t
@@ -403,51 +405,106 @@
   (projectile-global-mode t)
   :diminish projectile-mode)
 
+;;;----------------------------------------------------------------------------
+(use-package ranger
+  :ensure t
+  :commands (ranger)
+  :bind ("<f8>" . ranger)
+  :init
+  (progn
+    (setq ranger-max-preview-size 10)
+    (setq ranger-dont-show-binary t)))
+
+;;;----------------------------------------------------------------------------
+;;; file tree, replace neotree.
+(use-package direx
+  :ensure t
+  :commands (direx:jump-to-directory-other-window)
+  :init
+  (progn
+    (evil-leader/set-key
+      "ne" 'direx:jump-to-directory-other-window))
+  :config
+  (progn
+    ;; integrate with popwin so that it serves as sidebar
+    (when (boundp 'popwin:special-display-config)
+      (push '(direx:direx-mode :position left :width 25 :dedicated t)
+            popwin:special-display-config))
+
+    ;; disable per-item keymap
+    (setq direx:file-keymap nil)
+
+    (evil-define-key 'normal direx:direx-mode-map
+      (kbd "TAB") 'direx:toggle-item
+      (kbd "q") 'quit-window
+      (kbd "RET") 'direx:maybe-find-item
+      (kbd "o") 'direx:maybe-find-item
+      (kbd "j") 'direx:next-item
+      (kbd "k") 'direx:previous-item
+      (kbd "J") 'direx:next-sibling-item
+      (kbd "K") 'direx:previous-sibling-item
+      (kbd "e") 'direx:echo-item
+      (kbd "f") 'direx:find-item
+      (kbd "v") 'direx:view-item
+      (kbd "V") 'direx:view-item-other-window
+      (kbd "O") 'direx:expand-item-recursively
+      (kbd "r") 'direx:refresh-whole-tree
+      (kbd "c") 'direx:create-directory
+      (kbd "R") 'direx:do-rename-file
+      (kbd "C") 'direx:do-copy-files
+      (kbd "D") 'direx:do-delete-files
+      (kbd "M") 'direx:do-chmod-file
+      (kbd "L") 'direx:do-load-file
+      (kbd "B") 'direx:do-byte-compile-file
+      (kbd "G") 'direx:do-chgrp
+      (kbd "T") 'direx:do-touch)))
 
 ;;;----------------------------------------------------------------------------
 ;;; NeoTree -- NERD-tree for emacs
-(use-package neotree
-  :ensure t
-  :commands (neotree-toggle neotree-find)
-  :bind ("<f8>" . neotree-toggle)
-  :init
-  (evil-leader/set-key
-    "ne" 'neotree-toggle
-    "nf" 'neotree-find)
-  :config
-  (evil-define-key 'normal neotree-mode-map
-    (kbd "TAB") 'neotree-enter
-    (kbd "SPC") 'neotree-enter
-    (kbd "q") 'neotree-hide
-    (kbd "RET") 'neotree-enter
-    (kbd "o") 'neotree-enter
-    (kbd "j") 'neotree-next-line
-    (kbd "k") 'neotree-previous-line
-    (kbd "M") 'neotree-create-node
-    (kbd "R") 'neotree-rename-node
-    (kbd "D") 'neotree-delete-node
-    (kbd "r") 'neotree-refresh
-    (kbd "C") 'neotree-change-root
-    (kbd "U") 'neotree-change-root
-    (kbd "O") 'neotree-open-directory-recursively
-    (kbd "H") 'neotree-hidden-file-toggle))
+;; (use-package neotree
+;;   :ensure t
+;;   :commands (neotree-toggle neotree-find)
+;;   :init
+;;   (evil-leader/set-key
+;;     "ne" 'neotree-toggle
+;;     "nf" 'neotree-find)
+;;   :config
+;;   (progn
+;;     (setq neo-theme 'ascii)
 
-(defun neotree-expand-node-descendants (&optional arg)
-  "Expand the line under the cursor and all descendants.
-Optional argument ARG indicates that any cache should be flushed."
-  (interactive "P")
-  (let ((full-path (if arg arg (neo-buffer--get-filename-current-line))))
-    (when (file-directory-p full-path)
-      (neo-buffer--set-expand full-path t)
-      ; recursive expand the nodes;
-      (dolist (node (car (neo-buffer--get-nodes full-path)))
-        (neotree-expand-node-descendants node)))))
+;;     (evil-define-key 'normal neotree-mode-map
+;;       (kbd "TAB") 'neotree-enter
+;;       (kbd "SPC") 'neotree-enter
+;;       (kbd "q") 'neotree-hide
+;;       (kbd "RET") 'neotree-enter
+;;       (kbd "o") 'neotree-enter
+;;       (kbd "j") 'neotree-next-line
+;;       (kbd "k") 'neotree-previous-line
+;;       (kbd "M") 'neotree-create-node
+;;       (kbd "R") 'neotree-rename-node
+;;       (kbd "D") 'neotree-delete-node
+;;       (kbd "r") 'neotree-refresh
+;;       (kbd "C") 'neotree-change-root
+;;       (kbd "U") 'neotree-change-root
+;;       (kbd "O") 'neotree-open-directory-recursively
+;;       (kbd "H") 'neotree-hidden-file-toggle)))
 
-(defun neotree-open-directory-recursively (&optional arg)
-  "Expand a directory recursively."
-  (interactive "P")
-  (neotree-expand-node-descendants arg)
-  (neo-buffer--refresh t))
+;; (defun neotree-expand-node-descendants (&optional arg)
+;;   "Expand the line under the cursor and all descendants.
+;; Optional argument ARG indicates that any cache should be flushed."
+;;   (interactive "P")
+;;   (let ((full-path (if arg arg (neo-buffer--get-filename-current-line))))
+;;     (when (file-directory-p full-path)
+;;       (neo-buffer--set-expand full-path t)
+;;       ; recursive expand the nodes;
+;;       (dolist (node (car (neo-buffer--get-nodes full-path)))
+;;         (neotree-expand-node-descendants node)))))
+
+;; (defun neotree-open-directory-recursively (&optional arg)
+;;   "Expand a directory recursively."
+;;   (interactive "P")
+;;   (neotree-expand-node-descendants arg)
+;;   (neo-buffer--refresh t))
 
 ;;;----------------------------------------------------------------------------
 ;;; multi-eshell
@@ -745,19 +802,18 @@ Optional argument ARG indicates that any cache should be flushed."
 ;;;-----------------------------------------------------------------------------
 (use-package ivy
   :ensure t
+  :defer t
   :diminish ivy-mode
   :config
   (ivy-mode 1))
 
 (use-package swiper
   :ensure t
-  :config
-  (global-set-key (kbd "C-s") 'swiper))
+  :bind ("C-s" . swiper))
 
 (use-package counsel
   :ensure t
-  :config
-  (global-set-key (kbd "M-x") 'counsel-M-x))
+  :bind ("M-x" . counsel-M-x))
 
 ;;;-----------------------------------------------------------------------------
 ;;; hydrda, Free from typing the same prefixk eys
@@ -797,6 +853,7 @@ Optional argument ARG indicates that any cache should be flushed."
 
 ;;;-----------------------------------------------------------------------------
 (use-package tramp
+  :defer t
   :init
   ;; somehow scp and ssh won't work
   (setq tramp-default-method "sshx"))
@@ -901,7 +958,8 @@ Optional argument ARG indicates that any cache should be flushed."
        (ditaa . t)
        (gnuplot . t)
        (latex . t)
-       (scheme . t)))
+       (scheme . t)
+       (racket . t)))
     ))
 
 (use-package org-agenda
