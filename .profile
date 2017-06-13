@@ -32,8 +32,8 @@ path_prepend () { path_remove $1; export PATH="$1:$PATH"; }
 PATH=$HOME/bin:/sbin:/usr/sbin:$PATH:/usr/games/bin
 
 # texlive
-texdirs="/opt/texlive/*"
-for x in $texdirs; do
+texdirs="/opt/texlive/"
+for x in $(ls $texdirs 2>/dev/null); do
     dir=`basename "$x"`
     if [[ "$dir" =~ [0-9]+ ]]; then
         # PATH=`find /usr/local/texlive -name i386-linux`:$PATH
@@ -58,6 +58,10 @@ fi
 if [ -d $HOME/.cargo/bin ]; then
     PATH="$HOME/.cargo/bin:$PATH"
 fi
+
+export GOPATH=${GOPATH:-$HOME/go}
+path_append $GOPATH/bin;
+
 
 #==============================================================================
 
