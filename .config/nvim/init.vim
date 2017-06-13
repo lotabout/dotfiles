@@ -643,14 +643,19 @@ if exists('g:plugs["slimux"]')
 endif
 
 "----------------------------------------------------------------------
+" nerd tree
+if exists('g:plugs["nerdtree"]')
+    nmap <silent> <leader>ne :NERDTreeToggle<cr>
+    nmap <silent> <leader>nf :NERDTreeFind<cr>
+endif
+
+"----------------------------------------------------------------------
 " Tagbar
 
-if exists('g:plugs["Tagbar"]')
+if exists('g:plugs["tagbar"]')
 
     " nmap <silent> <leader>tl :TlistToggle<cr>
     nmap <silent> <leader>tl :TagbarToggle<cr>
-    nmap <silent> <leader>ne :NERDTreeToggle<cr>
-    nmap <silent> <leader>nf :NERDTreeFind<cr>
     nmap <silent> <F8> :call  ToggleNERDTreeAndTagbar()<cr>
 
     function! ToggleNERDTreeAndTagbar()
@@ -695,12 +700,12 @@ let g:fakeclip_terminal_multiplexer_type = "tmux"
 "---------------------------------------------------------------------
 " UltiSnips
 
-if exists("g:plugs['UltiSnips']")
+if exists("g:plugs['ultisnips']")
     let g:UltiSnipsSnippetsDir = $VIMHOME . "plugged/vim-ultisnippet-private/UltiSnips"
     " load UltiSnips lazily
     augroup load_ultisnip
         autocmd!
-        autocmd InsertEnter * call plug#load('UltiSnips')
+        autocmd InsertEnter * call plug#load('ultisnips')
                     \| autocmd! load_ultisnip
     augroup END
 endif
@@ -819,6 +824,11 @@ if exists('g:plugs["vimwiki"]')
     " provide search in vimwiki directly
     au FileType vimwiki nmap <buffer> <C-p> :Files <c-r>=VimwikiGet('path')<CR><CR>
     au FileType vimwiki nmap <buffer> <leader>/ :Ag <c-r>=VimwikiGet('path')<CR><CR>
+
+    if exists('g:plugs["vim-startify"]')
+        au FileType startify nmap <buffer> <C-p> :Files <c-r>=VimwikiGet('path')<CR><CR>
+        au FileType startify nmap <buffer> <leader>/ :Ag <c-r>=VimwikiGet('path')<CR><CR>
+    endif
 
     nmap <leader>` <Plug>VimwikiIndex
 
