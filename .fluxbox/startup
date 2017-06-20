@@ -3,6 +3,7 @@
 # fluxbox startup-script:
 #
 # Lines starting with a '#' are ignored.
+export XDG_CURRENT_DESKTOP=KDE
 
 # Change your keymap:
 xmodmap "/home/jinzhouz/.Xmodmap"
@@ -42,9 +43,13 @@ if hash skippy-xd 2> /dev/null; then
     skippy-xd --start-daemon &
 fi
 
+if hash teamviewer 2> /dev/null; then
+    sleep 60 && teamviewer &
+fi
+
 # And last but not least we start fluxbox.
 # Because it is the last app you have to run it with ''exec'' before it.
 
-exec fluxbox
+#exec fluxbox
 # or if you want to keep a log:
-# exec fluxbox -log "/home/jinzhouz/.fluxbox/log"
+exec fluxbox -log "/home/jinzhouz/.fluxbox/log"
