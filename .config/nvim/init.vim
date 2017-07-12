@@ -327,7 +327,7 @@ function!   QuickFixOpenAll()
     endfor
 endfunction
 
-command! QuickFixOpenAll         call QuickFixOpenAll()
+command! QuickFixOpenAll call QuickFixOpenAll()
 
 "===============================================================================
 " Settings for Programming
@@ -442,8 +442,6 @@ if has ("win32")
     set guifont=Courier_New:h12:w7
     set guifontwide=NSimSun-18030,NSimSun
 endif
-"set ambiwidth=double
-" let g:vimim_map='c-bslash'
 
 "===============================================================================
 " package manager settings
@@ -461,6 +459,7 @@ if package_manager == "vim-plug"
     Plug 'junegunn/vim-easy-align', {'on': '<Plug>(EasyAlign)'}
     Plug 'ervandew/supertab'    " you'll need it
     Plug 'easymotion/vim-easymotion', {'on': ['<Plug>(easymotion-s)', '<Plug>(easymotion-F)', '<Plug>(easymotion-bd-jk)']}
+    Plug 'justinmk/vim-sneak'
 
     Plug 'majutsushi/tagbar'
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -476,9 +475,9 @@ if package_manager == "vim-plug"
 
     Plug 'Chiel92/vim-autoformat' " enhance the format function (press '=' key)
 
-    Plug 't9md/vim-choosewin'
+    Plug 't9md/vim-choosewin', {'on': '<Plug>(choosewin)'}
 
-    Plug 'sjl/gundo.vim', {'on': 'Gundo'}
+    Plug 'sjl/gundo.vim', {'on': 'GundoToggle'}
 
     Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
 
@@ -502,10 +501,6 @@ if package_manager == "vim-plug"
     Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
     Plug 'lotabout/skim.vim'
 
-    " Async support for vim
-    " used by vim-monster
-    Plug 'Shougo/vimproc.vim', {'do' : 'make'}
-
     " work with git
     Plug 'tpope/vim-fugitive'
 
@@ -515,11 +510,9 @@ if package_manager == "vim-plug"
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
         Plug 'zchee/deoplete-jedi', {'for': 'python'}
-
         Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
     else
         Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
-
         Plug 'racer-rust/vim-racer', {'for': 'rust'}
     endif
 
@@ -545,7 +538,6 @@ if package_manager == "vim-plug"
 
     Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript-jsx']}
 
-
     Plug 'bps/vim-textobj-python', {'for': 'python'}
 
     " for javascript
@@ -560,9 +552,6 @@ if package_manager == "vim-plug"
 
     Plug 'rust-lang/rust.vim', {'for': 'rust'}
 
-    Plug 'osyo-manga/vim-monster', {'do': 'gem install rcodetools --user-install', 'for': 'ruby'}
-    Plug 'vim-ruby/vim-ruby', {'for': 'ruby'}
-
     " for markdown
     Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
 
@@ -571,7 +560,8 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'mattn/calendar-vim'
-    Plug 'lotabout/vimwiki', {'branch': 'dev'}
+    "Plug 'lotabout/vimwiki', {'branch': 'dev'}
+    Plug 'vimwiki/vimwiki'
 
     call plug#end()
 elseif package_manager == "pathogen"
