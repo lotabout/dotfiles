@@ -504,23 +504,13 @@ if package_manager == "vim-plug"
     " work with git
     Plug 'tpope/vim-fugitive'
 
-    Plug 'will133/vim-dirdiff'
-
-    " Completion
-    if has('nvim')
-        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-        Plug 'zchee/deoplete-jedi', {'for': 'python'}
-        Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
-    else
-        Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
-        Plug 'racer-rust/vim-racer', {'for': 'rust'}
-    endif
+    Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
 
     "------------------------------------------------------------------
     " Support more filetype specific feature
     "------------------------------------------------------------------
     Plug 'scrooloose/nerdcommenter'
-    Plug 'SirVer/ultisnips', {'on': []}
+    Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
 
     " private snippets
@@ -554,6 +544,32 @@ if package_manager == "vim-plug"
 
     " for markdown
     Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
+
+    "------------------------------------------------------------------
+    " Completion Framework
+    "------------------------------------------------------------------
+    " Completion -- deoplete
+    "if has('nvim')
+        "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+        "Plug 'zchee/deoplete-jedi', {'for': 'python'}
+        "Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
+    "else
+        "Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
+        "Plug 'racer-rust/vim-racer', {'for': 'rust'}
+    "endif
+
+    " Completion -- NCM
+    Plug 'roxma/nvim-completion-manager'
+    if !has('nvim')
+        Plug 'roxma/vim-hug-neovim-rpc'
+    endif
+
+    " Sources for NCM
+    Plug 'roxma/nvim-cm-racer', {'for': 'rust'}
+    Plug 'Shougo/neco-vim', {'for': 'vim'}
+    Plug 'roxma/ncm-rct-complete', {'for': 'ruby'}
+    Plug 'roxma/nvim-cm-tern',  {'do': 'npm install', 'for': 'javascript'}
+    Plug 'clojure-vim/async-clj-omni', {'for': 'clojure'}
 
     "------------------------------------------------------------------
     " Others
