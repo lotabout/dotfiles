@@ -146,5 +146,6 @@ Mod1 s :ToggleCmd {Maximize} {Restore}
 Mod4 n :Minimize
 Mod4 m :Deiconify
 Mod4 d :ToggleCmd {ShowDesktop} {Restore}
-Mod1 e :Exec ~/bin/select-window-by-name.sh
-Control Mod1 l :Exec xscreensaver-command -lock 
+Mod1 e :Exec rofi -show window
+Control Mod1 l :Exec xscreensaver-command -lock
+Print :Exec spectacle

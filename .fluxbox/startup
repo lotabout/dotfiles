@@ -27,6 +27,11 @@ if [ $? == 0 ]; then
     wmname "LG3D"
 fi
 
+# set keyboard repeat speed
+if hash xset 2>/dev/null; then
+    xset r rate 240 20
+fi
+
 fcitx &
 
 # xscreensaver
@@ -49,6 +54,10 @@ fi
 
 # And last but not least we start fluxbox.
 # Because it is the last app you have to run it with ''exec'' before it.
+
+if hash dunst 2> /dev/null; then
+    dunst &
+fi
 
 #exec fluxbox
 # or if you want to keep a log:
