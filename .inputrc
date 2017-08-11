@@ -1,0 +1,31 @@
+$include /etc/inputrc
+#set input-meta on
+#set meta-flag on
+#set convert-meta on
+#set output-meta on
+
+set editing-mode vi
+
+$if mode=vi
+set keymap vi-command
+"\C-x\C-r": re-read-init-file
+# these are for vi-command mode
+"\e[A": history-search-backward # arrow up
+"\e[B": history-search-forward  # arrow down
+"\ep": yank-last-arg            # bind to Alt-p
+Control-l: clear-screen
+set keymap vi-insert
+# these are for vi-insert mode
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\ep": yank-last-arg            # bind to Alt-p
+Control-l: clear-screen
+# simulate emacs in vi-insert mode
+"\C-k": kill-line
+"\C-A": beginning-of-line
+"\C-B": backward-char
+"\C-D": delete-char
+"\C-E": end-of-line
+"\C-F": forward-char
+"\C-G": abort
+$endif

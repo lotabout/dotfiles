@@ -1,0 +1,7 @@
+! right menu key -> right control
+keycode 117 = Control_R
+keycode 135 = Control_R
+add Control = Control_R
+
+! left hand
+pointer = 3 2 1
