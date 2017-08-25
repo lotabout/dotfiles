@@ -528,7 +528,9 @@ if package_manager == "vim-plug"
 
     Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript-jsx']}
 
+    " for python
     Plug 'bps/vim-textobj-python', {'for': 'python'}
+    Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
 
     " for javascript
     "Plug 'ternjs/tern_for_vim', {'for': 'javascript', 'do' : 'npm install'}
@@ -549,27 +551,26 @@ if package_manager == "vim-plug"
     " Completion Framework
     "------------------------------------------------------------------
     " Completion -- deoplete
-    "if has('nvim')
-        "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    if has('nvim')
+        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
         "Plug 'zchee/deoplete-jedi', {'for': 'python'}
-        "Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
-    "else
-        "Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
-        "Plug 'racer-rust/vim-racer', {'for': 'rust'}
-    "endif
-
-    " Completion -- NCM
-    Plug 'roxma/nvim-completion-manager'
-    if !has('nvim')
-        Plug 'roxma/vim-hug-neovim-rpc'
+        Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
+    else
+        Plug 'racer-rust/vim-racer', {'for': 'rust'}
     endif
 
-    " Sources for NCM
-    Plug 'roxma/nvim-cm-racer', {'for': 'rust'}
-    Plug 'Shougo/neco-vim', {'for': 'vim'}
-    Plug 'roxma/ncm-rct-complete', {'for': 'ruby'}
-    Plug 'roxma/nvim-cm-tern',  {'do': 'npm install', 'for': 'javascript'}
-    Plug 'clojure-vim/async-clj-omni', {'for': 'clojure'}
+    " Completion -- NCM
+    "Plug 'roxma/nvim-completion-manager'
+    "if !has('nvim')
+        "Plug 'roxma/vim-hug-neovim-rpc'
+    "endif
+
+    "" Sources for NCM
+    "Plug 'roxma/nvim-cm-racer', {'for': 'rust'}
+    "Plug 'Shougo/neco-vim', {'for': 'vim'}
+    "Plug 'roxma/ncm-rct-complete', {'for': 'ruby'}
+    "Plug 'roxma/nvim-cm-tern',  {'do': 'npm install', 'for': 'javascript'}
+    "Plug 'clojure-vim/async-clj-omni', {'for': 'clojure'}
 
     "------------------------------------------------------------------
     " Others
@@ -646,6 +647,7 @@ if exists('g:plugs["slimux"]')
     let g:slimux_clojure_keybindings=1
     let g:slimux_clojure_leader=';'
     let g:slimux_clojure_xrepl=1
+    let g:slimux_python_paste_options = '-p'
 endif
 
 "----------------------------------------------------------------------
