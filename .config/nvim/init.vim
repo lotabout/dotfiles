@@ -252,7 +252,7 @@ nmap <leader>p "+p
 nmap <leader>P "+P
 
 " quick save
-nmap <leader>w :w<CR>:<C-u>nohlsearch<CR>
+nmap <leader>w :w<CR>:<C-u>nohlsearch<CR>:echo<CR>
 
 " execute macro on every selected/visual lines
 xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
@@ -506,6 +506,8 @@ if package_manager == "vim-plug"
 
     Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
 
+    Plug 'nathanaelkane/vim-indent-guides'
+
     "------------------------------------------------------------------
     " Support more filetype specific feature
     "------------------------------------------------------------------
@@ -553,7 +555,7 @@ if package_manager == "vim-plug"
     " Completion -- deoplete
     if has('nvim')
         Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-        "Plug 'zchee/deoplete-jedi', {'for': 'python'}
+        Plug 'zchee/deoplete-jedi', {'for': 'python'}
         Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
     else
         Plug 'racer-rust/vim-racer', {'for': 'rust'}
@@ -922,6 +924,20 @@ if exists('g:plugs["vim-leader-guide"]')
     vnoremap <silent> <leader> :<c-u>LeaderGuideVisual '<Space>'<CR>
 endif
 
+"----------------------------------------------------------------------
+" indent-guides
+if exists('g:plugs["vim-indent-guides"]')
+    let g:indent_guides_start_level = 2
+    let g:indent_guides_guide_size = 1
+endif
+
+"----------------------------------------------------------------------
+" jedi-vim
+
+" use deoplete-jedi for completion, so disable completion of jedi-vim
+let g:jedi#completions_enabled = 0
+let g:jedi#goto_command = "<C-]>"
+
 "===============================================================================
 " self-added plugins && settigns
 
@@ -965,6 +981,12 @@ let g:syntastic_javascript_checkers = ['eslint']
 let g:syntastic_mode_map = {
             \ "mode": "active",
             \ "passive_filetypes": ["java", "racket"] }
+
+au BufNewFile,BufRead *.js, *.html, *.css
+    \ set tabstop = 2
+    \ set softtabstop = 2
+    \ set shiftwidth = 2
+    \ set smarttab
 
 "===============================================================================
 " client specified settings
