@@ -500,8 +500,10 @@ if package_manager == "vim-plug"
                 \ 'for': 'python'}
     Plug 'kana/vim-fakeclip'
 
-    Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
-    Plug 'lotabout/skim.vim'
+    "Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
+    "Plug 'lotabout/skim.vim'
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    Plug 'junegunn/fzf.vim'
 
     " work with git
     Plug 'tpope/vim-fugitive'
@@ -732,7 +734,7 @@ endif
 " fzf.vim
 
 " change keybinding for AG
-if executable('fzf')
+if executable('fzf') && exists('g:plugs["fzf.vim"]')
     let $FZF_DEFAULT_OPTS = '--bind ctrl-f:toggle'
     " replace Ctrl-p
     nmap <C-p> :Files<CR>
@@ -751,7 +753,7 @@ endif
 
 "---------------------------------------------------------------------
 " skim.vim
-if executable('sk')
+if executable('sk') && exists('g:plugs["skim.vim"]')
     let $SKIM_DEFAULT_OPTS = '--bind ctrl-f:toggle'
     " replace Ctrl-p
     nmap <C-p> :Files<CR>

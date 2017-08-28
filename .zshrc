@@ -302,7 +302,7 @@ function ftpane() {
 #------------------------------------------------------------------------------
 # SKIM settings
 
-# load fzf if exist
+# load if exist
 [[ -f ~/.skim.zsh ]] && source ~/.skim.zsh
 
 # Setting ag as the default source for skim
@@ -319,6 +319,19 @@ function j() {
 function v() {
   local file
   file="$(fasd -Rfl "$1" | sk +m)" && vi "${file}" || return 1
+}
+
+#------------------------------------------------------------------------------
+# FZF settings
+function j() {
+    local dir
+    dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
+}
+
+function v() {
+    [ $# -gt 0 ] && fasd -f -e ${EDITOR} "$*" && return
+    local file
+    file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && vi "${file}" || return 1
 }
 
 #------------------------------------------------------------------------------
@@ -376,3 +389,5 @@ fi
 if [[ -f ~/.zshrc-local ]]; then
     . ~/.zshrc-local
 fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
