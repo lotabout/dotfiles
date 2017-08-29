@@ -491,6 +491,8 @@ if package_manager == "vim-plug"
 
     Plug 'kana/vim-textobj-user'
 
+    Plug 'tpope/tpope-vim-abolish'
+
     "------------------------------------------------------------------
     " Integration with Linux environment
     "------------------------------------------------------------------
@@ -649,7 +651,13 @@ if exists('g:plugs["slimux"]')
     let g:slimux_clojure_keybindings=1
     let g:slimux_clojure_leader=';'
     let g:slimux_clojure_xrepl=1
-    let g:slimux_python_paste_options = '-p'
+    let g:slimux_python_use_ipython=1
+endif
+"----------------------------------------------------------------------
+" NerdTree
+if exists('g:plugs["nerdtree"]')
+    nmap <silent> <leader>ne :NERDTreeToggle<cr>
+    nmap <silent> <leader>nf :NERDTreeFind<cr>
 endif
 
 "----------------------------------------------------------------------
@@ -796,6 +804,8 @@ if exists('g:plugs["vimwiki"]')
     "let wiki_1.template_ext = '.htm'
     let wiki_1.nested_syntaxes = {'python': 'python',
         \ 'js': 'javascript',
+        \ 'bash': 'sh',
+        \ 'sh': 'sh',
         \ 'c': 'c',
         \ 'java': 'java',
         \ 'sql': 'sql',
@@ -961,7 +971,7 @@ let g:enable_my_python_config = 1
 " rust
 
 " racer : rust auto completion
-let $RUST_SRC_PATH = "/usr/local/src/rust/src/"
+let $RUST_SRC_PATH = expand("~/.multirust/toolchains/*/lib/rustlib/src/rust/src")
 let g:deoplete#sources#rust#racer_binary = expand("~/.cargo/bin/racer")
 
 "----------------------------------------------------------------------
@@ -1067,4 +1077,3 @@ else
         "set ttimeoutlen=20
     "endif
 endif
-
