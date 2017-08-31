@@ -500,10 +500,10 @@ if package_manager == "vim-plug"
                 \ 'for': 'python'}
     Plug 'kana/vim-fakeclip'
 
-    "Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
-    "Plug 'lotabout/skim.vim'
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-    Plug 'junegunn/fzf.vim'
+    Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
+    Plug 'lotabout/skim.vim'
+    "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    "Plug 'junegunn/fzf.vim'
 
     " work with git
     Plug 'tpope/vim-fugitive'
@@ -743,7 +743,7 @@ if executable('fzf') && exists('g:plugs["fzf.vim"]')
     nnoremap <leader>/ :Ag<CR>
 
     " Replace Bufexplore
-    nmap <leader>b :Buffers<CR>
+    nmap <C-e> :Buffers<CR>
 
     " select mapping
     nmap <leader><tab> <plug>(fzf-maps-n)
@@ -762,7 +762,7 @@ if executable('sk') && exists('g:plugs["skim.vim"]')
     nnoremap <leader>/ :Ag<CR>
 
     " Replace Bufexplore
-    nmap <leader>b :Buffers<CR>
+    nmap <C-e> :Buffers<CR>
 endif
 
 "---------------------------------------------------------------------
