@@ -757,7 +757,6 @@ if executable('sk') && exists('g:plugs["skim.vim"]')
     " replace Ctrl-p
     nmap <C-p> :Files<CR>
 
-
     command! -bang -nargs=* Ag call fzf#vim#ag_interactive(<q-args>, fzf#vim#with_preview('right:50%:hidden', 'alt-h'))
 
     " Customized binding for AG
@@ -976,6 +975,7 @@ let g:enable_my_python_config = 1
 
 " racer : rust auto completion
 let $RUST_SRC_PATH = expand("~/.multirust/toolchains/*/lib/rustlib/src/rust/src")
+let g:deoplete#sources#rust#rust_source_path = expand("~/.multirust/toolchains/*/lib/rustlib/src/rust/src")
 let g:deoplete#sources#rust#racer_binary = expand("~/.cargo/bin/racer")
 
 "----------------------------------------------------------------------
