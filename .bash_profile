@@ -354,6 +354,7 @@ fi
 #------------------------------------------------------------------------------
 # skim settings
 export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
+[ -f ~/.skim.bash ] && source ~/.skim.bash
 
 #------------------------------------------------------------------------------
 # used by emacs term mode, change the default-directory.

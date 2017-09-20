@@ -459,7 +459,6 @@ if package_manager == "vim-plug"
     Plug 'junegunn/vim-easy-align', {'on': '<Plug>(EasyAlign)'}
     Plug 'ervandew/supertab'    " you'll need it
     Plug 'easymotion/vim-easymotion', {'on': ['<Plug>(easymotion-s)', '<Plug>(easymotion-F)', '<Plug>(easymotion-bd-jk)']}
-    Plug 'justinmk/vim-sneak'
 
     Plug 'majutsushi/tagbar'
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -757,6 +756,9 @@ if executable('sk') && exists('g:plugs["skim.vim"]')
     let $SKIM_DEFAULT_OPTS = '--bind ctrl-f:toggle'
     " replace Ctrl-p
     nmap <C-p> :Files<CR>
+
+
+    command! -bang -nargs=* Ag call fzf#vim#ag_interactive(<q-args>, fzf#vim#with_preview('right:50%:hidden', 'alt-h'))
 
     " Customized binding for AG
     nnoremap <leader>/ :Ag<CR>

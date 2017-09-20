@@ -313,26 +313,26 @@ export SKIM_CTRL_T_COMMAND="$SKIM_DEFAULT_COMMAND"
 # integrate with fasd
 function j() {
   local dir
-  dir="$(fasd -Rdl "$1" | sk +m)" && cd "${dir}" || return 1
+  dir="$(fasd -Rdl "$1" | sk -m)" && cd "${dir}" || return 1
 }
 
 function v() {
   local file
-  file="$(fasd -Rfl "$1" | sk +m)" && vi "${file}" || return 1
+  file="$(fasd -Rfl "$1" | sk -m)" && vi "${file}" || return 1
 }
 
 #------------------------------------------------------------------------------
 # FZF settings
-function j() {
-    local dir
-    dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
-}
+#function j() {
+    #local dir
+    #dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
+#}
 
-function v() {
-    [ $# -gt 0 ] && fasd -f -e ${EDITOR} "$*" && return
-    local file
-    file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && vi "${file}" || return 1
-}
+#function v() {
+    #[ $# -gt 0 ] && fasd -f -e ${EDITOR} "$*" && return
+    #local file
+    #file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && vi "${file}" || return 1
+#}
 
 #------------------------------------------------------------------------------
 # fasd settings
@@ -389,5 +389,3 @@ fi
 if [[ -f ~/.zshrc-local ]]; then
     . ~/.zshrc-local
 fi
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
