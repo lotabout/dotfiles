@@ -84,13 +84,14 @@ zle .backward-delete-word
 zle -N backward-delete-to-slash
 
 # zsh keybindings
+bindkey -e # emacs mode
+
 bindkey '\ep' insert-last-word # bind to Alt-p
+bindkey '^[' vi-cmd-mode
+export KEYTIMEOUT=1
 
 #==============================================================================
 # settings
-
-# vi mode
-set -o vi
 
 ## source profile
 [[ -r $HOME/.profile ]] && source $HOME/.profile
@@ -382,6 +383,7 @@ AUTO_SUGGESTIONS=$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 if [[ -r $AUTO_SUGGESTIONS && $TERM =~ ".*256" ]]; then
     source $AUTO_SUGGESTIONS
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=030'
+    ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20 # do not trigger completion for large buffer
 fi
 
 #==============================================================================
