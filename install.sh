@@ -41,6 +41,7 @@ ln -s $DIR/.config/nvim $HOME/.vim
 #==============================================================================
 # zsh plugins
 
+# auto suggestion
 mkdir -p $HOME/.zsh
 if [[ ! -d ~/.zsh/zsh-autosuggestions ]];then
     git clone git://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
@@ -48,6 +49,18 @@ fi
 
 #==============================================================================
 # install dependencies
+
+# translate-shell
+if [[ ! -f $DIR/bin/trans ]]; then
+    wget git.io/trans -O $DIR/bin/trans
+    chmod +x $DIR/bin/trans
+fi
+
+# fasd
+if [[ ! -f $DIR/bin/fasd ]]; then
+    wget https://raw.githubusercontent.com/clvv/fasd/master/fasd -O $DIR/bin/fasd
+    chmod +x $DIR/bin/fasd
+fi
 
 #==============================================================================
 # Post install
