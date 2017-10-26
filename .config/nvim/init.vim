@@ -51,6 +51,8 @@ set nu
 " don't treat numbers as octal when performing Ctrl-A and Ctrl-X
 set nrformats-=octal
 
+" enable mouse support
+set mouse=a
 "----------------------------------------------------------------------
 " VIM user interface
 
@@ -844,6 +846,11 @@ if exists('g:plugs["vim-airline"]')
         let g:airline_theme='solarized'
     endif
     let g:airline_powerline_fonts = 1
+    let g:airline#extensions#tabline#enabled = 1
+    let g:airline#extensions#tabline#show_buffers = 0
+    let g:airline#extensions#tabline#show_splits = 0
+    let g:airline#extensions#tabline#show_tab_nr = 0
+    let g:airline#extensions#tabline#tab_min_count = 2
 endif
 
 "---------------------------------------------------------------------
@@ -892,6 +899,14 @@ if exists('g:plugs["vim-indent-guides"]')
     let g:indent_guides_start_level = 2
     let g:indent_guides_guide_size = 1
 endif
+
+"----------------------------------------------------------------------
+" ale/syntastic
+if exists('g:plugs["ale"]')
+    nmap <silent> [e <Plug>(ale_previous_wrap)
+    nmap <silent> ]e <Plug>(ale_next_wrap)
+endif
+
 
 "----------------------------------------------------------------------
 " jedi-vim
@@ -1011,8 +1026,6 @@ else
     " use blowfish as default crypt method
     set cryptmethod=blowfish
 
-    " enable mouse support
-    set mouse=a
 
     "- - - - - - - - - - - - - - - - - - - - - - - - -
     " mappings
