@@ -105,38 +105,6 @@ if exists('&inccommand')
 endif
 
 "----------------------------------------------------------------------
-" Colors and Fonts
-
-" Enable syntax highlighting
-syntax enable
-
-" Colorscheme
-if has("gui_running")
-    colorscheme zenburn
-    "colorscheme obsidian
-    set guifont=Dejavu\ Sans\ Mono\ for\ Powerline\ 12,Dejavu\ Sans\ Mono\ 12
-elseif &t_Co == 256
-    "colorscheme zenburn
-    colorscheme obsidian
-else
-    colorscheme desert
-    if &term == "linux"
-        colorscheme desert
-    endif
-endif
-
-" Set extra options when running in GUI mode
-if has("gui_running")
-    "set guioptions-=m " remove menubar
-    set guioptions-=T " remove toolbar
-    set guioptions-=r " remove right-hand scroll bar
-    set guioptions-=l " remove left-hand scroll bar
-    set guioptions+=e
-    set t_Co=256
-    set guitablabel=%M\ %t
-endif
-
-"----------------------------------------------------------------------
 " Files, backups and undo
 
 " Set possible file encodings
@@ -214,7 +182,6 @@ noremap gk k
 " swap these too because ' is easier to type and ` is what I want
 noremap ' `
 noremap ` '
-
 
 " Close current buffer
 " need vim-bbye
@@ -313,7 +280,7 @@ vmap <leader>j :Interleave<space>
 
 "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "Author: Tim Dahlin
-function!   QuickFixOpenAll()
+function! QuickFixOpenAll()
     if empty(getqflist())
         return
     endif
@@ -427,17 +394,12 @@ if show_tabs == 1
     endif
 endif
 
-" Configuration for plugin: indentLine
-let g:indentLine_loaded = 1
-let g:indentLine_char = "│"
-
 "===============================================================================
 " settings for manually installed plugins
 
 "----------------------------------------------------------------------
 " vimim
 
-"let fileencodings=ucs-bom,utf8,chinese,taiwan,ansi
 if has ("win32")
     set guifont=Courier_New:h12:w7
     set guifontwide=NSimSun-18030,NSimSun
@@ -564,19 +526,6 @@ if package_manager == "vim-plug"
         Plug 'racer-rust/vim-racer', {'for': 'rust'}
     endif
 
-    " Completion -- NCM
-    "Plug 'roxma/nvim-completion-manager'
-    "if !has('nvim')
-        "Plug 'roxma/vim-hug-neovim-rpc'
-    "endif
-
-    "" Sources for NCM
-    "Plug 'roxma/nvim-cm-racer', {'for': 'rust'}
-    "Plug 'Shougo/neco-vim', {'for': 'vim'}
-    "Plug 'roxma/ncm-rct-complete', {'for': 'ruby'}
-    "Plug 'roxma/nvim-cm-tern',  {'do': 'npm install', 'for': 'javascript'}
-    "Plug 'clojure-vim/async-clj-omni', {'for': 'clojure'}
-
     "------------------------------------------------------------------
     " Others
     "------------------------------------------------------------------
@@ -594,12 +543,35 @@ endif
 " settings for bundle plugins
 
 "----------------------------------------------------------------------
-" color scheme
-if has('gui_running')
-    colorscheme solarized
+" Colors and Fonts
+
+" Enable syntax highlighting
+syntax enable
+
+" Colorscheme
+if has("gui_running")
+    colorscheme zenburn
+    "colorscheme obsidian
+    set guifont=Dejavu\ Sans\ Mono\ for\ Powerline\ 12,Dejavu\ Sans\ Mono\ 12
 elseif &t_Co == 256
     set background=dark
     colorscheme solarized
+else
+    colorscheme desert
+    if &term == "linux"
+        colorscheme desert
+    endif
+endif
+
+" Set extra options when running in GUI mode
+if has("gui_running")
+    "set guioptions-=m " remove menubar
+    set guioptions-=T " remove toolbar
+    set guioptions-=r " remove right-hand scroll bar
+    set guioptions-=l " remove left-hand scroll bar
+    set guioptions+=e
+    set t_Co=256
+    set guitablabel=%M\ %t
 endif
 
 "----------------------------------------------------------------------
@@ -654,15 +626,9 @@ if exists('g:plugs["slimux"]')
     let g:slimux_clojure_xrepl=1
     let g:slimux_python_use_ipython=1
 endif
-"----------------------------------------------------------------------
-" NerdTree
-if exists('g:plugs["nerdtree"]')
-    nmap <silent> <leader>ne :NERDTreeToggle<cr>
-    nmap <silent> <leader>nf :NERDTreeFind<cr>
-endif
 
 "----------------------------------------------------------------------
-" nerd tree
+" NerdTree
 if exists('g:plugs["nerdtree"]')
     nmap <silent> <leader>ne :NERDTreeToggle<cr>
     nmap <silent> <leader>nf :NERDTreeFind<cr>
@@ -714,7 +680,9 @@ endif
 
 "---------------------------------------------------------------------
 " fakeclip
-let g:fakeclip_terminal_multiplexer_type = "tmux"
+if exists("g:plugs['vim-fakeclip']")
+    let g:fakeclip_terminal_multiplexer_type = "tmux"
+endif
 
 "---------------------------------------------------------------------
 " UltiSnips
@@ -758,6 +726,7 @@ if executable('sk') && exists('g:plugs["skim.vim"]')
     nmap <C-p> :Files<CR>
 
     command! -bang -nargs=* Ag call fzf#vim#ag_interactive(<q-args>, fzf#vim#with_preview('right:50%:hidden', 'alt-h'))
+    command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:50%:hidden', 'alt-h'))
 
     " Customized binding for AG
     nnoremap <leader>/ :Ag<CR>
@@ -801,10 +770,6 @@ if exists('g:plugs["vimwiki"]')
 
     let wiki_1 = {}
     let wiki_1.path = '~/Dropbox/wiki/vimwiki'
-    "let wiki_1.path_html = '~/repos/vimwiki_html'
-    "let wiki_1.template_path= wiki_1.path_html . '/template'
-    "let wiki_1.template_default = 'default'
-    "let wiki_1.template_ext = '.htm'
     let wiki_1.nested_syntaxes = {'python': 'python',
         \ 'js': 'javascript',
         \ 'bash': 'sh',
@@ -817,7 +782,6 @@ if exists('g:plugs["vimwiki"]')
         \ 'racket': 'racket'}
     let wiki_1.syntax = 'markdown'
     let wiki_1.ext = '.md'
-    "let wiki_1.diary_rel_path = '../diary/'
 
     let wiki_2 = {}
     let wiki_2.path = '~/Dropbox/wiki/vimwiki-private'
@@ -879,22 +843,7 @@ if exists('g:plugs["vim-airline"]')
         "let g:airline_theme='wombat'
         let g:airline_theme='solarized'
     endif
-
-    " let g:airline#extensions#tabline#enabled = 1
-    let g:airline_left_sep = ''
-    let g:airline_left_alt_sep = ''
-    let g:airline_right_sep = ''
-    let g:airline_right_alt_sep = ''
-    let g:airline_symbols = {}
-    let g:airline_symbols.branch = ''
-    let g:airline_symbols.readonly = ''
-    let g:airline_symbols.linenr = ''
-
-    "" Enable the list of buffers
-    "let g:airline#extensions#tabline#enabled = 1
-
-    "" Show just the filename
-    "let g:airline#extensions#tabline#fnamemod = ':t'
+    let g:airline_powerline_fonts = 1
 endif
 
 "---------------------------------------------------------------------
@@ -947,9 +896,11 @@ endif
 "----------------------------------------------------------------------
 " jedi-vim
 
-" use deoplete-jedi for completion, so disable completion of jedi-vim
-let g:jedi#completions_enabled = 0
-let g:jedi#goto_command = "<C-]>"
+if exists('g:plugs["jedi-vim"]')
+    " use deoplete-jedi for completion, so disable completion of jedi-vim
+    let g:jedi#completions_enabled = 0
+    let g:jedi#goto_command = "<C-]>"
+endif
 
 "===============================================================================
 " self-added plugins && settigns
