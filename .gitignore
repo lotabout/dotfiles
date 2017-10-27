@@ -57,3 +57,6 @@ var/
 # fluxbox
 .fluxbox/
 bin/
+
+# ranger local files
+.config/ranger
