@@ -9,7 +9,7 @@ if [[ ! "$active_window" =~ .*(Dolphin|Krusader)$ ]]; then
     exit 1
 fi
 
-target="$(fasd -Rdl "$1" | rofi -dmenu -p 'Jump To:')"
+target="$(fasd -Rdl "$1" | rofi -dmenu -p 'Jump To:' -matching fuzzy)"
 
 if [[ ! -d $target ]]; then
     exit 1

@@ -63,7 +63,7 @@ XTerm*color13:     #ec93d3
 XTerm*color14:     #93e0e3
 XTerm*color15:     #ffffff
 
-! fix some problems with emacs <backspace> 
+! fix some problems with emacs <backspace>
 ! XTerm.ttyModes:         erase ^?
 ! XTerm.VT100.Translations: \
 !         #override <Key>BackSpace: string(0x7f)\n\
@@ -129,7 +129,7 @@ UXTerm*color13:     #ec93d3
 UXTerm*color14:     #93e0e3
 UXTerm*color15:     #ffffff
 
-! fix some problems with emacs <backspace> 
+! fix some problems with emacs <backspace>
 ! UXTerm.ttyModes:         erase ^?
 ! UXTerm.VT100.Translations: \
 !         #override <Key>BackSpace: string(0x7f)\n\
@@ -216,6 +216,7 @@ URxvt.urlLauncher: firefox
 URxvt.matcher.button: 1
 !URxvt.perl-ext-common: matcher
 
-! disable perl extension
-URxvt.perl-ext:
-URxvt.perl-ext-common:
+-----------------------------------------------------------------------------
+! rofi
+rofi.font: DejaVu Sans Mono 12
+rofi.show-icons: true
