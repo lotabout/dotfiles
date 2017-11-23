@@ -456,6 +456,8 @@ if package_manager == "vim-plug"
 
     Plug 'tpope/tpope-vim-abolish'
 
+    Plug 'vim-scripts/LargeFile' "disable some features for faster opening large files.
+
     "------------------------------------------------------------------
     " Integration with Linux environment
     "------------------------------------------------------------------
@@ -515,6 +517,10 @@ if package_manager == "vim-plug"
 
     " for markdown
     Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
+
+    " for typescript
+    Plug 'HerringtonDarkholme/yats.vim'
+    Plug 'mhartington/nvim-typescript'
 
     "------------------------------------------------------------------
     " Completion Framework
@@ -678,6 +684,14 @@ if exists('g:plugs["tagbar"]')
             endif
         endfor
     endfunction
+endif
+
+
+"---------------------------------------------------------------------
+" fakeclip
+
+if exists("g:plugs['LargeFile']")
+    let g:LargeFile = 10
 endif
 
 "---------------------------------------------------------------------
