@@ -83,6 +83,9 @@ set hlsearch
 " Makes search act like search in modern browsers
 set incsearch
 
+" Substitute globally by default
+set gdefault
+
 " Don't redraw while executing macros (good performance config)
 set lazyredraw
 
@@ -97,6 +100,9 @@ set cursorline
 " Always show the status line
 set laststatus=2
 "set stl=%F%y%m\ [%l,%c,%p%%]\ [%n/%{len(filter(range(1,bufnr('$')),'buflisted(v:val)'))}]
+
+" disable syntax highlighting for lone lines
+set synmaxcol=200
 
 " set showtabline=2
 set completeopt=longest,menuone,preview
@@ -426,6 +432,7 @@ if package_manager == "vim-plug"
 
     Plug 'majutsushi/tagbar'
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+    Plug 'Xuyuanp/nerdtree-git-plugin'
 
     " for word wraps for japanese and chinese
     Plug 'vim-jp/autofmt'
@@ -472,6 +479,7 @@ if package_manager == "vim-plug"
 
     " work with git
     Plug 'tpope/vim-fugitive'
+    Plug 'airblade/vim-gitgutter'
 
     Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
 
@@ -929,6 +937,11 @@ if exists('g:plugs["jedi-vim"]')
     " use deoplete-jedi for completion, so disable completion of jedi-vim
     let g:jedi#completions_enabled = 0
     let g:jedi#goto_command = "<C-]>"
+endif
+
+if exists('g:plugs["vim-gitgutter"]')
+    nmap <silent> ]g :GitGutterNextHunk<CR>
+    nmap <silent> [g :GitGutterPrevHunk<CR>
 endif
 
 "===============================================================================
