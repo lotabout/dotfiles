@@ -966,10 +966,12 @@ let g:enable_my_python_config = 1
 "----------------------------------------------------------------------
 " rust
 
-" racer : rust auto completion
-let $RUST_SRC_PATH = expand("~/.multirust/toolchains/*/lib/rustlib/src/rust/src")
-let g:deoplete#sources#rust#rust_source_path = expand("~/.multirust/toolchains/*/lib/rustlib/src/rust/src")
-let g:deoplete#sources#rust#racer_binary = expand("~/.cargo/bin/racer")
+if exists('g:plugs["deoplete-rust"]')
+    " racer : rust auto completion
+    let $RUST_SRC_PATH = expand("~/.multirust/toolchains/stable-*/lib/rustlib/src/rust/src")
+    let g:deoplete#sources#rust#rust_source_path = expand("~/.multirust/toolchains/stable-*/lib/rustlib/src/rust/src")
+    let g:deoplete#sources#rust#racer_binary = expand("~/.cargo/bin/racer")
+endif
 
 "----------------------------------------------------------------------
 " markdown
