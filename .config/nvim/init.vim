@@ -1,16 +1,4 @@
 "===============================================================================
-" Plugins Manually Installed (needed anyway)
-" 1. zenburn.vim       -- color theme
-" 2. bufexplorer.vim    -- show buffer list
-" 3. vimim_wubi.vim     -- wubi input method
-" 4. TagBar             -- show tags of current file
-" 5. NERD_tree.vim      -- plugins to show directories
-" 6. a.vim              -- quick switch between .c file and .h file
-" 7. linuxsty           -- settings for kernel coding style
-" 8. EasyMotion	        -- quick navigating plugin
-" 9. others => managed using vundle.
-
-"===============================================================================
 " General Settings
 
 " Inform that the script is written in UTF-8 (including special characters)
@@ -549,6 +537,7 @@ if package_manager == "vim-plug"
     Plug 'mattn/calendar-vim'
     "Plug 'lotabout/vimwiki', {'branch': 'dev'}
     Plug 'vimwiki/vimwiki'
+    Plug 'lotabout/ywvim' " Chinese input method
 
     call plug#end()
 elseif package_manager == "pathogen"
@@ -942,6 +931,31 @@ endif
 if exists('g:plugs["vim-gitgutter"]')
     nmap <silent> ]g :GitGutterNextHunk<CR>
     nmap <silent> [g :GitGutterPrevHunk<CR>
+endif
+
+"----------------------------------------------------------------------
+" ywvim: input method for chinese
+if exists('g:plugs["ywvim"]')
+    let g:ywvim_ims=[
+                \['wb', '五笔', 'wubi.ywvim'],
+                \['py', '拼音', 'pinyin.ywvim'],
+                \]
+
+    let g:ywvim_py = { 'helpim':'wb', 'gb':0 }
+
+    let g:ywvim_zhpunc = 1
+    let g:ywvim_listmax = 10
+    let g:ywvim_esc_autoff = 0
+    let g:ywvim_autoinput = 0
+    let g:ywvim_circlecandidates = 1
+    let g:ywvim_helpim_on = 0          " 五笔反查
+    let g:ywvim_matchexact = 0
+    let g:ywvim_chinesecode = 1
+    let g:ywvim_gb = 0
+    let g:ywvim_preconv = 'g2b'
+    let g:ywvim_conv = ''
+    let g:ywvim_lockb = 1
+    let g:ywvim_theme = 'dark'
 endif
 
 "===============================================================================
