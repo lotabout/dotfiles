@@ -12,11 +12,19 @@ bind generic l scroll-right
 
 bind generic g  none
 bind generic gg move-first-line
-bind generic gj next
-bind generic gk previous
 bind generic gp parent
 bind generic gP back
-bind generic gn view-next
+
+bind generic gm view-main
+bind generic gd view-diff
+bind generic gl view-log
+bind generic gt view-tree
+bind generic gb view-blob
+bind generic gx view-blame
+bind generic gr view-refs
+bind generic gs view-status
+bind generic gu view-stage
+bind generic gy view-stash
 
 bind main    G move-last-line
 bind generic G move-last-line
@@ -25,16 +33,6 @@ bind generic <C-f> move-page-down
 bind generic <C-b> move-page-up
 
 bind generic v  none
-bind generic vm view-main
-bind generic vd view-diff
-bind generic vl view-log
-bind generic vt view-tree
-bind generic vb view-blob
-bind generic vx view-blame
-bind generic vr view-refs
-bind generic vs view-status
-bind generic vu view-stage
-bind generic vy view-stash
 bind generic vg view-grep
 bind generic vp view-pager
 bind generic vh view-help
@@ -72,4 +70,3 @@ bind generic cc !git commit
 bind generic ca !?@git commit --amend --no-edit
 
 bind generic K view-help
-bind generic <C-w><C-w> view-next
