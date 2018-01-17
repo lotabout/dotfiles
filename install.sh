@@ -62,6 +62,12 @@ if [[ ! -f $DIR/bin/fasd ]]; then
     chmod +x $DIR/bin/fasd
 fi
 
+# diff-so-fancy
+if [[ ! -f $DIR/bin/diff-so-fancy ]]; then
+    wget https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy -O $DIR/bin/diff-so-fancy
+    chmod +x $DIR/bin/diff-so-fancy
+fi
+
 #==============================================================================
 # Post install
 
