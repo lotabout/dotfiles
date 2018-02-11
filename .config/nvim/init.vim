@@ -71,9 +71,6 @@ set hlsearch
 " Makes search act like search in modern browsers
 set incsearch
 
-" Substitute globally by default
-set gdefault
-
 " Don't redraw while executing macros (good performance config)
 set lazyredraw
 
@@ -298,7 +295,7 @@ command! QuickFixOpenAll call QuickFixOpenAll()
 "----------------------------------------------------------------------
 " Extra Settings
 
-set formatoptions=tclqron
+set formatoptions=tclqronmM
 if v:version > 703 || v:version == 703 && has("patch541")
   set formatoptions+=j " Delete comment character when joining commented lines
 endif
@@ -422,9 +419,6 @@ if package_manager == "vim-plug"
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
     Plug 'Xuyuanp/nerdtree-git-plugin'
 
-    " for word wraps for japanese and chinese
-    Plug 'vim-jp/autofmt'
-
     " powerline alternative; for better status line
     Plug 'bling/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
@@ -442,8 +436,6 @@ if package_manager == "vim-plug"
     Plug 'mhinz/vim-startify'
 
     "Plug 'kana/vim-arpeggio' "Allow key chords
-
-    "Plug 'hecal3/vim-leader-guide'
 
     Plug 'vim-scripts/marvim' " save macros
 
@@ -513,6 +505,7 @@ if package_manager == "vim-plug"
 
     " for markdown
     Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
+    Plug 'reedes/vim-pencil', {'for': ['markdown', 'text'], 'on': ['Pencil', 'TogglePencil']}
 
     " for typescript
     Plug 'HerringtonDarkholme/yats.vim'
@@ -535,8 +528,6 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'mattn/calendar-vim'
-    "Plug 'lotabout/vimwiki', {'branch': 'dev'}
-    Plug 'vimwiki/vimwiki'
     Plug 'lotabout/ywvim' " Chinese input method
 
     call plug#end()
@@ -555,9 +546,9 @@ syntax enable
 
 " Colorscheme
 if has("gui_running")
-    colorscheme zenburn
+    colorscheme solarized
     "colorscheme obsidian
-    set guifont=Dejavu\ Sans\ Mono\ for\ Powerline\ 12,Dejavu\ Sans\ Mono\ 12
+    set guifont=Dejavu\ Sans\ Mono\ Nerd\ Font\ 12,Dejavu\ Sans\ Mono\ for\ Powerline\ 12,Dejavu\ Sans\ Mono\ 12
 elseif &t_Co == 256
     set background=dark
     colorscheme solarized
@@ -749,12 +740,6 @@ if executable('sk') && exists('g:plugs["skim.vim"]')
 endif
 
 "---------------------------------------------------------------------
-" autofmt
-if exists('g:plugs["autofmt"]')
-    nmap <leader>f :setlocal formatexpr=autofmt#japanese#formatexpr()<CR>
-endif
-
-"---------------------------------------------------------------------
 " Gundo
 if exists('g:plugs["gundo.vim"]')
     nnoremap <F5> :GundoToggle<CR>
@@ -767,83 +752,27 @@ endif
 
 
 "---------------------------------------------------------------------
-" vimwiki
+" calendar-vim
 
-" set norelativenumber manually.
-let g:calendar_options = "fdc=0 nonu nornu"
+let g:wiki_directory = $HOME . '/Dropbox/wiki'
 
-if exists('g:plugs["vimwiki"]')
-    " turn off insert mode mappings
-    let g:vimwiki_global_ext = 0
-    let g:vimwiki_table_mappings = 0
-    let g:vimwiki_ext2syntax = {'.md': 'markdown',
-                    \ '.mkd': 'markdown',
-                    \ '.wiki': 'media'}
-    let g:vimwiki_use_calendar = 1
+if exists('g:plugs["calendar-vim"]')
+    let g:calendar_filetype = 'markdown'
+    let g:calendar_diary= g:wiki_directory . '/diary'
 
-    let wiki_1 = {}
-    let wiki_1.path = '~/Dropbox/wiki/vimwiki'
-    let wiki_1.nested_syntaxes = {'python': 'python',
-        \ 'js': 'javascript',
-        \ 'bash': 'sh',
-        \ 'sh': 'sh',
-        \ 'c': 'c',
-        \ 'java': 'java',
-        \ 'sql': 'sql',
-        \ 'rust': 'rust',
-        \ 'scheme': 'scheme',
-        \ 'racket': 'racket'}
-    let wiki_1.syntax = 'markdown'
-    let wiki_1.ext = '.md'
+    function! BindForWikiFiles()
+        if expand('%:p') =~ '^'. g:wiki_directory
+            execute("nmap <buffer> <C-p> :Files ".g:wiki_directory."<CR>")
+            execute("nmap <buffer> <leader>/ :Rg ".g:wiki_directory."<CR>")
+        endif
+    endfunction
 
-    let wiki_2 = {}
-    let wiki_2.path = '~/Dropbox/wiki/vimwiki-private'
-    let wiki_2.nested_syntaxes = wiki_1.nested_syntaxes
-    let wiki_2.syntax = 'markdown'
-    let wiki_2.ext = '.md'
-    let g:vimwiki_list = [wiki_1, wiki_2]
-
-    map <F4> :exec '!cd '.VimwikiGet('path').'; ./sync.sh'<cr>
-
-    " Disable vimwiki mappings (to remove bindings begins with <leader>w)
-    nmap <Plug>NoVimwikiIndex <Plug>VimwikiIndex
-    nmap <Plug>NoVimwikiTabIndex <Plug>VimwikiTabIndex
-    nmap <Plug>NoVimwikiUISelect <Plug>VimwikiUISelect
-    nmap <Plug>NoVimwikiDiaryIndex <Plug>VimwikiDiaryIndex
-    nmap <Plug>NoVimwikiMakeDiaryNote <Plug>VimwikiMakeDiaryNote
-    nmap <Plug>NoVimwikiTabMakeDiaryNote <Plug>VimwikiTabMakeDiaryNote
-    nmap <Plug>NoVimwikiDiaryGenerateLinks <Plug>VimwikiDiaryGenerateLinks
-    nmap <Plug>NoVimwikiMakeYesterdayDiaryNote <Plug>VimwikiMakeYesterdayDiaryNote
-    nmap <Plug>NoVimwikiRenameLink <Plug>VimwikiRenameLink
-    nmap <Plug>NoVimwikiDeleteLink <Plug>VimwikiDeleteLink
-    nmap <Plug>NoVimwiki2HTMLBrowse <Plug>Vimwiki2HTMLBrowse
-    nmap <Plug>NoVimwiki2HTML <Plug>Vimwiki2HTML
-    nmap <Plug>NoVimwikiNormalizeLinkVisual <Plug>VimwikiNormalizeLinkVisual
-    nmap <Plug>NoVimwikiNormalizeLink <Plug>VimwikiNormalizeLink
-
-    " provide search in vimwiki directly
-    au FileType vimwiki nmap <buffer> <C-p> :Files <c-r>=VimwikiGet('path')<CR><CR>
-    au FileType vimwiki nmap <buffer> <leader>/ :Ag <c-r>=VimwikiGet('path')<CR><CR>
+    au FileType markdown call BindForWikiFiles()
 
     if exists('g:plugs["vim-startify"]')
-        au FileType startify nmap <buffer> <C-p> :Files <c-r>=VimwikiGet('path')<CR><CR>
-        au FileType startify nmap <buffer> <leader>/ :Ag <c-r>=VimwikiGet('path')<CR><CR>
+        au FileType startify nmap <buffer> <C-p> :Files <c-r>=g:wiki_directory<CR><CR>
+        au FileType startify nmap <buffer> <leader>/ :Rg <c-r>=g:wiki_directory<CR><CR>
     endif
-
-    nmap <leader>` <Plug>VimwikiIndex
-
-    hi link VimwikiHR Comment
-
-    " integrate vimwiki with tagbar
-    let g:tagbar_type_vimwiki = {
-                \   'ctagstype':'vimwiki'
-                \ , 'kinds':['h:header']
-                \ , 'sro':'&&&'
-                \ , 'kind2scope':{'h':'header'}
-                \ , 'sort':0
-                \ , 'ctagsbin': $VIMHOME . '/scripts/vwtags.py'
-                \ , 'ctagsargs': 'markdown'
-                \ }
 endif
 
 "---------------------------------------------------------------------
@@ -948,7 +877,7 @@ if exists('g:plugs["ywvim"]')
     let g:ywvim_esc_autoff = 0
     let g:ywvim_autoinput = 0
     let g:ywvim_circlecandidates = 1
-    let g:ywvim_helpim_on = 0          " 五笔反查
+    let g:ywvim_helpim_on = 1          " 五笔反查
     let g:ywvim_matchexact = 0
     let g:ywvim_chinesecode = 1
     let g:ywvim_gb = 0
@@ -956,6 +885,12 @@ if exists('g:plugs["ywvim"]')
     let g:ywvim_conv = ''
     let g:ywvim_lockb = 1
     let g:ywvim_theme = 'dark'
+endif
+
+"----------------------------------------------------------------------
+" vim-pencil: mode for writing
+if exists('g:plugs["vim-pencil"]')
+    autocmd FileType markdown,mkd,text call pencil#init()
 endif
 
 "===============================================================================
@@ -982,14 +917,23 @@ let g:enable_my_python_config = 1
 
 if exists('g:plugs["deoplete-rust"]')
     " racer : rust auto completion
-    let $RUST_SRC_PATH = expand("~/.multirust/toolchains/stable-*/lib/rustlib/src/rust/src")
-    let g:deoplete#sources#rust#rust_source_path = expand("~/.multirust/toolchains/stable-*/lib/rustlib/src/rust/src")
+    let $RUST_SRC_PATH = expand("~/.rustup/toolchains/stable-*/lib/rustlib/src/rust/src")
+    let g:deoplete#sources#rust#rust_source_path = expand("~/.rustup/toolchains/stable-*/lib/rustlib/src/rust/src")
     let g:deoplete#sources#rust#racer_binary = expand("~/.cargo/bin/racer")
 endif
 
 "----------------------------------------------------------------------
 " markdown
-let g:vim_markdown_folding_disabled = 1
+
+if exists('g:plugs["vim-markdown"]')
+    let g:vim_markdown_folding_disabled = 1
+    let g:vim_markdown_frontmatter=1
+    let g:vim_markdown_follow_anchor = 1
+    let g:vim_markdown_conceal = 0
+    let g:tex_conceal = ""
+    let g:vim_markdown_math = 1
+    let g:vim_markdown_frontmatter = 1
+endif
 
 "----------------------------------------------------------------------
 " javascript
