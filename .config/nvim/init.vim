@@ -505,7 +505,7 @@ if package_manager == "vim-plug"
 
     " for markdown
     Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
-    Plug 'reedes/vim-pencil', {'for': ['markdown', 'text'], 'on': ['Pencil', 'TogglePencil']}
+    Plug 'dkarter/bullets.vim', {'for': ['markdown', 'text', 'gitcommit']}
 
     " for typescript
     Plug 'HerringtonDarkholme/yats.vim'
@@ -752,27 +752,31 @@ endif
 
 
 "---------------------------------------------------------------------
-" calendar-vim
-
+" Personal wiki
 let g:wiki_directory = $HOME . '/Dropbox/wiki'
+
+function! CreateMappingForPersonalWiki()
+    execute("nmap <buffer> <C-p> :Files ".g:wiki_directory."<CR>")
+    execute("nmap <buffer> <leader>/ :Rg ".g:wiki_directory."<CR>")
+    execute("nmap <buffer> <C-n> :e ".g:wiki_directory."/")
+endfunction
+
+function! BindForWikiFiles()
+    if expand('%:p') =~ '^'. g:wiki_directory
+        call CreateMappingForPersonalWiki()
+    endif
+endfunction
+
+au FileType markdown call BindForWikiFiles()
+au FileType startify call CreateMappingForPersonalWiki()
+
+"---------------------------------------------------------------------
+" calendar-vim
 
 if exists('g:plugs["calendar-vim"]')
     let g:calendar_filetype = 'markdown'
     let g:calendar_diary= g:wiki_directory . '/diary'
 
-    function! BindForWikiFiles()
-        if expand('%:p') =~ '^'. g:wiki_directory
-            execute("nmap <buffer> <C-p> :Files ".g:wiki_directory."<CR>")
-            execute("nmap <buffer> <leader>/ :Rg ".g:wiki_directory."<CR>")
-        endif
-    endfunction
-
-    au FileType markdown call BindForWikiFiles()
-
-    if exists('g:plugs["vim-startify"]')
-        au FileType startify nmap <buffer> <C-p> :Files <c-r>=g:wiki_directory<CR><CR>
-        au FileType startify nmap <buffer> <leader>/ :Rg <c-r>=g:wiki_directory<CR><CR>
-    endif
 endif
 
 "---------------------------------------------------------------------
@@ -887,12 +891,6 @@ if exists('g:plugs["ywvim"]')
     let g:ywvim_theme = 'dark'
 endif
 
-"----------------------------------------------------------------------
-" vim-pencil: mode for writing
-if exists('g:plugs["vim-pencil"]')
-    autocmd FileType markdown,mkd,text call pencil#init()
-endif
-
 "===============================================================================
 " self-added plugins && settigns
 
@@ -933,6 +931,15 @@ if exists('g:plugs["vim-markdown"]')
     let g:tex_conceal = ""
     let g:vim_markdown_math = 1
     let g:vim_markdown_frontmatter = 1
+endif
+
+"----------------------------------------------------------------------
+" bullets
+if exists('g:plugs["bullets.vim"]')
+    let g:bullets_set_mappings = 0
+
+    au FileType markdown,text,gitcommit nmap <silent> <C-Space> :ToggleCheckbox<CR>
+    au FileType markdown,text,gitcommit nmap <silent> <C-@> :ToggleCheckbox<CR>
 endif
 
 "----------------------------------------------------------------------
