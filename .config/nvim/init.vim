@@ -515,13 +515,24 @@ if package_manager == "vim-plug"
     " Completion Framework
     "------------------------------------------------------------------
     " Completion -- deoplete
-    if has('nvim')
-        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-        Plug 'zchee/deoplete-jedi', {'for': 'python'}
-        Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
-    else
-        Plug 'racer-rust/vim-racer', {'for': 'rust'}
+    "if has('nvim')
+        "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+        "Plug 'zchee/deoplete-jedi', {'for': 'python'}
+        "Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
+    "else
+        "Plug 'racer-rust/vim-racer', {'for': 'rust'}
+    "endif
+
+    Plug 'autozimu/LanguageClient-neovim', {
+        \ 'branch': 'next',
+        \ 'do': 'bash install.sh',
+        \ }
+
+    if !has('nvim')
+        Plug 'roxma/vim-hug-neovim-rpc'
     endif
+
+    Plug 'roxma/nvim-completion-manager'
 
     "------------------------------------------------------------------
     " Others
@@ -849,6 +860,25 @@ endif
 if exists('g:plugs["ale"]')
     nmap <silent> [e <Plug>(ale_previous_wrap)
     nmap <silent> ]e <Plug>(ale_next_wrap)
+endif
+
+"----------------------------------------------------------------------
+" LanguageClient-neovim
+
+if exists('g:plugs["LanguageClient-neovim"]')
+    " Required for operations modifying multiple buffers like rename.
+    set hidden
+
+    let g:LanguageClient_serverCommands = {
+        \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+        \ 'python': ['pyls'],
+        \ 'javascript': ['javascript-typescript-stdio'],
+        \ 'javascript.jsx': ['javascript-typescript-stdio'],
+        \ }
+
+    nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
+    nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
+    nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
 endif
 
 
