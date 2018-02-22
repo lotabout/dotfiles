@@ -870,17 +870,23 @@ if exists('g:plugs["LanguageClient-neovim"]')
     set hidden
 
     let g:LanguageClient_serverCommands = {
-        \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+        \ 'rust': ['rustup', 'run', 'stable', 'rls'],
         \ 'python': ['pyls'],
         \ 'javascript': ['javascript-typescript-stdio'],
         \ 'javascript.jsx': ['javascript-typescript-stdio'],
         \ }
 
-    nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
-    nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
-    nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
-endif
+    let g:LanguageClient_changeThrottle = 0.5
 
+    function! LanguageClientInit()
+        nnoremap <buffer><silent> K :call LanguageClient_textDocument_hover()<CR>
+        nnoremap <buffer><silent> gd :call LanguageClient_textDocument_definition()<CR>
+        nnoremap <buffer><silent> <F2> :call LanguageClient_textDocument_rename()<CR>
+        setlocal formatexpr=LanguageClient_textDocument_rangeFormatting()
+    endfunction
+
+    au Filetype rust,python,javascript call LanguageClientInit()
+endif
 
 "----------------------------------------------------------------------
 " jedi-vim
