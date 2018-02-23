@@ -76,6 +76,9 @@ zstyle ':completion:*:kill:*' force-list always
 # cd not select parent dir
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
 
+# highlight the selections of completion
+zstyle ':completion:*' menu select
+
 # useful for path editing, backward-delete-word, but with / as additional delimiter
 backward-delete-to-slash () {
 local WORDCHARS=${WORDCHARS//\//}
@@ -173,6 +176,10 @@ alias l='ls -CF'
 alias emacs="emacs -nw"
 alias ec='emacsclient -t -a ""'
 
+if hash exa 2> /dev/null; then
+    alias ls="exa"
+fi
+
 # alias for convenience
 alias psg='ps axu | grep'
 alias cd..="cd .."
@@ -210,7 +217,12 @@ function move_to_trash() {
         local dst=${mindtrailingslash##*/}
         mv -- "$FILE" $HOME/.trash/"${dst}-$(date '+%Y-%m-%d-%T')"
     done
+}
 
+function trash_empty() {
+    mv $HOME/.trash $HOME/.trash.to-remove
+    mkdir $HOME/.trash
+    /bin/rm -rf $HOME/.trash.to-remove
 }
 
 alias rm=move_to_trash
