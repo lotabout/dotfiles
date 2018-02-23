@@ -4,6 +4,9 @@
 #
 # Lines starting with a '#' are ignored.
 export XDG_CURRENT_DESKTOP=KDE
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
 
 # Change your keymap:
 xmodmap "/home/jinzhouz/.Xmodmap"
@@ -29,7 +32,7 @@ fi
 
 # set keyboard repeat speed
 if hash xset 2>/dev/null; then
-    xset r rate 240 20
+    xset r rate 200 40
 fi
 
 fcitx &
