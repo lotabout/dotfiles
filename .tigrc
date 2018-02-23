@@ -1,6 +1,5 @@
 set main-view	= id:yes date:default author:email-user commit-title:yes,graph,refs,overflow=no
-set main-view-date = custom
-set main-view-date-format = "%Y-%m-%d"
+color cursor black green
 
 #==============================================================================
 # vim style bindings
