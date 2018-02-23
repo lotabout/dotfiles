@@ -445,6 +445,8 @@ if package_manager == "vim-plug"
 
     Plug 'vim-scripts/LargeFile' "disable some features for faster opening large files.
 
+    Plug 'ryanoasis/vim-devicons'
+
     "------------------------------------------------------------------
     " Integration with Linux environment
     "------------------------------------------------------------------
@@ -792,7 +794,6 @@ endif
 
 "---------------------------------------------------------------------
 " vim-airline
-
 if exists('g:plugs["vim-airline"]')
     if has("gui_running")
         let g:airline_theme='solarized'
@@ -806,6 +807,13 @@ if exists('g:plugs["vim-airline"]')
     let g:airline#extensions#tabline#show_splits = 0
     let g:airline#extensions#tabline#show_tab_nr = 0
     let g:airline#extensions#tabline#tab_min_count = 2
+endif
+"
+"---------------------------------------------------------------------
+" vim-devicons
+if exists('g:plugs["vim-devicons"]')
+    let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+    let g:webdevicons_enable_airline_statusline = 1
 endif
 
 "---------------------------------------------------------------------
