@@ -216,6 +216,8 @@ class StockBox(widget.base.ThreadedPollText):
 
         return '|'.join(texts)
 
+#-----------------------------------------------------------------------------
+
 #=============================================================================
 
 # read stock list from config file

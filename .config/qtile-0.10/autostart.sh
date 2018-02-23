@@ -38,4 +38,9 @@ if hash dunst 2> /dev/null; then
 fi
 
 # echo "Starting auto-sync tools"
-sleep 60 && dropbox start &
+if hash dropbox 2> /dev/null; then
+    sleep 60 && dropbox start &
+fi
+
+# allow all users to access X
+xhost +
