@@ -20,7 +20,7 @@ set formatoptions-=c formatoptions-=o formatoptions-=r
 set modeline
 
 " hightlight column 80
-set colorcolumn=100
+set colorcolumn=80,120
 set textwidth=100
 
 if exists('g:plugs["vim-textobj-python"]') && exists('g:plugs["slimux"]')
@@ -52,5 +52,5 @@ if exists('g:plugs["vim-textobj-python"]') && exists('g:plugs["slimux"]')
     endfunction
     command! SlimuxPythonEvalDefun call Slimux_python_eval_defun()
     " bind it to Control-Enter
-    nmap <C-M> :SlimuxPythonEvalDefun<CR>
+    nmap <buffer> <C-M> :SlimuxPythonEvalDefun<CR>
 endif
