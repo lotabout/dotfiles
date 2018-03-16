@@ -236,22 +236,22 @@ function pac() {
         localenv=$localenv-$1
     fi
 
+    if [ ! -d $localenv ]; then
+        localenv=$HOME/anaconda3
+    fi
+
     if [ -f $localenv/bin/activate ]; then
-        source $localenv/bin/activate
+        source $localenv/bin/activate $1
     fi
 }
 
 function pac3() {
-    # short for python activate
-    localenv=$HOME/localenv-py3
-    if [ -f $localenv/bin/activate ]; then
-        source $localenv/bin/activate
-    fi
+    pac py3
 }
 
 function pdc() {
     # short for python deactivate
-    deactivate
+    deactivate &> /dev/null || source deactivate
 }
 
 
@@ -445,6 +445,10 @@ if [[ $TERM =~ eterm ]]; then
     }
     cd "$(pwd)"
 fi
+
+#------------------------------------------------------------------------------
+# Homebrew settings
+export HOMEBREW_NO_AUTO_UPDATE=true
 
 #==============================================================================
 # plugins
