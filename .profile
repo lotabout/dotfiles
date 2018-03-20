@@ -46,7 +46,7 @@ for x in $(ls $texdirs 2>/dev/null); do
 done
 
 # add path for ruby gems
-if which ruby >/dev/null && which gem >/dev/null; then
+if hash ruby &> /dev/null && hash gem &> /dev/null; then
     PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
 fi
 

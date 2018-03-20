@@ -72,26 +72,26 @@ fi
 # Post install
 
 # install neovim python support
-if hash pip2 > /dev/null; then
+if hash pip2 &> /dev/null; then
     pip2 install --user --upgrade neovim
     pip2 install --user psutil setproctitle # for ncm
 fi
 
-if hash pip3 > /dev/null; then
+if hash pip3 &> /dev/null; then
     pip3 install --user --upgrade neovim
     pip3 install --user psutil setproctitle # for ncm
 fi
 
 # install LSP server for rust, python
-if hash rustup > /dev/null; then
+if hash rustup &> /dev/null; then
     rustup component add rls-preview rust-analysis rust-src
 fi
 
-if hash pip2 > /dev/null; then
+if hash pip2 &> /dev/null; then
     pip2 install python-language-server
 fi
 
-if hash pip3 > /dev/null; then
+if hash pip3 &> /dev/null; then
     pip3 install python-language-server
 fi
 
