@@ -316,80 +316,94 @@ function ftpane() {
 # SKIM settings
 
 # load if exist
-[[ -f ~/.skim.zsh ]] && source ~/.skim.zsh
+if [ -d $HOME/.skim ]; then
+    if [[ ! "$PATH" == *$HOME/.skim/bin* ]]; then
+      export PATH="$PATH:$HOME/.skim/bin"
+    fi
 
-# Setting ag as the default source for skim
-export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
-# To apply the command to CTRL-T as well
-export SKIM_CTRL_T_COMMAND="$SKIM_DEFAULT_COMMAND"
+    # Setting ag as the default source for skim
+    export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
+    # To apply the command to CTRL-T as well
+    export SKIM_CTRL_T_COMMAND="$SKIM_DEFAULT_COMMAND"
 
-# integrate with fasd
-function j() {
-  local dir
-  dir="$(fasd -Rdl "$1" | sk -m)" && cd "${dir}" || return 1
-}
+    # integrate with fasd
+    function j() {
+      local dir
+      dir="$(fasd -Rdl "$1" | sk -m)" && cd "${dir}" || return 1
+    }
 
-function v() {
-  local file
-  file="$(fasd -Rfl "$1" | sk -m)" && vi "${file}" || return 1
-}
+    function v() {
+      local file
+      file="$(fasd -Rfl "$1" | sk -m)" && vi "${file}" || return 1
+    }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# intergration with git
-# modified from https://gist.github.com/junegunn/8b572b8d4b5eddd8b85e5f4d40f17236
-is_in_git_repo() {
-  git rev-parse HEAD > /dev/null 2>&1
-}
 
-fzf-down() {
-  sk --bind 'alt-a:select-all,alt-d:deselect-all' --height 50% "$@"
-}
+    # Auto-completion
+    # ---------------
+    [[ $- == *i* ]] && source "$HOME/.skim/shell/completion.zsh" 2> /dev/null
 
-gf() {
-  is_in_git_repo || return
-  git -c color.status=always status --short |
-  fzf-down -m --ansi --nth 1..,.. \
-    --preview '(git diff --color=always -- {-1} | sed 1,4d; cat {-1}) | head -500' |
-  cut -c4- | sed 's/.* -> //'
-}
+    # Key bindings
+    # ------------
+    source "$HOME/.skim/shell/key-bindings.zsh"
 
-gb() {
-  is_in_git_repo || return
-  git branch -a --color=always | grep -v '/HEAD\s' | sort |
-  fzf-down --ansi --multi --tac --preview-window right:70% \
-    --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" $(sed s/^..// <<< {} | cut -d" " -f1) | head -'$LINES |
-  sed 's/^..//' | cut -d' ' -f1 |
-  sed 's#^remotes/##'
-}
 
-gh() {
-  is_in_git_repo || return
-  git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --graph --color=always |
-  fzf-down --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
-    --header 'Press CTRL-S to toggle sort' \
-    --preview 'grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always | head -'$LINES |
-  grep -o "[a-f0-9]\{7,\}"
-}
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # intergration with git
+    # modified from https://gist.github.com/junegunn/8b572b8d4b5eddd8b85e5f4d40f17236
+    is_in_git_repo() {
+      git rev-parse HEAD > /dev/null 2>&1
+    }
 
-join-lines() {
-  local item
-  while read item; do
-    echo -n "${(q)item} "
-  done
-}
+    fzf-down() {
+      sk --bind 'alt-a:select-all,alt-d:deselect-all' --height 50% "$@"
+    }
 
-bind-git-helper() {
-  local char
-  for c in $@; do
-    eval "fzf-g$c-widget() { local result=\$(g$c | join-lines); zle reset-prompt; LBUFFER+=\$result }"
-    eval "zle -N fzf-g$c-widget"
-    eval "bindkey '^g$c' fzf-g$c-widget"
-  done
-}
+    gf() {
+      is_in_git_repo || return
+      git -c color.status=always status --short |
+      fzf-down -m --ansi --nth 1..,.. \
+        --preview '(git diff --color=always -- {-1} | sed 1,4d; cat {-1}) | head -500' |
+      cut -c4- | sed 's/.* -> //'
+    }
 
-bindkey -r '^g'
-bind-git-helper f b h
-unset -f bind-git-helper
+    gb() {
+      is_in_git_repo || return
+      git branch -a --color=always | grep -v '/HEAD\s' | sort |
+      fzf-down --ansi --multi --tac --preview-window right:70% \
+        --preview 'git log --oneline --graph --date=short --pretty="format:%C(auto)%cd %h%d %s" $(sed s/^..// <<< {} | cut -d" " -f1) | head -'$LINES |
+      sed 's/^..//' | cut -d' ' -f1 |
+      sed 's#^remotes/##'
+    }
+
+    gh() {
+      is_in_git_repo || return
+      git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --graph --color=always |
+      fzf-down --ansi --no-sort --reverse --multi --bind 'ctrl-s:toggle-sort' \
+        --header 'Press CTRL-S to toggle sort' \
+        --preview 'grep -o "[a-f0-9]\{7,\}" <<< {} | xargs git show --color=always | head -'$LINES |
+      grep -o "[a-f0-9]\{7,\}"
+    }
+
+    join-lines() {
+      local item
+      while read item; do
+        echo -n "${(q)item} "
+      done
+    }
+
+    bind-git-helper() {
+      local char
+      for c in $@; do
+        eval "fzf-g$c-widget() { local result=\$(g$c | join-lines); zle reset-prompt; LBUFFER+=\$result }"
+        eval "zle -N fzf-g$c-widget"
+        eval "bindkey '^g$c' fzf-g$c-widget"
+      done
+    }
+
+    bindkey -r '^g'
+    bind-git-helper f b h
+    unset -f bind-git-helper
+fi
 
 #------------------------------------------------------------------------------
 # FZF settings
