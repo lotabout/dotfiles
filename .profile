@@ -59,6 +59,10 @@ if [ -d $HOME/.cargo/bin ]; then
     PATH="$HOME/.cargo/bin:$PATH"
 fi
 
+if [ -d $HOME/anaconda3 ]; then
+    PATH="$HOME/anaconda3/bin:$PATH"
+fi
+
 export GOPATH=${GOPATH:-$HOME/go}
 path_append $GOPATH/bin;
 
