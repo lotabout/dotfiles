@@ -66,6 +66,15 @@ fi
 export GOPATH=${GOPATH:-$HOME/go}
 path_append $GOPATH/bin;
 
+#==============================================================================
+# mirrors for some tools
+
+# homebrew
+export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
+
+# rustup
+export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
 
 #==============================================================================
 
