@@ -322,7 +322,7 @@ if [ -d $HOME/.skim ]; then
     fi
 
     # Setting ag as the default source for skim
-    export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
+    export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || rg -l "" || ag -l -g "" || find . -type f)'
     # To apply the command to CTRL-T as well
     export SKIM_CTRL_T_COMMAND="$SKIM_DEFAULT_COMMAND"
 
@@ -472,6 +472,13 @@ if [[ -r $AUTO_SUGGESTIONS && $TERM =~ ".*256" ]]; then
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=030'
     ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20 # do not trigger completion for large buffer
 fi
+
+#==============================================================================
+# aliases
+alias cnpm="npm --registry=https://registry.npm.taobao.org \
+    --cache=$HOME/.npm/.cache/cnpm \
+    --disturl=https://npm.taobao.org/dist \
+    --userconfig=$HOME/.cnpmrc"
 
 #==============================================================================
 # load other settings

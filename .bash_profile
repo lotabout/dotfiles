@@ -353,7 +353,7 @@ fi
 
 #------------------------------------------------------------------------------
 # skim settings
-export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || ag -l -g "")'
+    export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || rg -l "" || ag -l -g "" || find . -type f)'
 [ -f ~/.skim.bash ] && source ~/.skim.bash
 
 #------------------------------------------------------------------------------

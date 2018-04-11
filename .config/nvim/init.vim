@@ -746,7 +746,7 @@ if executable('sk') && exists('g:plugs["skim.vim"]')
     command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:50%:hidden', 'alt-h'))
 
     " Customized binding for AG
-    nnoremap <leader>/ :Ag<CR>
+    nnoremap <leader>/ :Rg<CR>
 
     " Replace Bufexplore
     nmap <C-e> :Buffers<CR>
