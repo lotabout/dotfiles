@@ -812,7 +812,7 @@ endif
 "---------------------------------------------------------------------
 " vim-devicons
 if exists('g:plugs["vim-devicons"]')
-    let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+    "let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
     let g:webdevicons_enable_airline_statusline = 1
 endif
 
@@ -1000,10 +1000,10 @@ let g:syntastic_mode_map = {
             \ "mode": "active",
             \ "passive_filetypes": ["java", "racket"] }
 
-au BufNewFile,BufRead *.js, *.html, *.css
-    \ set tabstop = 2
-    \ set softtabstop = 2
-    \ set shiftwidth = 2
+au BufNewFile,BufRead *.js,*.html,*.css
+    \ set tabstop=2 |
+    \ set softtabstop=2 |
+    \ set shiftwidth=2 |
     \ set smarttab
 
 "===============================================================================
