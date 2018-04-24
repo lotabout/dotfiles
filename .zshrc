@@ -285,12 +285,32 @@ function polipo_shadowsocks(){
     polipo socksParentProxy=localhost:1080
 }
 
-function ppp() {
-    export http_proxy=http://localhost:8123
-    export https_proxy=https://localhost:8123
-    export socks_proxy=socks://localhost:8123
-    echo "exporting proxy settings for polipo done."
+case $OS in
+    Mac)
+        function ppp() {
+            export http_proxy=http://localhost:1087
+            export https_proxy=http://localhost:1087
+            export socks_proxy=socks://localhost:8123
+            echo "exporting proxy settings for SS done."
+        }
+        ;;
+    Linux)
+        function ppp() {
+            export http_proxy=http://localhost:8123
+            export https_proxy=https://localhost:8123
+            export socks_proxy=socks://localhost:8123
+            echo "exporting proxy settings for polipo done."
+        }
+        ;;
+esac
+
+function upp() {
+    unset http_proxy
+    unset https_proxy
+    unset socks_proxy
+    echo "Unset proxy settingsdone."
 }
+
 
 # ftpane - switch pane (@george-b)
 function ftpane() {
