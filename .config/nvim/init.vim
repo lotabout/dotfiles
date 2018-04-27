@@ -425,7 +425,7 @@ if package_manager == "vim-plug"
 
     Plug 'terryma/vim-expand-region'
 
-    Plug 'Chiel92/vim-autoformat' " enhance the format function (press '=' key)
+    Plug 'sbdchd/neoformat' " enhance the format function (press '=' key)
 
     Plug 't9md/vim-choosewin', {'on': '<Plug>(choosewin)'}
 
@@ -444,8 +444,6 @@ if package_manager == "vim-plug"
     Plug 'tpope/tpope-vim-abolish'
 
     Plug 'vim-scripts/LargeFile' "disable some features for faster opening large files.
-
-    Plug 'ryanoasis/vim-devicons'
 
     "------------------------------------------------------------------
     " Integration with Linux environment
@@ -495,9 +493,10 @@ if package_manager == "vim-plug"
 
     " for javascript
     "Plug 'ternjs/tern_for_vim', {'for': 'javascript', 'do' : 'npm install'}
-    Plug 'pangloss/vim-javascript', {'for': 'javascript'}
-    "Plug 'mxw/vim-jsx' " for react.js
-    "Plug 'othree/javascript-libraries-syntax.vim'
+    Plug 'pangloss/vim-javascript', {'for': ['javascript', 'javascript.jsx']}
+    Plug 'mxw/vim-jsx', {'for': ['javascript', 'javascript.jsx']} " for react.js
+    Plug 'moll/vim-node', {'for': 'javascript'}
+    Plug 'othree/javascript-libraries-syntax.vim', {'for': 'javascript'}
 
     Plug 'guns/vim-clojure-static', {'for': 'clojure'}
     Plug 'tpope/vim-fireplace', {'for': 'clojure'}
@@ -511,20 +510,11 @@ if package_manager == "vim-plug"
 
     " for typescript
     Plug 'HerringtonDarkholme/yats.vim'
-    Plug 'mhartington/nvim-typescript'
+    Plug 'mhartington/nvim-typescript', {'for': 'typescript'}
 
     "------------------------------------------------------------------
     " Completion Framework
     "------------------------------------------------------------------
-    " Completion -- deoplete
-    "if has('nvim')
-        "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-        "Plug 'zchee/deoplete-jedi', {'for': 'python'}
-        "Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
-    "else
-        "Plug 'racer-rust/vim-racer', {'for': 'rust'}
-    "endif
-
     Plug 'autozimu/LanguageClient-neovim', {
         \ 'branch': 'next',
         \ 'do': 'bash install.sh',
@@ -561,7 +551,7 @@ syntax enable
 if has("gui_running")
     colorscheme solarized
     "colorscheme obsidian
-    set guifont=Dejavu\ Sans\ Mono\ Nerd\ Font\ 12,Dejavu\ Sans\ Mono\ for\ Powerline\ 12,Dejavu\ Sans\ Mono\ 12
+    set guifont=Fira\ Code\ 12,Dejavu\ Sans\ Mono\ for\ Powerline\ 12,Dejavu\ Sans\ Mono\ 12
 elseif &t_Co == 256
     set background=dark
     colorscheme solarized
@@ -737,7 +727,7 @@ endif
 
 "---------------------------------------------------------------------
 " skim.vim
-if executable('sk') && exists('g:plugs["skim.vim"]')
+if exists('g:plugs["skim.vim"]')
     let $SKIM_DEFAULT_OPTS = '--bind ctrl-f:toggle'
     " replace Ctrl-p
     nmap <C-p> :Files<CR>
@@ -876,6 +866,10 @@ endif
 if exists('g:plugs["LanguageClient-neovim"]')
     " Required for operations modifying multiple buffers like rename.
     set hidden
+
+    " rustup component add rls-preview rust-analysis rust-src
+    " pip install pyls
+    " npm i -g javascript-typescript-langserve"
 
     let g:LanguageClient_serverCommands = {
         \ 'rust': ['rustup', 'run', 'stable', 'rls'],
