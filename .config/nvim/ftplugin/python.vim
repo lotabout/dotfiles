@@ -21,7 +21,7 @@ set modeline
 
 " hightlight column 80
 set colorcolumn=80,120
-set textwidth=100
+set textwidth=120
 
 if exists('g:plugs["vim-textobj-python"]') && exists('g:plugs["slimux"]')
     function Slimux_python_eval_defun()

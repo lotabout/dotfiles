@@ -441,9 +441,12 @@ if package_manager == "vim-plug"
 
     Plug 'kana/vim-textobj-user'
 
-    Plug 'tpope/tpope-vim-abolish'
+    Plug 'tpope/tpope-vim-abolish' " Enhance
 
-    Plug 'vim-scripts/LargeFile' "disable some features for faster opening large files.
+    Plug 'vim-scripts/LargeFile' " disable some features for faster opening large files.
+
+    Plug 'schickling/vim-bufonly' " close all buffers except current one
+    Plug 'kshenoy/vim-signature' " show sign for native marks
 
     "------------------------------------------------------------------
     " Integration with Linux environment
@@ -489,7 +492,7 @@ if package_manager == "vim-plug"
 
     " for python
     Plug 'bps/vim-textobj-python', {'for': 'python'}
-    Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
+    "Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
 
     " for javascript
     "Plug 'ternjs/tern_for_vim', {'for': 'javascript', 'do' : 'npm install'}
@@ -515,16 +518,19 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     " Completion Framework
     "------------------------------------------------------------------
+    if has('nvim')
+        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    else
+        Plug 'Shougo/deoplete.nvim'
+        Plug 'roxma/nvim-yarp'
+        Plug 'roxma/vim-hug-neovim-rpc'
+    endif
+
+    let g:deoplete#enable_at_startup = 1
     Plug 'autozimu/LanguageClient-neovim', {
         \ 'branch': 'next',
         \ 'do': 'bash install.sh',
         \ }
-
-    if !has('nvim')
-        Plug 'roxma/vim-hug-neovim-rpc'
-    endif
-
-    Plug 'roxma/nvim-completion-manager'
 
     "------------------------------------------------------------------
     " Others
@@ -869,14 +875,14 @@ if exists('g:plugs["LanguageClient-neovim"]')
 
     " rustup component add rls-preview rust-analysis rust-src
     " pip install pyls
-    " npm i -g javascript-typescript-langserve"
+    " npm install -g typescript-language-server
 
     let g:LanguageClient_serverCommands = {
         \ 'rust': ['rustup', 'run', 'stable', 'rls'],
         \ 'python': ['pyls'],
-        \ 'javascript': ['javascript-typescript-stdio'],
-        \ 'javascript.jsx': ['javascript-typescript-stdio'],
         \ }
+        "\ 'javascript': ['javascript-typescript-stdio'],
+        "\ 'javascript.jsx': ['javascript-typescript-stdio'],
 
     let g:LanguageClient_changeThrottle = 0.5
 
@@ -994,7 +1000,7 @@ let g:syntastic_mode_map = {
             \ "mode": "active",
             \ "passive_filetypes": ["java", "racket"] }
 
-au BufNewFile,BufRead *.js,*.html,*.css
+au BufNewFile,BufRead *.js,*.jsx,*.ts,*.tsx,*.html,*.css
     \ set tabstop=2 |
     \ set softtabstop=2 |
     \ set shiftwidth=2 |
