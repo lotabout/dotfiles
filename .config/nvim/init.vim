@@ -107,9 +107,6 @@ set fileencodings=ucs-bom,utf-8,cp932,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
 
-" Turn backup off.
-" set nobackup
-
 " Change backup directory to a less annoying place under linux.
 if has("unix")
     if isdirectory($HOME.'/.vim-backup') == 0
@@ -188,6 +185,7 @@ autocmd BufReadPost *
      \ if line("'\"") > 0 && line("'\"") <= line("$") |
      \   exe "normal! g`\"" |
      \ endif
+
 au FileType crontab setlocal backupcopy=yes
 
 "----------------------------------------------------------------------
@@ -435,13 +433,9 @@ if package_manager == "vim-plug"
 
     Plug 'mhinz/vim-startify'
 
-    "Plug 'kana/vim-arpeggio' "Allow key chords
-
-    Plug 'vim-scripts/marvim' " save macros
-
     Plug 'kana/vim-textobj-user'
 
-    Plug 'tpope/tpope-vim-abolish' " Enhance
+    Plug 'tpope/vim-abolish' " Enhance
 
     Plug 'vim-scripts/LargeFile' " disable some features for faster opening large files.
 
@@ -475,8 +469,7 @@ if package_manager == "vim-plug"
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
 
-    " private snippets
-    Plug 'lotabout/vim-ultisnippet-private'
+    Plug 'lotabout/vim-ultisnippet-private' " private snippets
 
     Plug 'w0rp/ale' " async version of Syntastic
 
@@ -488,23 +481,22 @@ if package_manager == "vim-plug"
 
     Plug 'Rip-Rip/clang_complete', {'for': ['c', 'cpp']}
 
-    Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript-jsx']}
-
     " for python
     Plug 'bps/vim-textobj-python', {'for': 'python'}
     "Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
 
     " for javascript
-    "Plug 'ternjs/tern_for_vim', {'for': 'javascript', 'do' : 'npm install'}
     Plug 'pangloss/vim-javascript', {'for': ['javascript', 'javascript.jsx']}
     Plug 'mxw/vim-jsx', {'for': ['javascript', 'javascript.jsx']} " for react.js
-    Plug 'moll/vim-node', {'for': 'javascript'}
     Plug 'othree/javascript-libraries-syntax.vim', {'for': 'javascript'}
+    Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript-jsx', 'typescript']}
 
+    " for clojure
     Plug 'guns/vim-clojure-static', {'for': 'clojure'}
     Plug 'tpope/vim-fireplace', {'for': 'clojure'}
     Plug 'guns/vim-clojure-highlight', {'for': 'clojure'}
 
+    " for rust
     Plug 'rust-lang/rust.vim', {'for': 'rust'}
 
     " for markdown
@@ -685,7 +677,7 @@ endif
 
 
 "---------------------------------------------------------------------
-" fakeclip
+" LargeFile
 
 if exists("g:plugs['LargeFile']")
     let g:LargeFile = 10
@@ -754,11 +746,13 @@ if exists('g:plugs["gundo.vim"]')
     nnoremap <F5> :GundoToggle<CR>
 endif
 
+"---------------------------------------------------------------------
+" DelimitMate
+
 if exists('g:plugs["delimitMate"]')
     " not used
     au FileType racket,clojure let b:delimitMate_quotes = "\""
 endif
-
 
 "---------------------------------------------------------------------
 " Personal wiki
@@ -804,13 +798,6 @@ if exists('g:plugs["vim-airline"]')
     let g:airline#extensions#tabline#show_tab_nr = 0
     let g:airline#extensions#tabline#tab_min_count = 2
 endif
-"
-"---------------------------------------------------------------------
-" vim-devicons
-if exists('g:plugs["vim-devicons"]')
-    "let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
-    let g:webdevicons_enable_airline_statusline = 1
-endif
 
 "---------------------------------------------------------------------
 " vim-tmux-navigator
@@ -839,20 +826,6 @@ if exists('g:plugs["vim-hardtime"]')
 endif
 
 "----------------------------------------------------------------------
-" vim-arpeggio
-if exists('g:plugs["vim-arpeggio"]')
-    " press jk at the same time in insert mode will trigger Esc
-    call arpeggio#map('ic', '', 0, 'jk', '<Esc>')
-endif
-
-"----------------------------------------------------------------------
-" vim-leader-guide
-if exists('g:plugs["vim-leader-guide"]')
-    nnoremap <silent> <leader> :<c-u>LeaderGuide '<Space>'<CR>
-    vnoremap <silent> <leader> :<c-u>LeaderGuideVisual '<Space>'<CR>
-endif
-
-"----------------------------------------------------------------------
 " indent-guides
 if exists('g:plugs["vim-indent-guides"]')
     let g:indent_guides_start_level = 2
@@ -864,6 +837,10 @@ endif
 if exists('g:plugs["ale"]')
     nmap <silent> [e <Plug>(ale_previous_wrap)
     nmap <silent> ]e <Plug>(ale_next_wrap)
+
+    let g:syntastic_mode_map = {
+                \ "mode": "active",
+                \ "passive_filetypes": ["java", "racket"] }
 endif
 
 "----------------------------------------------------------------------
@@ -881,8 +858,6 @@ if exists('g:plugs["LanguageClient-neovim"]')
         \ 'rust': ['rustup', 'run', 'stable', 'rls'],
         \ 'python': ['pyls'],
         \ }
-        "\ 'javascript': ['javascript-typescript-stdio'],
-        "\ 'javascript.jsx': ['javascript-typescript-stdio'],
 
     let g:LanguageClient_changeThrottle = 0.5
 
@@ -904,6 +879,9 @@ if exists('g:plugs["jedi-vim"]')
     let g:jedi#completions_enabled = 0
     let g:jedi#goto_command = "<C-]>"
 endif
+
+"----------------------------------------------------------------------
+" vim-gitgutter
 
 if exists('g:plugs["vim-gitgutter"]')
     nmap <silent> ]g :GitGutterNextHunk<CR>
@@ -955,16 +933,6 @@ autocmd FileType c,cpp setlocal colorcolumn=80
 let g:enable_my_python_config = 1
 
 "----------------------------------------------------------------------
-" rust
-
-if exists('g:plugs["deoplete-rust"]')
-    " racer : rust auto completion
-    let $RUST_SRC_PATH = expand("~/.rustup/toolchains/stable-*/lib/rustlib/src/rust/src")
-    let g:deoplete#sources#rust#rust_source_path = expand("~/.rustup/toolchains/stable-*/lib/rustlib/src/rust/src")
-    let g:deoplete#sources#rust#racer_binary = expand("~/.cargo/bin/racer")
-endif
-
-"----------------------------------------------------------------------
 " markdown
 
 if exists('g:plugs["vim-markdown"]')
@@ -989,16 +957,13 @@ endif
 "----------------------------------------------------------------------
 " javascript
 
-" javascript-libraries-syntax.vim
-let g:used_javascript_libs = 'underscore,jquery,angularjs,angularui,react'
-let g:jsx_ext_required = 0 " Allow JSX in normal JS files
+if exists('javascript-libraries-syntax.vim')
+    let g:used_javascript_libs = 'underscore,jquery,angularjs,angularui,react'
+    let g:jsx_ext_required = 0 " Allow JSX in normal JS files
+endif
 
 " Syntastic
 let g:syntastic_javascript_checkers = ['eslint']
-
-let g:syntastic_mode_map = {
-            \ "mode": "active",
-            \ "passive_filetypes": ["java", "racket"] }
 
 au BufNewFile,BufRead *.js,*.jsx,*.ts,*.tsx,*.html,*.css
     \ set tabstop=2 |
@@ -1027,12 +992,6 @@ if has('nvim')
 
     if exists('g:plugs["deoplete.nvim"]')
         let g:deoplete#enable_at_startup = 1
-
-        " With deoplete.nvim
-        let g:monster#completion#rcodetools#backend = "async_rct_complete"
-        let g:deoplete#sources#omni#input_patterns = {
-                    \   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
-                    \}
     endif
 
     "- - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1058,28 +1017,9 @@ else
     "--------------------------------------------------
     " vim specified settings
 
-    "- - - - - - - - - - - - - - - - - - - - - - - - -
-    " default settings
-
     " use blowfish as default crypt method
     set cryptmethod=blowfish
 
-
-    "- - - - - - - - - - - - - - - - - - - - - - - - -
-    " mappings
-
     " Fast editing or sourcing vimrc file
     nmap <silent> <leader>ee :tabnew<cr>:edit ~/.vimrc<cr>
-
-    "if !has("gui_running")
-        "" fix Alt key problem
-        "let c='a'
-        "while c <= 'z'
-            "exec "set <A-".c.">=\e".c
-            "exec "imap \e".c." <A-".c.">"
-            "let c = nr2char(1+char2nr(c))
-        "endw
-        ""set timeout ttimeoutlen=50
-        "set ttimeoutlen=20
-    "endif
 endif
