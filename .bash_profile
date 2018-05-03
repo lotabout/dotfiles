@@ -353,7 +353,7 @@ fi
 
 #------------------------------------------------------------------------------
 # skim settings
-    export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || rg -l "" || ag -l -g "" || find . -type f)'
+export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || rg -l "" || ag -l -g "" || find . -type f)'
 [ -f ~/.skim.bash ] && source ~/.skim.bash
 
 #------------------------------------------------------------------------------
@@ -385,3 +385,6 @@ if [ -f ~/.bashrc_local ]; then
 fi
 
 set -o vi
+
+# added by travis gem
+[ -f /Users/jinzhouz/.travis/travis.sh ] && source /Users/jinzhouz/.travis/travis.sh

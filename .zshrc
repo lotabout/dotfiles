@@ -505,3 +505,6 @@ alias cnpm="npm --registry=https://registry.npm.taobao.org \
 if [[ -f ~/.zshrc-local ]]; then
     . ~/.zshrc-local
 fi
+
+# added by travis gem
+[ -f /Users/jinzhouz/.travis/travis.sh ] && source /Users/jinzhouz/.travis/travis.sh
