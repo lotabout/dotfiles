@@ -47,6 +47,7 @@ export HISTFILE=~/.zsh_history
 export HISTSIZE=50000
 export SAVEHIST=50000
 setopt inc_append_history
+setopt hist_ignore_dups
 
 #/v/c/p/p => /var/cache/pacman/pkg
 setopt complete_in_word
@@ -151,6 +152,7 @@ case $OS in
         alias grep='grep --color=auto'
         alias fgrep='fgrep --color=auto'
         alias egrep='egrep --color=auto'
+        alias ctags="`brew --prefix`/bin/ctags"
         ;;
     Linux)
         if [ -x /usr/bin/dircolors ]; then
@@ -342,7 +344,7 @@ if [ -d $HOME/.skim ]; then
     fi
 
     # Setting ag as the default source for skim
-    export SKIM_DEFAULT_COMMAND='(git ls-tree -r --name-only HEAD || rg -l "" || ag -l -g "" || find . -type f)'
+    export SKIM_DEFAULT_COMMAND='(git ls-files -c -o --exclude-standard || rg -l "" || ag -l -g "" || find . -type f)'
     # To apply the command to CTRL-T as well
     export SKIM_CTRL_T_COMMAND="$SKIM_DEFAULT_COMMAND"
 

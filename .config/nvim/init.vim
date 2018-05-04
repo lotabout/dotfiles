@@ -490,6 +490,7 @@ if package_manager == "vim-plug"
     Plug 'mxw/vim-jsx', {'for': ['javascript', 'javascript.jsx']} " for react.js
     Plug 'othree/javascript-libraries-syntax.vim', {'for': 'javascript'}
     Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript-jsx', 'typescript']}
+    Plug 'ternjs/tern_for_vim'
 
     " for clojure
     Plug 'guns/vim-clojure-static', {'for': 'clojure'}
@@ -726,6 +727,7 @@ endif
 "---------------------------------------------------------------------
 " skim.vim
 if exists('g:plugs["skim.vim"]')
+    let $SKIM_DEFAULT_COMMAND = '(git ls-files -c -o --exclude-standard || rg -l "" || ag -l -g "" || find . -type f)'
     let $SKIM_DEFAULT_OPTS = '--bind ctrl-f:toggle'
     " replace Ctrl-p
     nmap <C-p> :Files<CR>
@@ -733,8 +735,11 @@ if exists('g:plugs["skim.vim"]')
     command! -bang -nargs=* Ag call fzf#vim#ag_interactive(<q-args>, fzf#vim#with_preview('right:50%:hidden', 'alt-h'))
     command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:50%:hidden', 'alt-h'))
 
-    " Customized binding for AG
+    " Customized binding for Rg
     nnoremap <leader>/ :Rg<CR>
+
+    nnoremap <leader>i :BTags<CR>
+    nnoremap <leader>I :Tags<CR>
 
     " Replace Bufexplore
     nmap <C-e> :Buffers<CR>
@@ -828,6 +833,7 @@ endif
 "----------------------------------------------------------------------
 " indent-guides
 if exists('g:plugs["vim-indent-guides"]')
+    let g:indent_guides_default_mapping = 0
     let g:indent_guides_start_level = 2
     let g:indent_guides_guide_size = 1
 endif
@@ -884,6 +890,7 @@ endif
 " vim-gitgutter
 
 if exists('g:plugs["vim-gitgutter"]')
+    let g:gitgutter_map_keys = 0
     nmap <silent> ]g :GitGutterNextHunk<CR>
     nmap <silent> [g :GitGutterPrevHunk<CR>
 endif
