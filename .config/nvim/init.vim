@@ -423,7 +423,7 @@ if package_manager == "vim-plug"
 
     Plug 'terryma/vim-expand-region'
 
-    Plug 'sbdchd/neoformat' " enhance the format function (press '=' key)
+    Plug 'sbdchd/neoformat', {'on': 'Neoformat'} " enhance the format function (press '=' key)
 
     Plug 't9md/vim-choosewin', {'on': '<Plug>(choosewin)'}
 
@@ -486,11 +486,10 @@ if package_manager == "vim-plug"
     "Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
 
     " for javascript
-    Plug 'pangloss/vim-javascript', {'for': ['javascript', 'javascript.jsx']}
-    Plug 'mxw/vim-jsx', {'for': ['javascript', 'javascript.jsx']} " for react.js
+    Plug 'pangloss/vim-javascript'
+    Plug 'mxw/vim-jsx', {'for': 'javascript.jsx'} " for react.js
     Plug 'othree/javascript-libraries-syntax.vim', {'for': 'javascript'}
     Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript-jsx', 'typescript']}
-    Plug 'ternjs/tern_for_vim'
 
     " for clojure
     Plug 'guns/vim-clojure-static', {'for': 'clojure'}
@@ -505,7 +504,7 @@ if package_manager == "vim-plug"
     Plug 'dkarter/bullets.vim', {'for': ['markdown', 'text', 'gitcommit']}
 
     " for typescript
-    Plug 'HerringtonDarkholme/yats.vim'
+    Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
     Plug 'mhartington/nvim-typescript', {'for': 'typescript'}
 
     "------------------------------------------------------------------
@@ -849,6 +848,14 @@ if exists('g:plugs["ale"]')
                 \ "passive_filetypes": ["java", "racket"] }
 endif
 
+
+"----------------------------------------------------------------------
+" neoformat
+
+if exists('g:plugs["neoformat"]')
+  nmap <silent> <leader>f :Neoformat<CR>
+endif
+
 "----------------------------------------------------------------------
 " LanguageClient-neovim
 
@@ -874,7 +881,7 @@ if exists('g:plugs["LanguageClient-neovim"]')
         setlocal formatexpr=LanguageClient_textDocument_rangeFormatting()
     endfunction
 
-    au Filetype rust,python,javascript call LanguageClientInit()
+    au Filetype rust,python call LanguageClientInit()
 endif
 
 "----------------------------------------------------------------------
