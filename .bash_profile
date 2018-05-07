@@ -90,7 +90,7 @@ DEPENDS="fcitx"
 export EDITOR=vim
 export VISUAL=vim
 
-if hash nvim 2> /dev/null ;then
+if command -v nvim &> /dev/null ;then
     export EDITOR=nvim
     export VISUAL=nvim
 fi
@@ -152,12 +152,12 @@ fi
 #==============================================================================
 # Aliases
 
-if hash gvim 2> /dev/null;then
+if command -v gvim &> /dev/null;then
     alias vim='gvim -v'
     alias vi='gvim -v'
 fi
 
-if hash nvim 2> /dev/null ;then
+if command -v nvim &> /dev/null ;then
     alias vi='nvim'
 fi
 
@@ -342,7 +342,7 @@ function v() {
 # fasd settings
 
 # enable fasd
-if hash fasd 2> /dev/null; then
+if command -v fasd &> /dev/null; then
     fasd_cache="$HOME/.fasd-init-bash"
     if [ "$(command -v fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache" ]; then
         fasd --init posix-alias bash-hook bash-ccomp bash-ccomp-install >| "$fasd_cache"

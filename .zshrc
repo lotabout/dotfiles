@@ -116,7 +116,7 @@ DEPENDS="fcitx"
 export EDITOR=vim
 export VISUAL=vim
 
-if hash nvim 2> /dev/null; then
+if command -v nvim &> /dev/null; then
     export EDITOR=nvim
     export VISUAL=nvim
 fi
@@ -137,12 +137,12 @@ fi
 #==============================================================================
 # Aliases
 
-if hash gvim 2> /dev/null;then
+if command -v gvim &> /dev/null;then
     alias vim='gvim -v'
 fi
 
 # prefer neovim over vim
-if hash nvim 2> /dev/null ;then
+if command -v nvim &> /dev/null ;then
     alias vi='nvim'
 fi
 
@@ -178,7 +178,7 @@ alias l='ls -CF'
 alias emacs="emacs -nw"
 alias ec='emacsclient -t -a ""'
 
-if hash exa 2> /dev/null; then
+if command -v exa &> /dev/null; then
     alias ls="exa"
 fi
 
@@ -444,7 +444,7 @@ fi
 # fasd settings
 
 # enable fasd
-if hash fasd 2> /dev/null; then
+if command -v fasd &> /dev/null; then
     fasd_cache="$HOME/.fasd-init-zsh"
     if [ "$(command -v fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache" ]; then
         fasd --init posix-alias zsh-hook >| "$fasd_cache"
