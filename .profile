@@ -37,7 +37,7 @@ for x in $(ls $texdirs 2>/dev/null); do
     dir=`basename "$x"`
     if [[ "$dir" =~ [0-9]+ ]]; then
         # PATH=`find /usr/local/texlive -name i386-linux`:$PATH
-        PATH="/opt/texlive/$dir/bin/${ARCH}-linux/":$PATH
+        path_prepend "/opt/texlive/$dir/bin/${ARCH}-linux/"
         # MANPATH=`find /usr/local/texlive -type d -name man`:$MANPATH
         MANPATH="/opt/texlive/$dir/texmf-dist/doc/man":$MANPATH
         # INFOPATH=`find /usr/local/texlive -type d -name info`:$INFOPATH
@@ -45,36 +45,44 @@ for x in $(ls $texdirs 2>/dev/null); do
     fi
 done
 
-# add path for ruby gems
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Ruby
 if hash ruby &> /dev/null && hash gem &> /dev/null; then
-    PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
+    path_prepend "$(ruby -rubygems -e 'puts Gem.user_dir')/bin"
 fi
 
 if [ -d $HOME/.rvm/bin ]; then
-    export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+    path_prepend $HOME/.rvm/bin
     [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 fi
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Rust
 if [ -d $HOME/.cargo/bin ]; then
-    PATH="$HOME/.cargo/bin:$PATH"
+    path_prepend $HOME/.cargo/bin
 fi
-
-if [ -d $HOME/anaconda3 ]; then
-    PATH="$HOME/anaconda3/bin:$PATH"
-fi
-
-export GOPATH=${GOPATH:-$HOME/go}
-path_append $GOPATH/bin;
-
-#==============================================================================
-# mirrors for some tools
-
-# homebrew
-export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
 
 # rustup
 export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
 export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Anaconda
+if [ -d $HOME/anaconda3 ]; then
+    path_prepend $HOME/anaconda3/bin
+fi
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Go
+export GOPATH=${GOPATH:-$HOME/go}
+if [ -d $GOPATH/bin ]; then
+    path_append $GOPATH/bin;
+fi
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Hahoop
+alias hstart="/usr/local/Cellar/hadoop/3.0.0/sbin/start-dfs.sh;/usr/local/Cellar/hadoop/3.0.0/sbin/start-yarn.sh"
+alias hstop="/usr/local/Cellar/hadoop/3.0.0/sbin/stop-yarn.sh;/usr/local/Cellar/hadoop/3.0.0/sbin/stop-dfs.sh"
 
 #==============================================================================
 
@@ -86,6 +94,8 @@ case $OS in
     Mac)
         export LC_ALL="en_US.UTF-8"
         export LANG="en_US.UTF-8"
+
+        export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
         ;;
     *)
         export LC_CTYPE="zh_CN.utf8"
