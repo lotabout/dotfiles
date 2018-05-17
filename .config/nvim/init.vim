@@ -8,7 +8,7 @@ scriptencoding utf-8
 if has('nvim')
     let $VIMHOME = expand('~/.config/nvim/')
 else
-    let $VIMHOME = expand('~/.config/')
+    let $VIMHOME = expand('~/.vim/')
 endif
 
 " Use Vim settings instead of vi settings.
@@ -414,6 +414,7 @@ if package_manager == "vim-plug"
     Plug 'easymotion/vim-easymotion', {'on': ['<Plug>(easymotion-s)', '<Plug>(easymotion-F)', '<Plug>(easymotion-bd-jk)']}
 
     Plug 'majutsushi/tagbar'
+    " Plug 'ludovicchabant/vim-gutentags' " Generate tags automatically
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
     Plug 'Xuyuanp/nerdtree-git-plugin'
 
@@ -441,6 +442,7 @@ if package_manager == "vim-plug"
 
     Plug 'schickling/vim-bufonly' " close all buffers except current one
     Plug 'kshenoy/vim-signature' " show sign for native marks
+    "Plug 'tpope/vim-apathy'
 
     "------------------------------------------------------------------
     " Integration with Linux environment
@@ -457,6 +459,7 @@ if package_manager == "vim-plug"
     " work with git
     Plug 'tpope/vim-fugitive'
     Plug 'airblade/vim-gitgutter'
+    " Plug 'mhinz/vim-signify' " replace gitgutter
 
     Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
 
@@ -547,9 +550,10 @@ syntax enable
 
 " Colorscheme
 if has("gui_running")
+    set background=dark
     colorscheme solarized
-    "colorscheme obsidian
-    set guifont=Fira\ Code\ 12,Dejavu\ Sans\ Mono\ for\ Powerline\ 12,Dejavu\ Sans\ Mono\ 12
+    set macligatures
+    set guifont=Fira\ Code:h16,Dejavu\ Sans\ Mono\ for\ Powerline:h16,Dejavu\ Sans\ Mono:h16
 elseif &t_Co == 256
     set background=dark
     colorscheme solarized
