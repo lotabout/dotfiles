@@ -414,7 +414,9 @@ if package_manager == "vim-plug"
     Plug 'easymotion/vim-easymotion', {'on': ['<Plug>(easymotion-s)', '<Plug>(easymotion-F)', '<Plug>(easymotion-bd-jk)']}
 
     Plug 'majutsushi/tagbar'
+    Plug 'lvht/tagbar-markdown', {'for': 'markdown'}
     " Plug 'ludovicchabant/vim-gutentags' " Generate tags automatically
+
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
     Plug 'Xuyuanp/nerdtree-git-plugin'
 
@@ -492,7 +494,7 @@ if package_manager == "vim-plug"
     Plug 'pangloss/vim-javascript'
     Plug 'mxw/vim-jsx', {'for': 'javascript.jsx'} " for react.js
     Plug 'othree/javascript-libraries-syntax.vim', {'for': 'javascript'}
-    Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript-jsx', 'typescript']}
+    Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript.jsx', 'typescript']}
 
     " for clojure
     Plug 'guns/vim-clojure-static', {'for': 'clojure'}
@@ -552,7 +554,6 @@ syntax enable
 if has("gui_running")
     set background=dark
     colorscheme solarized
-    set macligatures
     set guifont=Fira\ Code:h16,Dejavu\ Sans\ Mono\ for\ Powerline:h16,Dejavu\ Sans\ Mono:h16
 elseif &t_Co == 256
     set background=dark
@@ -1030,7 +1031,6 @@ if has('nvim')
 
     " Register the TextYankPost event
     au! TextYankPost * call YankRing(copy(v:event))
-
 else
     "--------------------------------------------------
     " vim specified settings
@@ -1040,4 +1040,21 @@ else
 
     " Fast editing or sourcing vimrc file
     nmap <silent> <leader>ee :tabnew<cr>:edit ~/.vimrc<cr>
+endif
+
+
+if has("gui_macvim")
+    set macligatures " Enable ligatures for font 'Fira Code'
+
+    " Need this if python is installed via homebrew
+    " check this https://github.com/macvim-dev/macvim/issues/562
+    if has('python3')
+        command! -nargs=1 Py py3 <args>
+        set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/3.6/Python
+        set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.6
+    else
+        command! -nargs=1 Py py <args>
+        set pythondll=/usr/local/Frameworks/Python.framework/Versions/2.7/Python
+        set pythonhome=/usr/local/Frameworks/Python.framework/Versions/2.7
+    endif
 endif
