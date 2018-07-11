@@ -11,6 +11,16 @@ else
     let $VIMHOME = expand('~/.vim/')
 endif
 
+if has("termguicolors")
+    " vim need this
+    " check https://github.com/vim/vim/issues/981#issuecomment-241941032
+    set t_8f=[38;2;%lu;%lu;%lum
+    set t_8b=[48;2;%lu;%lu;%lum
+
+    " enable true color
+    set termguicolors
+endif
+
 " Use Vim settings instead of vi settings.
 set nocompatible
 
@@ -44,7 +54,7 @@ set mouse=a
 "----------------------------------------------------------------------
 " VIM user interface
 
-" Turn on the WiLd menu
+" Turn on the Wild menu
 set wildmenu
 set wildmode=longest,list,full
 
@@ -406,7 +416,7 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     " Enhance Basic functionality
     "------------------------------------------------------------------
-    Plug 'altercation/vim-colors-solarized'
+    Plug 'lifepillar/vim-solarized8'
 
     Plug 'moll/vim-bbye'
     Plug 'junegunn/vim-easy-align', {'on': '<Plug>(EasyAlign)'}
@@ -552,12 +562,15 @@ syntax enable
 
 " Colorscheme
 if has("gui_running")
-    set background=dark
-    colorscheme solarized
     set guifont=Fira\ Code:h16,Dejavu\ Sans\ Mono\ for\ Powerline:h16,Dejavu\ Sans\ Mono:h16
-elseif &t_Co == 256
-    set background=dark
-    colorscheme solarized
+endif
+
+set background=dark
+if &t_Co >= 256 || has("gui_running")
+    colorscheme solarized8
+elseif &t_Co >= 16
+    let g:solarized_use16 = 1
+    colorscheme solarized8
 else
     colorscheme desert
     if &term == "linux"
@@ -572,7 +585,6 @@ if has("gui_running")
     set guioptions-=r " remove right-hand scroll bar
     set guioptions-=l " remove left-hand scroll bar
     set guioptions+=e
-    set t_Co=256
     set guitablabel=%M\ %t
 endif
 
@@ -794,13 +806,8 @@ endif
 "---------------------------------------------------------------------
 " vim-airline
 if exists('g:plugs["vim-airline"]')
-    if has("gui_running")
-        let g:airline_theme='solarized'
-    else
-        "let g:airline_theme='wombat'
-        let g:airline_theme='solarized'
-    endif
-    let g:airline_powerline_fonts = 1
+    let g:airline_solarized_bg = 'dark'
+    let g:airline_theme='solarized'
     let g:airline#extensions#tabline#enabled = 1
     let g:airline#extensions#tabline#show_buffers = 0
     let g:airline#extensions#tabline#show_splits = 0
