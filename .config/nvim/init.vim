@@ -165,7 +165,7 @@ set textwidth=78
 set ai " Auto Indent
 set si " Smart indent
 set wrap " Wrap lines
-set cinoptions=l1,t0,g0,(0,Ws
+set cinoptions=l1,t0,g0,Ws
 
 " Dictionary completion
 set dictionary+=/usr/share/dict/words
@@ -983,9 +983,12 @@ endif
 "----------------------------------------------------------------------
 " javascript
 
-if exists('javascript-libraries-syntax.vim')
-    let g:used_javascript_libs = 'underscore,jquery,angularjs,angularui,react'
+if exists('vim-jsx')
     let g:jsx_ext_required = 0 " Allow JSX in normal JS files
+endif
+
+if exists('javascript-libraries-syntax.vim')
+    let g:used_javascript_libs = 'react'
 endif
 
 " Syntastic
