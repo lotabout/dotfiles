@@ -266,6 +266,10 @@ function set_difference () {
    cat $1 $2 $2 | sort | uniq -u
 }
 
+function set_intersection() {
+    comm -12 <(sort $1) <(sort $2)
+}
+
 # quick bookmark
 alias mdump='alias|grep -e "alias g[0-9]"|grep -v "alias m" > ~/.bookmarks'
 alias lma='alias | grep -e "alias g[0-9]"|grep -v "alias m"|sed "s/alias //"'
@@ -344,7 +348,7 @@ if [ -d $HOME/.skim ]; then
     fi
 
     # Setting ag as the default source for skim
-    export SKIM_DEFAULT_COMMAND='(git ls-files -c -o --exclude-standard || rg -l "" || ag -l -g "" || find . -type f)'
+    export SKIM_DEFAULT_COMMAND='fd --type f || git ls-files -c -o --exclude-standard || rg -l "" || ag -l -g "" || find . -type f'
     # To apply the command to CTRL-T as well
     export SKIM_CTRL_T_COMMAND="$SKIM_DEFAULT_COMMAND"
 

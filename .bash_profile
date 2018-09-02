@@ -353,7 +353,7 @@ fi
 
 #------------------------------------------------------------------------------
 # skim settings
-export SKIM_DEFAULT_COMMAND='(git ls-files -c -o --exclude-standard || rg -l "" || ag -l -g "" || find . -type f)'
+export SKIM_DEFAULT_COMMAND='fd --type f || git ls-files -c -o --exclude-standard || rg -l "" || ag -l -g "" || find . -type f'
 [ -f ~/.skim.bash ] && source ~/.skim.bash
 
 #------------------------------------------------------------------------------
