@@ -122,6 +122,7 @@ if has("unix")
     if isdirectory($HOME.'/.vim-backup') == 0
         :silent !mkdir -p ~/.vim-backup > /dev/null 2>&1
     endif
+
     set backupdir-=.
     set backupdir+=.
     set backupdir-=~/
@@ -187,9 +188,6 @@ noremap ` '
 " need vim-bbye
 nmap <leader>q :Bdelete<cr>
 
-" Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
-
 " Return to last edit position when opening files (You want this!)
 autocmd BufReadPost *
      \ if line("'\"") > 0 && line("'\"") <= line("$") |
@@ -198,7 +196,167 @@ autocmd BufReadPost *
 
 au FileType crontab setlocal backupcopy=yes
 
+"===============================================================================
+" settings for manually installed plugins
+
 "----------------------------------------------------------------------
+" vimim
+
+if has ("win32")
+    set guifont=Courier_New:h12:w7
+    set guifontwide=NSimSun-18030,NSimSun
+endif
+
+"===============================================================================
+" package manager settings
+let package_manager = "vim-plug"
+
+if package_manager == "vim-plug"
+    call plug#begin($VIMHOME . 'plugged')
+
+    "------------------------------------------------------------------
+    " Enhance Basic functionality
+    "------------------------------------------------------------------
+    Plug 'lifepillar/vim-solarized8'
+
+    Plug 'moll/vim-bbye'
+    Plug 'junegunn/vim-easy-align', {'on': '<Plug>(EasyAlign)'}
+    Plug 'ervandew/supertab'    " you'll need it
+    Plug 'easymotion/vim-easymotion', {'on': ['<Plug>(easymotion-s)', '<Plug>(easymotion-F)', '<Plug>(easymotion-bd-jk)']}
+
+    Plug 'majutsushi/tagbar'
+    Plug 'lvht/tagbar-markdown', {'for': 'markdown'}
+
+    Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+    Plug 'Xuyuanp/nerdtree-git-plugin'
+
+    " powerline alternative; for better status line
+    Plug 'bling/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
+
+    " Plug 'terryma/vim-expand-region'
+
+    Plug 'sbdchd/neoformat', {'on': 'Neoformat'} " enhance the format function (press '=' key)
+
+    " Plug 't9md/vim-choosewin', {'on': '<Plug>(choosewin)'}
+
+    Plug 'sjl/gundo.vim', {'on': 'GundoToggle'}
+
+    Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
+
+    Plug 'mhinz/vim-startify'
+
+    Plug 'kana/vim-textobj-user'
+
+    Plug 'tpope/vim-abolish' " Enhance `s` command
+
+    Plug 'vim-scripts/LargeFile' " disable some features for faster opening large files.
+
+    Plug 'schickling/vim-bufonly' " close all buffers except current one
+    Plug 'kshenoy/vim-signature' " show sign for native marks
+
+    Plug 'ludovicchabant/vim-gutentags' " Generate tags automatically
+    Plug 'skywind3000/gutentags_plus'
+
+    "------------------------------------------------------------------
+    " Integration with Linux environment
+    "------------------------------------------------------------------
+    Plug 'lotabout/slimux', {'on': ['SlimuxREPLSendLine', 'SlimuxREPLSendSelection'],
+                \ 'for': 'python'}
+    Plug 'kana/vim-fakeclip'
+
+    Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
+    Plug 'lotabout/skim.vim'
+    "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    "Plug 'junegunn/fzf.vim'
+
+    " work with git
+    Plug 'tpope/vim-fugitive'
+    Plug 'airblade/vim-gitgutter'
+    " Plug 'mhinz/vim-signify' " replace gitgutter
+
+    Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
+
+    " Plug 'nathanaelkane/vim-indent-guides'
+
+
+
+    "------------------------------------------------------------------
+    " Support more filetype specific feature
+    "------------------------------------------------------------------
+    "Plug 'scrooloose/nerdcommenter'
+    Plug 'tomtom/tcomment_vim'
+    Plug 'SirVer/ultisnips'
+    Plug 'honza/vim-snippets'
+
+    Plug 'lotabout/vim-ultisnippet-private' " private snippets
+
+    Plug 'w0rp/ale' " async version of Syntastic
+
+    " in replace of paredit.vim
+    Plug 'guns/vim-sexp', {'for': ['clojure', 'scheme', 'racket']}
+    Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': ['clojure', 'scheme', 'racket']}
+
+    Plug 'https://github.com/wlangstroth/vim-racket', {'for': 'racket'}
+
+    "Plug 'Rip-Rip/clang_complete', {'for': ['c', 'cpp']}
+
+    " for python
+    Plug 'bps/vim-textobj-python', {'for': 'python'}
+    "Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
+
+    " for javascript
+    Plug 'pangloss/vim-javascript'
+    Plug 'mxw/vim-jsx', {'for': 'javascript.jsx'} " for react.js
+    Plug 'othree/javascript-libraries-syntax.vim', {'for': 'javascript'}
+    Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript.jsx', 'typescript']}
+
+    " for clojure
+    Plug 'guns/vim-clojure-static', {'for': 'clojure'}
+    Plug 'tpope/vim-fireplace', {'for': 'clojure'}
+    Plug 'guns/vim-clojure-highlight', {'for': 'clojure'}
+
+    " for rust
+    Plug 'rust-lang/rust.vim', {'for': 'rust'}
+
+    " for markdown
+    Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
+    Plug 'dkarter/bullets.vim', {'for': ['markdown', 'text', 'gitcommit']}
+
+    " for typescript
+    Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
+    Plug 'mhartington/nvim-typescript', {'for': 'typescript'}
+
+    "------------------------------------------------------------------
+    " Completion Framework
+    "------------------------------------------------------------------
+    if has('nvim')
+        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    else
+        Plug 'Shougo/deoplete.nvim'
+        Plug 'roxma/nvim-yarp'
+        Plug 'roxma/vim-hug-neovim-rpc'
+    endif
+
+    let g:deoplete#enable_at_startup = 1
+    " Plug 'autozimu/LanguageClient-neovim', {
+    "     \ 'branch': 'next',
+    "     \ 'do': 'bash install.sh',
+    "     \ }
+
+    "------------------------------------------------------------------
+    " Others
+    "------------------------------------------------------------------
+    Plug 'christoomey/vim-tmux-navigator'
+    Plug 'mattn/calendar-vim'
+    Plug 'lotabout/ywvim' " Chinese input method
+
+    call plug#end()
+elseif package_manager == "pathogen"
+    execute pathogen#infect()
+endif
+
+"===============================================================================
 " Misc Maps & Functions(for convenience)
 
 " Remove the Windows ^M - when the encodings gets messed up
@@ -213,16 +371,19 @@ nmap <leader><cr> :%s/\(^[[:blank:]]*\n\)\{2,}/\r/<cr>
 " quick access to system's clipboard
 vmap <leader>y "+y
 vmap <leader>Y "+Y
-vmap <leader>d "+d
+nmap <leader>y "+y
+nmap <leader>Y "+Y
 vmap <leader>p "+p
 vmap <leader>P "+P
 nmap <leader>p "+p
 nmap <leader>P "+P
 
 " quick save
-nmap <leader>w :w<CR>:<C-u>nohlsearch<CR>:echo<CR>
+nmap <leader>w :<C-u>nohlsearch<CR>:w<CR>
 
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 " execute macro on every selected/visual lines
+
 xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
 
 function! ExecuteMacroOverVisualRange()
@@ -231,6 +392,8 @@ function! ExecuteMacroOverVisualRange()
 endfunction
 
 "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" zoom
+
 function! Zoom ()
     " check if is the zoomed state (tabnumber > 1 && window == 1)
     if tabpagenr('$') > 1 && tabpagewinnr(tabpagenr(), '$') == 1
@@ -252,6 +415,7 @@ nmap <leader>z :call Zoom()<CR>
 "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 " Interleave lines, do not support overlapping
 " Usage: 90, 100call Interleave(1)
+
 function! Interleave(where) range
     let l:where = a:where
 
@@ -280,7 +444,8 @@ command! -nargs=1 -range Interleave <line1>,<line2>call Interleave("<args>")
 vmap <leader>j :Interleave<space>
 
 "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"Author: Tim Dahlin
+" Open all files in quickfix window
+" Author: Tim Dahlin
 function! QuickFixOpenAll()
     if empty(getqflist())
         return
@@ -320,8 +485,8 @@ endif
 
 "----------------------------------------------------------------------
 " Extra Mappings
-
 " borrowed from vim-unimpaired
+
 nmap <silent> [a :prev<CR>
 nmap <silent> ]a :next<CR>
 nmap <silent> [A :first<CR>
@@ -395,161 +560,6 @@ if show_tabs == 1
     endif
 endif
 
-"===============================================================================
-" settings for manually installed plugins
-
-"----------------------------------------------------------------------
-" vimim
-
-if has ("win32")
-    set guifont=Courier_New:h12:w7
-    set guifontwide=NSimSun-18030,NSimSun
-endif
-
-"===============================================================================
-" package manager settings
-let package_manager = "vim-plug"
-
-if package_manager == "vim-plug"
-    call plug#begin($VIMHOME . 'plugged')
-
-    "------------------------------------------------------------------
-    " Enhance Basic functionality
-    "------------------------------------------------------------------
-    Plug 'lifepillar/vim-solarized8'
-
-    Plug 'moll/vim-bbye'
-    Plug 'junegunn/vim-easy-align', {'on': '<Plug>(EasyAlign)'}
-    Plug 'ervandew/supertab'    " you'll need it
-    Plug 'easymotion/vim-easymotion', {'on': ['<Plug>(easymotion-s)', '<Plug>(easymotion-F)', '<Plug>(easymotion-bd-jk)']}
-
-    Plug 'majutsushi/tagbar'
-    Plug 'lvht/tagbar-markdown', {'for': 'markdown'}
-    " Plug 'ludovicchabant/vim-gutentags' " Generate tags automatically
-
-    Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-    Plug 'Xuyuanp/nerdtree-git-plugin'
-
-    " powerline alternative; for better status line
-    Plug 'bling/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
-
-    Plug 'terryma/vim-expand-region'
-
-    Plug 'sbdchd/neoformat', {'on': 'Neoformat'} " enhance the format function (press '=' key)
-
-    Plug 't9md/vim-choosewin', {'on': '<Plug>(choosewin)'}
-
-    Plug 'sjl/gundo.vim', {'on': 'GundoToggle'}
-
-    Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
-
-    Plug 'mhinz/vim-startify'
-
-    Plug 'kana/vim-textobj-user'
-
-    Plug 'tpope/vim-abolish' " Enhance
-
-    Plug 'vim-scripts/LargeFile' " disable some features for faster opening large files.
-
-    Plug 'schickling/vim-bufonly' " close all buffers except current one
-    Plug 'kshenoy/vim-signature' " show sign for native marks
-    "Plug 'tpope/vim-apathy'
-
-    "------------------------------------------------------------------
-    " Integration with Linux environment
-    "------------------------------------------------------------------
-    Plug 'lotabout/slimux', {'on': ['SlimuxREPLSendLine', 'SlimuxREPLSendSelection'],
-                \ 'for': 'python'}
-    Plug 'kana/vim-fakeclip'
-
-    Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
-    Plug 'lotabout/skim.vim'
-    "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-    "Plug 'junegunn/fzf.vim'
-
-    " work with git
-    Plug 'tpope/vim-fugitive'
-    Plug 'airblade/vim-gitgutter'
-    " Plug 'mhinz/vim-signify' " replace gitgutter
-
-    Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
-
-    Plug 'nathanaelkane/vim-indent-guides'
-
-    "------------------------------------------------------------------
-    " Support more filetype specific feature
-    "------------------------------------------------------------------
-    Plug 'scrooloose/nerdcommenter'
-    Plug 'SirVer/ultisnips'
-    Plug 'honza/vim-snippets'
-
-    Plug 'lotabout/vim-ultisnippet-private' " private snippets
-
-    Plug 'w0rp/ale' " async version of Syntastic
-
-    " in replace of paredit.vim
-    Plug 'guns/vim-sexp', {'for': ['clojure', 'scheme', 'racket']}
-    Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': ['clojure', 'scheme', 'racket']}
-
-    Plug 'https://github.com/wlangstroth/vim-racket', {'for': 'racket'}
-
-    Plug 'Rip-Rip/clang_complete', {'for': ['c', 'cpp']}
-
-    " for python
-    Plug 'bps/vim-textobj-python', {'for': 'python'}
-    "Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
-
-    " for javascript
-    Plug 'pangloss/vim-javascript'
-    Plug 'mxw/vim-jsx', {'for': 'javascript.jsx'} " for react.js
-    Plug 'othree/javascript-libraries-syntax.vim', {'for': 'javascript'}
-    Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript.jsx', 'typescript']}
-
-    " for clojure
-    Plug 'guns/vim-clojure-static', {'for': 'clojure'}
-    Plug 'tpope/vim-fireplace', {'for': 'clojure'}
-    Plug 'guns/vim-clojure-highlight', {'for': 'clojure'}
-
-    " for rust
-    Plug 'rust-lang/rust.vim', {'for': 'rust'}
-
-    " for markdown
-    Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
-    Plug 'dkarter/bullets.vim', {'for': ['markdown', 'text', 'gitcommit']}
-
-    " for typescript
-    Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
-    Plug 'mhartington/nvim-typescript', {'for': 'typescript'}
-
-    "------------------------------------------------------------------
-    " Completion Framework
-    "------------------------------------------------------------------
-    if has('nvim')
-        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    else
-        Plug 'Shougo/deoplete.nvim'
-        Plug 'roxma/nvim-yarp'
-        Plug 'roxma/vim-hug-neovim-rpc'
-    endif
-
-    let g:deoplete#enable_at_startup = 1
-    Plug 'autozimu/LanguageClient-neovim', {
-        \ 'branch': 'next',
-        \ 'do': 'bash install.sh',
-        \ }
-
-    "------------------------------------------------------------------
-    " Others
-    "------------------------------------------------------------------
-    Plug 'christoomey/vim-tmux-navigator'
-    Plug 'mattn/calendar-vim'
-    Plug 'lotabout/ywvim' " Chinese input method
-
-    call plug#end()
-elseif package_manager == "pathogen"
-    execute pathogen#infect()
-endif
 
 "===============================================================================
 " settings for bundle plugins
@@ -692,6 +702,35 @@ if exists('g:plugs["tagbar"]')
     endfunction
 endif
 
+"---------------------------------------------------------------------
+" Gutentags & Gutentags-plus
+
+if exists("g:plugs['vim-gutentags']")
+    " config project root markers.
+    let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
+
+    let g:gutentags_ctags_tagfile = '.tags'
+
+    " enable ctags and gtags
+    let g:gutentags_modules = []
+    if executable('ctags')
+        let g:gutentags_modules += ['ctags']
+    endif
+    if executable('gtags-cscope') && executable('gtags')
+        let g:gutentags_modules += ['gtags_cscope']
+    endif
+
+    " generate datebases in my cache directory, prevent gtags files polluting my project
+    let s:vim_tags = expand('~/.cache/tags')
+    if !isdirectory(s:vim_tags)
+        silent! call mkdir(s:vim_tags, 'p')
+    endif
+
+    let g:gutentags_cache_dir = s:vim_tags
+
+    " forbid gutentags adding gtags databases
+    let g:gutentags_auto_add_gtags_cscope = 0
+endif
 
 "---------------------------------------------------------------------
 " LargeFile
@@ -827,26 +866,6 @@ if exists('g:plugs["vim-tmux-navigator"]')
     " originally binded to C-l, now change to C-d
     nnoremap <silent> <C-d> :<C-u>nohlsearch<CR><C-l>
     nnoremap <silent> <C-\> :TmuxNavigatePrevious<cr>
-endif
-
-"---------------------------------------------------------------------
-" vim-choosewin
-if exists('g:plugs["vim-choosewin"]')
-    nmap - <Plug>(choosewin)
-    let g:choosewin_blink_on_land  = 0 " don't blink at land
-    let g:choosewin_overlay_enable = 1
-endif
-
-if exists('g:plugs["vim-hardtime"]')
-    nnoremap <silent> <leader>h :HardTimeToggle<CR>
-endif
-
-"----------------------------------------------------------------------
-" indent-guides
-if exists('g:plugs["vim-indent-guides"]')
-    let g:indent_guides_default_mapping = 0
-    let g:indent_guides_start_level = 2
-    let g:indent_guides_guide_size = 1
 endif
 
 "----------------------------------------------------------------------
