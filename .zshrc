@@ -28,7 +28,7 @@ function git_prompt_info() {
 
 function color_my_prompt {
     local __num_of_jobs="%j"
-    local __user_and_host="%F{154}%n@%m%f"
+    local __user_and_host="%F{blue}%n@%m%f"
     local __cur_location="%F{012}%1~%f"
     local __git_branch='%F{009}$(git_prompt_info)%f'
     local __prompt_tail="%F{013}$%f"
@@ -185,15 +185,15 @@ fi
 # alias for convenience
 alias psg='ps axu | grep'
 alias cd..="cd .."
-alias -g ..=".."
-alias -g ...="../.."
-alias -g ....="../../.."
-alias -g .....="../../../.."
-alias -g ......="../../../../.."
-alias -g .......="../../../../../.."
-alias -g ........="../../../../../../.."
-alias -g .........="../../../../../../../.."
-alias -g ..........="../../../../../../../../.."
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
+alias .......="cd ../../../../../.."
+alias ........="cd ../../../../../../.."
+alias .........="cd ../../../../../../../.."
+alias ..........="cd ../../../../../../../../.."
 
 if [ -f ~/.zsh_aliases ]; then
     . ~/.zsh_aliases
@@ -297,6 +297,7 @@ case $OS in
             export http_proxy=http://localhost:1087
             export https_proxy=http://localhost:1087
             export socks_proxy=socks://localhost:8123
+            echo 'proxy = http://localhost:1087' > ~/.curlrc
             echo "exporting proxy settings for SS done."
         }
         ;;
@@ -305,6 +306,7 @@ case $OS in
             export http_proxy=http://localhost:8123
             export https_proxy=https://localhost:8123
             export socks_proxy=socks://localhost:8123
+            echo 'proxy = http://localhost:8123' > ~/.curlrc
             echo "exporting proxy settings for polipo done."
         }
         ;;
@@ -314,6 +316,7 @@ function upp() {
     unset http_proxy
     unset https_proxy
     unset socks_proxy
+    echo '' > ~/.curlrc
     echo "Unset proxy settingsdone."
 }
 
