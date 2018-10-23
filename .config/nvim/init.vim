@@ -222,7 +222,7 @@ if package_manager == "vim-plug"
     Plug 'moll/vim-bbye'
     Plug 'junegunn/vim-easy-align', {'on': '<Plug>(EasyAlign)'}
     Plug 'ervandew/supertab'    " you'll need it
-    Plug 'easymotion/vim-easymotion', {'on': ['<Plug>(easymotion-s)', '<Plug>(easymotion-F)', '<Plug>(easymotion-bd-jk)']}
+    Plug 'justinmk/vim-sneak'
 
     Plug 'majutsushi/tagbar'
     Plug 'lvht/tagbar-markdown', {'for': 'markdown'}
@@ -255,9 +255,6 @@ if package_manager == "vim-plug"
     Plug 'schickling/vim-bufonly' " close all buffers except current one
     Plug 'kshenoy/vim-signature' " show sign for native marks
 
-    Plug 'ludovicchabant/vim-gutentags' " Generate tags automatically
-    Plug 'skywind3000/gutentags_plus'
-
     "------------------------------------------------------------------
     " Integration with Linux environment
     "------------------------------------------------------------------
@@ -279,13 +276,10 @@ if package_manager == "vim-plug"
 
     " Plug 'nathanaelkane/vim-indent-guides'
 
-
-
     "------------------------------------------------------------------
     " Support more filetype specific feature
     "------------------------------------------------------------------
-    "Plug 'scrooloose/nerdcommenter'
-    Plug 'tomtom/tcomment_vim'
+    Plug 'tpope/vim-commentary'
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
 
