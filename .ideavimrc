@@ -1,6 +1,5 @@
 set hls
 set smartcase
-set clipboard=unnamedplus,unnamed
 
 let mapleader = " "
 let g:mapleader = " "

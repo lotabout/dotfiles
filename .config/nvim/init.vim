@@ -539,6 +539,9 @@ vnoremap <C-J> <C-E>j
 nnoremap <C-K> <C-Y>k
 vnoremap <C-K> <C-Y>k
 
+" https://dev.to/jovica/the-vim-trick-which-will-save-your-time-and-nerves-45pg
+cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+
 "----------------------------------------------------------------------
 " Show tabs (indent lines)
 
