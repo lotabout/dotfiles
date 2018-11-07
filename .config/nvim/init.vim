@@ -215,14 +215,13 @@ if package_manager == "vim-plug"
     call plug#begin($VIMHOME . 'plugged')
 
     "------------------------------------------------------------------
-    " Enhance Basic functionality
-    "------------------------------------------------------------------
+    " UI enhancement
+
     Plug 'lifepillar/vim-solarized8'
 
-    Plug 'moll/vim-bbye'
-    Plug 'junegunn/vim-easy-align', {'on': '<Plug>(EasyAlign)'}
-    Plug 'ervandew/supertab'    " you'll need it
-    Plug 'justinmk/vim-sneak'
+    " powerline alternative; for better status line
+    Plug 'bling/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
 
     Plug 'majutsushi/tagbar'
     Plug 'lvht/tagbar-markdown', {'for': 'markdown'}
@@ -230,34 +229,66 @@ if package_manager == "vim-plug"
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
     Plug 'Xuyuanp/nerdtree-git-plugin'
 
-    " powerline alternative; for better status line
-    Plug 'bling/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
+    Plug 'mhinz/vim-startify'
 
-    " Plug 'terryma/vim-expand-region'
+    Plug 'kshenoy/vim-signature' " show sign for native marks
 
-    Plug 'sbdchd/neoformat', {'on': 'Neoformat'} " enhance the format function (press '=' key)
+    " Plug 'nathanaelkane/vim-indent-guides'
 
-    " Plug 't9md/vim-choosewin', {'on': '<Plug>(choosewin)'}
+    "------------------------------------------------------------------
+    " Basic feature enhancement
 
-    Plug 'sjl/gundo.vim', {'on': 'GundoToggle'}
+    Plug 'moll/vim-bbye'
+    Plug 'ervandew/supertab'    " you'll need it
+    Plug 'justinmk/vim-sneak'
 
     Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
-
-    Plug 'mhinz/vim-startify'
 
     Plug 'kana/vim-textobj-user'
 
     Plug 'tpope/vim-abolish' " Enhance `s` command
 
-    Plug 'vim-scripts/LargeFile' " disable some features for faster opening large files.
+    "------------------------------------------------------------------
+    " Completion Framework
+
+    if has('nvim')
+        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    else
+        Plug 'Shougo/deoplete.nvim'
+        Plug 'roxma/nvim-yarp'
+        Plug 'roxma/vim-hug-neovim-rpc'
+    endif
+
+    let g:deoplete#enable_at_startup = 1
+    " Plug 'autozimu/LanguageClient-neovim', {
+    "     \ 'branch': 'next',
+    "     \ 'do': 'bash install.sh',
+    "     \ }
+
+    "------------------------------------------------------------------
+    " Handy commands
+
+    Plug 'junegunn/vim-easy-align', {'on': '<Plug>(EasyAlign)'}
+    Plug 'sbdchd/neoformat', {'on': 'Neoformat'} " enhance the format function (press '=' key)
+
+    Plug 'sjl/gundo.vim', {'on': 'GundoToggle'}
 
     Plug 'schickling/vim-bufonly' " close all buffers except current one
-    Plug 'kshenoy/vim-signature' " show sign for native marks
+
+    " work with git
+    Plug 'tpope/vim-fugitive'
+    Plug 'airblade/vim-gitgutter'
+
+    Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
+
+    "------------------------------------------------------------------
+    " Better defaults
+
+    Plug 'vim-scripts/LargeFile' " disable some features for faster opening large files.
 
     "------------------------------------------------------------------
     " Integration with Linux environment
-    "------------------------------------------------------------------
+
     Plug 'lotabout/slimux', {'on': ['SlimuxREPLSendLine', 'SlimuxREPLSendSelection'],
                 \ 'for': 'python'}
     Plug 'kana/vim-fakeclip'
@@ -267,18 +298,9 @@ if package_manager == "vim-plug"
     "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     "Plug 'junegunn/fzf.vim'
 
-    " work with git
-    Plug 'tpope/vim-fugitive'
-    Plug 'airblade/vim-gitgutter'
-    " Plug 'mhinz/vim-signify' " replace gitgutter
-
-    Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
-
-    " Plug 'nathanaelkane/vim-indent-guides'
-
     "------------------------------------------------------------------
     " Support more filetype specific feature
-    "------------------------------------------------------------------
+
     Plug 'tpope/vim-commentary'
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
@@ -322,25 +344,8 @@ if package_manager == "vim-plug"
     Plug 'mhartington/nvim-typescript', {'for': 'typescript'}
 
     "------------------------------------------------------------------
-    " Completion Framework
-    "------------------------------------------------------------------
-    if has('nvim')
-        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    else
-        Plug 'Shougo/deoplete.nvim'
-        Plug 'roxma/nvim-yarp'
-        Plug 'roxma/vim-hug-neovim-rpc'
-    endif
-
-    let g:deoplete#enable_at_startup = 1
-    " Plug 'autozimu/LanguageClient-neovim', {
-    "     \ 'branch': 'next',
-    "     \ 'do': 'bash install.sh',
-    "     \ }
-
-    "------------------------------------------------------------------
     " Others
-    "------------------------------------------------------------------
+
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'mattn/calendar-vim'
     Plug 'lotabout/ywvim' " Chinese input method
