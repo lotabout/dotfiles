@@ -245,8 +245,14 @@ if package_manager == "vim-plug"
     Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
 
     Plug 'kana/vim-textobj-user'
+    Plug 'vim-scripts/argtextobj.vim'
+
+    Plug 'mg979/vim-visual-multi' " multi cursors
+    " Plug 'terryma/vim-multiple-cursors'
 
     Plug 'tpope/vim-abolish' " Enhance `s` command
+    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-repeat'
 
     "------------------------------------------------------------------
     " Completion Framework
