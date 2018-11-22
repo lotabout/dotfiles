@@ -233,7 +233,7 @@ if package_manager == "vim-plug"
 
     Plug 'kshenoy/vim-signature' " show sign for native marks
 
-    " Plug 'nathanaelkane/vim-indent-guides'
+    Plug 'nathanaelkane/vim-indent-guides'
 
     "------------------------------------------------------------------
     " Basic feature enhancement
@@ -266,10 +266,10 @@ if package_manager == "vim-plug"
     endif
 
     let g:deoplete#enable_at_startup = 1
-    " Plug 'autozimu/LanguageClient-neovim', {
-    "     \ 'branch': 'next',
-    "     \ 'do': 'bash install.sh',
-    "     \ }
+    Plug 'autozimu/LanguageClient-neovim', {
+        \ 'branch': 'next',
+        \ 'do': 'bash install.sh',
+        \ }
 
     "------------------------------------------------------------------
     " Handy commands
@@ -304,6 +304,8 @@ if package_manager == "vim-plug"
     "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     "Plug 'junegunn/fzf.vim'
 
+    Plug 'ybian/smartim'
+
     "------------------------------------------------------------------
     " Support more filetype specific feature
 
@@ -326,6 +328,7 @@ if package_manager == "vim-plug"
     " for python
     Plug 'bps/vim-textobj-python', {'for': 'python'}
     "Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
+    Plug 'zchee/deoplete-jedi', {'for': 'python'}
 
     " for javascript
     Plug 'pangloss/vim-javascript'
@@ -348,6 +351,9 @@ if package_manager == "vim-plug"
     " for typescript
     Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
     Plug 'mhartington/nvim-typescript', {'for': 'typescript'}
+
+    " for Julia
+    Plug 'JuliaEditorSupport/julia-vim'
 
     "------------------------------------------------------------------
     " Others
@@ -823,6 +829,17 @@ if exists('g:plugs["delimitMate"]')
 endif
 
 "---------------------------------------------------------------------
+" smartim Switch Input Method smartly
+
+if exists('g:plugs["smartim"]')
+    let g:smartim_default = 'com.apple.keylayout.ABC'
+
+    if !has('macunix')
+        let g:smartim_disable = 1
+    endif
+endif
+
+"---------------------------------------------------------------------
 " Personal wiki
 let g:wiki_directory = $HOME . '/Dropbox/wiki'
 
@@ -903,7 +920,7 @@ if exists('g:plugs["LanguageClient-neovim"]')
     set hidden
 
     " rustup component add rls-preview rust-analysis rust-src
-    " pip install pyls
+    " pip install python-language-server
     " npm install -g typescript-language-server
 
     let g:LanguageClient_serverCommands = {
@@ -1045,10 +1062,6 @@ if has('nvim')
     tnoremap <C-k> <C-\><C-n>:TmuxNavigateUp<cr>
     tnoremap <C-l> <C-\><C-n>:TmuxNavigateRight<cr>
     tnoremap <C-\> <C-\><C-n>:TmuxNavigatePrevious<cr>
-
-    if exists('g:plugs["deoplete.nvim"]')
-        let g:deoplete#enable_at_startup = 1
-    endif
 
     "- - - - - - - - - - - - - - - - - - - - - - - - -
     " Custom yank ring, utilize numbered registers for yank too.
