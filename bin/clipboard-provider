@@ -8,8 +8,8 @@
 #exec 2>> ~/clipboard-provider.out
 #set -x
 
-: ${COPY_PROVIDERS:=tmux osc52 local}
-: ${PASTE_PROVIDERS:=tmux local}
+: ${COPY_PROVIDERS:=tmux pb osc52 local}
+: ${PASTE_PROVIDERS:=tmux pb local}
 : ${TTY:=`(tty || tty </proc/$PPID/fd/0) 2>/dev/null | grep /dev/`}
 
 LOCAL_STORAGE=$HOME/.clipboard-provider.out
@@ -38,6 +38,13 @@ tmux-provider() {
     case $1 in
         copy) internal | tmux load-buffer - ;;
         paste) tmux save-buffer - ;;
+    esac
+}
+
+pb-provider() {
+    case $1 in
+        copy) internal | pbcopy ;;
+        paste) pbpaste ;;
     esac
 }
 
