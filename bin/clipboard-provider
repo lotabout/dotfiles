@@ -19,7 +19,7 @@ main() {
 
     case $1 in
         copy)
-            buffer=$(base64)
+            buffer=$(base64 | tr -d '\n')
             internal() { base64 --decode <<<"$buffer"; }
             for p in $COPY_PROVIDERS; do
                 internal | $p-provider copy && status=0
