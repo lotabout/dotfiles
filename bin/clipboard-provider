@@ -9,7 +9,7 @@
 #set -x
 
 : ${COPY_PROVIDERS:=tmux pb osc52 local}
-: ${PASTE_PROVIDERS:=tmux pb local}
+: ${PASTE_PROVIDERS:=pb tmux local}
 : ${TTY:=`(tty || tty </proc/$PPID/fd/0) 2>/dev/null | grep /dev/`}
 
 LOCAL_STORAGE=$HOME/.clipboard-provider.out
