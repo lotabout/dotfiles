@@ -1,0 +1,59 @@
+#!/bin/bash
+# Taken and modified from https://github.com/agriffis/skel/blob/master/neovim/bin/clipboard-provider
+#
+# clipboard provider for neovim
+#
+# :help provider-clipboard
+
+#exec 2>> ~/clipboard-provider.out
+#set -x
+
+: ${COPY_PROVIDERS:=tmux osc52 local}
+: ${PASTE_PROVIDERS:=tmux local}
+: ${TTY:=`(tty || tty </proc/$PPID/fd/0) 2>/dev/null | grep /dev/`}
+
+LOCAL_STORAGE=$HOME/.clipboard-provider.out
+
+main() {
+    declare buffer status=1
+
+    case $1 in
+        copy)
+            buffer=$(base64)
+            internal() { base64 --decode <<<"$buffer"; }
+            for p in $COPY_PROVIDERS; do
+                internal | $p-provider copy && status=0
+            done ;;
+        paste)
+            for p in $PASTE_PROVIDERS; do
+                $p-provider paste && status=0 && break
+            done ;;
+    esac
+
+    exit $status
+}
+
+tmux-provider() {
+    [[ -n $TMUX ]] || return
+    case $1 in
+        copy) internal | tmux load-buffer - ;;
+        paste) tmux save-buffer - ;;
+    esac
+}
+
+osc52-provider() {
+    # HACK: this ignores stdin and looks directly at the base64 buffer
+    case $1 in
+        copy) [[ -n "$TTY" ]] && printf $'\e]52;c;%s\a' "$buffer" > "$TTY" ;;
+        paste) return 1 ;;
+    esac
+}
+
+local-provider() {
+    case $1 in
+        copy) internal > $LOCAL_STORAGE ;;
+        paste) cat $LOCAL_STORAGE && return 0;;
+    esac
+}
+
+main "$@"
