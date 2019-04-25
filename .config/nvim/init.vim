@@ -379,6 +379,22 @@ nnoremap <leader><Space><Space> :%s/\s\+$//<cr>:<C-u>nohlsearch<CR>
 " merge multiple continuous lines into one.
 nmap <leader><cr> :%s/\(^[[:blank:]]*\n\)\{2,}/\r/<cr>
 
+" for neovim to integrate with tmux/iterm2, copy over ssh
+if executable('clipboard-provider')
+    " checkout https://github.com/agriffis/skel/blob/master/neovim/bin/clipboard-provider
+    let g:clipboard = {
+          \ 'name': 'myClipboard',
+          \     'copy': {
+          \         '+': 'clipboard-provider copy',
+          \         '*': 'env COPY_PROVIDERS=tmux clipboard-provider copy',
+          \     },
+          \     'paste': {
+          \         '+': 'clipboard-provider paste',
+          \         '*': 'env COPY_PROVIDERS=tmux clipboard-provider paste',
+          \     },
+          \ }
+endif
+
 " quick access to system's clipboard
 vmap <leader>y "+y
 vmap <leader>Y "+Y
