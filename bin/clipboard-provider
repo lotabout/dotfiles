@@ -42,7 +42,7 @@ tmux-provider() {
 }
 
 pb-provider() {
-    [[ $(command -v pbcopy >/dev/null 2>&1) -ne 0 ]] && return
+    if ! command -v pbcopy &>/dev/null;then return; fi
     case $1 in
         copy) internal | pbcopy ;;
         paste) pbpaste ;;
