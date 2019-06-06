@@ -52,5 +52,5 @@ if exists('g:plugs["vim-textobj-python"]') && exists('g:plugs["slimux"]')
     endfunction
     command! SlimuxPythonEvalDefun call Slimux_python_eval_defun()
     " bind it to Control-Enter
-    nmap <buffer> <C-M> :SlimuxPythonEvalDefun<CR>
+    autocmd FileType python nmap <buffer> <C-M> :SlimuxPythonEvalDefun<CR>
 endif
