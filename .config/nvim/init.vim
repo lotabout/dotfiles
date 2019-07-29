@@ -247,9 +247,6 @@ if package_manager == "vim-plug"
     Plug 'kana/vim-textobj-user'
     Plug 'vim-scripts/argtextobj.vim'
 
-    Plug 'mg979/vim-visual-multi' " multi cursors
-    " Plug 'terryma/vim-multiple-cursors'
-
     Plug 'tpope/vim-abolish' " Enhance `s` command
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-repeat'
@@ -257,19 +254,7 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     " Completion Framework
 
-    if has('nvim')
-        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    else
-        Plug 'Shougo/deoplete.nvim'
-        Plug 'roxma/nvim-yarp'
-        Plug 'roxma/vim-hug-neovim-rpc'
-    endif
-
-    let g:deoplete#enable_at_startup = 1
-    Plug 'autozimu/LanguageClient-neovim', {
-        \ 'branch': 'next',
-        \ 'do': 'bash install.sh',
-        \ }
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
     "------------------------------------------------------------------
     " Handy commands
@@ -323,12 +308,8 @@ if package_manager == "vim-plug"
 
     Plug 'https://github.com/wlangstroth/vim-racket', {'for': 'racket'}
 
-    "Plug 'Rip-Rip/clang_complete', {'for': ['c', 'cpp']}
-
     " for python
     Plug 'bps/vim-textobj-python', {'for': 'python'}
-    "Plug 'https://github.com/davidhalter/jedi-vim.git', {'for': 'python'}
-    Plug 'zchee/deoplete-jedi', {'for': 'python'}
 
     " for javascript
     Plug 'pangloss/vim-javascript'
@@ -733,6 +714,16 @@ if exists('g:plugs["tagbar"]')
 endif
 
 "---------------------------------------------------------------------
+" Indent Guide
+if exists("g:plugs['vim-indent-guides']")")
+    let g:indent_guides_guide_size = 1
+    let g:indent_guides_start_level = 2
+    let g:indent_guides_auto_colors = 0
+    autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#063738 ctermbg=3
+    autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#073642 ctermbg=4
+endif
+
+"---------------------------------------------------------------------
 " Gutentags & Gutentags-plus
 
 if exists("g:plugs['vim-gutentags']")
@@ -817,8 +808,8 @@ if exists('g:plugs["skim.vim"]')
     " replace Ctrl-p
     nmap <C-p> :Files<CR>
 
-    command! -bang -nargs=* Ag call fzf#vim#ag_interactive(<q-args>, fzf#vim#with_preview('right:50%:hidden', 'alt-h'))
-    command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:50%:hidden', 'alt-h'))
+    command! -bang -nargs=* Ag call fzf#vim#ag_interactive(<q-args>, fzf#vim#with_preview('right:50%', 'alt-h'))
+    command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:50%', 'alt-h'))
 
     " Customized binding for Rg
     nnoremap <leader>/ :Rg<CR>
@@ -929,40 +920,13 @@ if exists('g:plugs["neoformat"]')
 endif
 
 "----------------------------------------------------------------------
-" LanguageClient-neovim
+" coc.nvim
 
-if exists('g:plugs["LanguageClient-neovim"]')
-    " Required for operations modifying multiple buffers like rename.
-    set hidden
-
-    " rustup component add rls-preview rust-analysis rust-src
-    " pip install python-language-server
-    " npm install -g typescript-language-server
-
-    let g:LanguageClient_serverCommands = {
-        \ 'rust': ['rustup', 'run', 'stable', 'rls'],
-        \ 'python': ['pyls'],
-        \ }
-
-    let g:LanguageClient_changeThrottle = 0.5
-
-    function! LanguageClientInit()
-        nnoremap <buffer><silent> K :call LanguageClient_textDocument_hover()<CR>
-        nnoremap <buffer><silent> gd :call LanguageClient_textDocument_definition()<CR>
-        nnoremap <buffer><silent> <F2> :call LanguageClient_textDocument_rename()<CR>
-        setlocal formatexpr=LanguageClient_textDocument_rangeFormatting()
-    endfunction
-
-    au Filetype rust,python call LanguageClientInit()
-endif
-
-"----------------------------------------------------------------------
-" jedi-vim
-
-if exists('g:plugs["jedi-vim"]')
-    " use deoplete-jedi for completion, so disable completion of jedi-vim
-    let g:jedi#completions_enabled = 0
-    let g:jedi#goto_command = "<C-]>"
+if exists('g:plugs["coc.nvim"]')
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)
 endif
 
 "----------------------------------------------------------------------
@@ -1029,6 +993,7 @@ if exists('g:plugs["vim-markdown"]')
     let g:tex_conceal = ""
     let g:vim_markdown_math = 1
     let g:vim_markdown_frontmatter = 1
+    let g:vim_markdown_no_extensions_in_markdown = 1
 endif
 
 "----------------------------------------------------------------------
@@ -1116,8 +1081,8 @@ if has("gui_macvim")
     " check this https://github.com/macvim-dev/macvim/issues/562
     if has('python3')
         command! -nargs=1 Py py3 <args>
-        set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/3.6/Python
-        set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.6
+        set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/3.7/Python
+        set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.7
     else
         command! -nargs=1 Py py <args>
         set pythondll=/usr/local/Frameworks/Python.framework/Versions/2.7/Python
