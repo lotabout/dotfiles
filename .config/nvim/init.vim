@@ -808,8 +808,8 @@ if exists('g:plugs["skim.vim"]')
     " replace Ctrl-p
     nmap <C-p> :Files<CR>
 
-    command! -bang -nargs=* Ag call fzf#vim#ag_interactive(<q-args>, fzf#vim#with_preview('right:50%', 'alt-h'))
-    command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('right:50%', 'alt-h'))
+    command! -bang -nargs=* Ag call fzf#vim#ag_interactive(<q-args>, fzf#vim#with_preview('down:50%', 'alt-h'))
+    command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('down:50%', 'alt-h'))
 
     " Customized binding for Rg
     nnoremap <leader>/ :Rg<CR>
@@ -819,6 +819,31 @@ if exists('g:plugs["skim.vim"]')
 
     " Replace Bufexplore
     nmap <C-e> :Buffers<CR>
+
+    " make use of neovim's floating window
+    function! FloatingFZF()
+      let buf = nvim_create_buf(v:false, v:true)
+      call setbufvar(buf, '&signcolumn', 'no')
+
+      let height = &lines - 3
+      let width = float2nr(&columns - (&columns * 2 / 10))
+      let col = float2nr((&columns - width) / 2)
+
+      let opts = {
+            \ 'relative': 'editor',
+            \ 'row': 1,
+            \ 'col': col,
+            \ 'width': width,
+            \ 'height': height
+            \ }
+
+      call nvim_open_win(buf, v:true, opts)
+    endfunction
+
+    if exists('*nvim_open_win')
+        let $SKIM_DEFAULT_OPTIONS='--layout=reverse'
+        let g:skim_layout = { 'window': 'call FloatingFZF()' }
+    endif
 endif
 
 "---------------------------------------------------------------------
