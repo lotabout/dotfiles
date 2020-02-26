@@ -805,7 +805,7 @@ if exists('g:plugs["skim.vim"]')
     let g:skim_history_dir = "~/.skim-history"
 
     let $SKIM_DEFAULT_COMMAND = '(git ls-files -c -o --exclude-standard || rg -l "" || ag -l -g "" || find . -type f)'
-    let $SKIM_DEFAULT_OPTS = '--bind ctrl-f:toggle'
+    let $SKIM_DEFAULT_OPTIONS = '--bind ctrl-f:toggle,ctrl-p:up,ctrl-n:down,up:previous-history,down:next-history'
 
     " replace Ctrl-p
     nmap <C-p> :Files<CR>
@@ -843,7 +843,7 @@ if exists('g:plugs["skim.vim"]')
     endfunction
 
     if exists('*nvim_open_win')
-        let $SKIM_DEFAULT_OPTIONS='--layout=reverse'
+        let $SKIM_DEFAULT_OPTIONS .= ' --layout=reverse'
         let g:skim_layout = { 'window': 'call FloatingFZF()' }
     endif
 endif
