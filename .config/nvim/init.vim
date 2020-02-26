@@ -286,8 +286,8 @@ if package_manager == "vim-plug"
 
     Plug 'lotabout/skim', { 'dir': '~/.skim', 'do': './install' }
     Plug 'lotabout/skim.vim'
-    "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-    "Plug 'junegunn/fzf.vim'
+    " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    " Plug 'junegunn/fzf.vim'
 
     Plug 'ybian/smartim'
 
@@ -331,10 +331,9 @@ if package_manager == "vim-plug"
 
     " for typescript
     Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
-    Plug 'mhartington/nvim-typescript', {'for': 'typescript'}
 
     " for Julia
-    Plug 'JuliaEditorSupport/julia-vim'
+    Plug 'JuliaEditorSupport/julia-vim', {'for': 'julia'}
 
     "------------------------------------------------------------------
     " Others
@@ -803,8 +802,11 @@ endif
 "---------------------------------------------------------------------
 " skim.vim
 if exists('g:plugs["skim.vim"]')
+    let g:skim_history_dir = "~/.skim-history"
+
     let $SKIM_DEFAULT_COMMAND = '(git ls-files -c -o --exclude-standard || rg -l "" || ag -l -g "" || find . -type f)'
     let $SKIM_DEFAULT_OPTS = '--bind ctrl-f:toggle'
+
     " replace Ctrl-p
     nmap <C-p> :Files<CR>
 
