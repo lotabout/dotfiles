@@ -23,7 +23,7 @@ set modeline
 set colorcolumn=80,120
 set textwidth=120
 
-if exists('g:plugs["vim-textobj-python"]') && exists('g:plugs["slimux"]')
+if exists('g:plugs["vim-pythonsense"]') && exists('g:plugs["slimux"]')
     function Slimux_python_eval_defun()
         " backup the position
         let vb = getpos("'<")

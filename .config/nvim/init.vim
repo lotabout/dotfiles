@@ -289,8 +289,6 @@ if package_manager == "vim-plug"
     " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     " Plug 'junegunn/fzf.vim'
 
-    Plug 'ybian/smartim'
-
     "------------------------------------------------------------------
     " Support more filetype specific feature
 
@@ -309,7 +307,7 @@ if package_manager == "vim-plug"
     Plug 'https://github.com/wlangstroth/vim-racket', {'for': 'racket'}
 
     " for python
-    Plug 'bps/vim-textobj-python', {'for': 'python'}
+    Plug 'jeetsukumaran/vim-pythonsense', {'for': 'python'}
 
     " for javascript
     Plug 'pangloss/vim-javascript'
@@ -804,7 +802,7 @@ endif
 if exists('g:plugs["skim.vim"]')
     let g:skim_history_dir = "~/.skim-history"
 
-    let $SKIM_DEFAULT_COMMAND = '(git ls-files -c -o --exclude-standard || rg -l "" || ag -l -g "" || find . -type f)'
+    let $SKIM_DEFAULT_COMMAND = '(fd --type f || git ls-files -c -o --exclude-standard || rg -l "" || ag -l -g "" || find . -type f)'
     let $SKIM_DEFAULT_OPTIONS = '--bind ctrl-f:toggle,ctrl-p:up,ctrl-n:down,up:previous-history,down:next-history'
 
     " replace Ctrl-p
@@ -863,17 +861,6 @@ if exists('g:plugs["delimitMate"]')
 endif
 
 "---------------------------------------------------------------------
-" smartim Switch Input Method smartly
-
-if exists('g:plugs["smartim"]')
-    let g:smartim_default = 'com.apple.keylayout.ABC'
-
-    if !has('macunix')
-        let g:smartim_disable = 1
-    endif
-endif
-
-"---------------------------------------------------------------------
 " Personal wiki
 let g:wiki_directory = $HOME . '/Dropbox/wiki'
 
@@ -891,6 +878,8 @@ endfunction
 
 au FileType markdown call BindForWikiFiles()
 au FileType startify call CreateMappingForPersonalWiki()
+
+command! OpenInBrowser :silent !open -a Google\ Chrome %
 
 "---------------------------------------------------------------------
 " calendar-vim
@@ -988,6 +977,7 @@ if exists('g:plugs["ywvim"]')
     let g:ywvim_conv = ''
     let g:ywvim_lockb = 1
     let g:ywvim_theme = 'dark'
+    let g:ywvim_intelligent_punc = 1
 endif
 
 "===============================================================================
