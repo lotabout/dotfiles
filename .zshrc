@@ -33,7 +33,8 @@ function color_my_prompt {
     local __git_branch='%F{009}$(git_prompt_info)%f'
     local __prompt_tail="%F{013}$%f"
     local __last_color="$reset_color"
-    export PROMPT="[$__num_of_jobs][$__user_and_host $__cur_location]$__git_branch"$'\n'"$__prompt_tail$__last_color "
+    local __current_time='%F{002}$(date +%H:%M:%S)%f'
+    export PROMPT="[$__num_of_jobs][$__current_time][$__user_and_host $__cur_location]$__git_branch"$'\n'"$__prompt_tail$__last_color "
 }
 
 # so that PS1 is replaced
@@ -198,6 +199,8 @@ alias ..........="cd ../../../../../../../../.."
 if [ -f ~/.zsh_aliases ]; then
     . ~/.zsh_aliases
 fi
+
+alias scpr="rsync -P --rsh=ssh"
 
 #==============================================================================
 # utilities
@@ -509,6 +512,8 @@ alias cnpm="npm --registry=https://registry.npm.taobao.org \
     --disturl=https://npm.taobao.org/dist \
     --userconfig=$HOME/.cnpmrc"
 
+alias occ='gcc -framework Foundation'
+
 #==============================================================================
 # load other settings
 if [[ -f ~/.zshrc-local ]]; then
@@ -517,3 +522,6 @@ fi
 
 # added by travis gem
 [ -f /Users/jinzhouz/.travis/travis.sh ] && source /Users/jinzhouz/.travis/travis.sh
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
