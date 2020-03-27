@@ -23,7 +23,7 @@ fi
 
 path_remove ()  { export PATH=`echo -n $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`; }
 path_append ()  { path_remove $1; export PATH="$PATH:$1"; }
-path_prepend () { path_remove $1; export PATH="$1:$PATH"; }
+path_prepend () { export PATH="$1:$PATH"; }
 
 #==============================================================================
 # Path settings
@@ -31,19 +31,11 @@ path_prepend () { path_remove $1; export PATH="$1:$PATH"; }
 # local binary path
 PATH=$HOME/bin:/sbin:/usr/sbin:$PATH:/usr/games/bin
 
-# texlive
-texdirs="/opt/texlive/"
-for x in $(ls $texdirs 2>/dev/null); do
-    dir=`basename "$x"`
-    if [[ "$dir" =~ [0-9]+ ]]; then
-        # PATH=`find /usr/local/texlive -name i386-linux`:$PATH
-        path_prepend "/opt/texlive/$dir/bin/${ARCH}-linux/"
-        # MANPATH=`find /usr/local/texlive -type d -name man`:$MANPATH
-        MANPATH="/opt/texlive/$dir/texmf-dist/doc/man":$MANPATH
-        # INFOPATH=`find /usr/local/texlive -type d -name info`:$INFOPATH
-        INFOPATH="/opt/texlive/$dir/texmf-dist/doc/info":$INFOPATH
-    fi
-done
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# npm
+if [ -d $HOME/node ]; then
+    path_prepend $HOME/node
+fi
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Ruby
@@ -80,15 +72,13 @@ if [ -d $GOPATH/bin ]; then
 fi
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Hahoop
-alias hstart="/usr/local/Cellar/hadoop/3.0.0/sbin/start-dfs.sh;/usr/local/Cellar/hadoop/3.0.0/sbin/start-yarn.sh"
-alias hstop="/usr/local/Cellar/hadoop/3.0.0/sbin/stop-yarn.sh;/usr/local/Cellar/hadoop/3.0.0/sbin/stop-dfs.sh"
+# spark
+PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/build:$PYTHONPATH
+if hash ipython 2> /dev/null; then
+    export PYSPARK_DRIVER_PYTHON=ipython
+fi
 
 #==============================================================================
-
-export PATH
-export MANPATH
-export INFOPATH
 
 case $OS in
     Mac)
@@ -96,9 +86,16 @@ case $OS in
         export LANG="en_US.UTF-8"
 
         export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
+        export COPYFILE_DISABLE=true
         ;;
     *)
         export LC_CTYPE="zh_CN.utf8"
         export LANG=en_US.utf8
         ;;
 esac
+
+#==============================================================================
+# load local settings
+if [[ -f ~/.profile-local ]]; then
+    . ~/.profile-local
+fi

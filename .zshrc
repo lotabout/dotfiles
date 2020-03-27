@@ -1,3 +1,5 @@
+#zmodload zsh/zprof # top of your .zshrc file
+#==============================================================================
 # turn off bell
 # set bell-style none
 
@@ -53,8 +55,13 @@ setopt hist_ignore_dups
 #/v/c/p/p => /var/cache/pacman/pkg
 setopt complete_in_word
 
-autoload -U compinit
-compinit
+# only initialize once a day
+autoload -Uz compinit
+if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
+  compinit
+else
+  compinit -C
+fi
 
 # enable extended glob
 setopt extendedglob
@@ -125,16 +132,6 @@ fi
 # less command with color
 export LESS="-MRg"
 
-if [[ "$(uname)" == "Darwin" ]]; then
-    OS="Mac"
-elif [[ "$(expr substr $(uname -s) 1 5)" == "Linux" ]]; then
-    OS="Linux"
-elif [[ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]]; then
-    OS="MinGW"
-fi
-
-#==============================================================================
-
 #==============================================================================
 # Aliases
 
@@ -174,7 +171,6 @@ esac
 alias sl='ls'
 alias ll='ls -lh'
 alias l='ls -CF'
-#alias grep='grep --color=always'
 
 alias emacs="emacs -nw"
 alias ec='emacsclient -t -a ""'
@@ -201,6 +197,13 @@ if [ -f ~/.zsh_aliases ]; then
 fi
 
 alias scpr="rsync -P --rsh=ssh"
+
+alias cnpm="npm --registry=https://registry.npm.taobao.org \
+    --cache=$HOME/.npm/.cache/cnpm \
+    --disturl=https://npm.taobao.org/dist \
+    --userconfig=$HOME/.cnpmrc"
+
+alias occ='gcc -framework Foundation'
 
 #==============================================================================
 # utilities
@@ -287,12 +290,6 @@ alias m8='alias g8="cd `pwd`; mdump"'
 alias m9='alias g9="cd `pwd`; mdump"'
 touch ~/.bookmarks
 source ~/.bookmarks
-
-# use polipo for proxy
-# you'll have to start polipo first
-function polipo_shadowsocks(){
-    polipo socksParentProxy=localhost:1080
-}
 
 case $OS in
     Mac)
@@ -438,19 +435,6 @@ if [ -d $HOME/.skim ]; then
 fi
 
 #------------------------------------------------------------------------------
-# FZF settings
-#function j() {
-    #local dir
-    #dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
-#}
-
-#function v() {
-    #[ $# -gt 0 ] && fasd -f -e ${EDITOR} "$*" && return
-    #local file
-    #file="$(fasd -Rfl "$1" | fzf -1 -0 --no-sort +m)" && vi "${file}" || return 1
-#}
-
-#------------------------------------------------------------------------------
 # fasd settings
 
 # enable fasd
@@ -506,15 +490,6 @@ if [[ -r $AUTO_SUGGESTIONS && $TERM =~ ".*256" ]]; then
 fi
 
 #==============================================================================
-# aliases
-alias cnpm="npm --registry=https://registry.npm.taobao.org \
-    --cache=$HOME/.npm/.cache/cnpm \
-    --disturl=https://npm.taobao.org/dist \
-    --userconfig=$HOME/.cnpmrc"
-
-alias occ='gcc -framework Foundation'
-
-#==============================================================================
 # load other settings
 if [[ -f ~/.zshrc-local ]]; then
     . ~/.zshrc-local
@@ -522,6 +497,7 @@ fi
 
 # added by travis gem
 [ -f /Users/jinzhouz/.travis/travis.sh ] && source /Users/jinzhouz/.travis/travis.sh
-
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+#==============================================================================
+#zprof # bottom of .zshrc
