@@ -1,5 +1,6 @@
 set hls
 set smartcase
+set multiple-cursors
 
 let mapleader = " "
 let g:mapleader = " "
@@ -25,7 +26,6 @@ nmap <leader>c :action GotoClass<cr>
 nmap <leader>m :action GotoSymbol<cr>
 nmap <leader>s :action FileStructurePopup<cr>
 nmap <leader>d :action ShowErrorDescription<cr>
-
 nmap <C-p> :action SearchEverywhere<cr>
 
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'

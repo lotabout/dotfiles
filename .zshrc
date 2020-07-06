@@ -1,7 +1,7 @@
 #zmodload zsh/zprof # top of your .zshrc file
 #==============================================================================
 # turn off bell
-# set bell-style none
+set bell-style none
 
 [ $TERM = "dumb" ] && PS1='$ ' && return
 

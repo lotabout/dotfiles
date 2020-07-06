@@ -51,6 +51,7 @@ set nrformats-=octal
 
 " enable mouse support
 set mouse=a
+
 "----------------------------------------------------------------------
 " VIM user interface
 
@@ -244,12 +245,7 @@ if package_manager == "vim-plug"
 
     Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
 
-    Plug 'kana/vim-textobj-user'
-    Plug 'vim-scripts/argtextobj.vim'
-
     Plug 'tpope/vim-abolish' " Enhance `s` command
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-repeat'
 
     "------------------------------------------------------------------
     " Completion Framework
@@ -268,6 +264,8 @@ if package_manager == "vim-plug"
 
     " work with git
     Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-rhubarb' " for Gbrowser with github
+    Plug 'shumphrey/fugitive-gitlab.vim' " for Gbrowser with gitlab
     Plug 'airblade/vim-gitgutter'
 
     Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
@@ -803,13 +801,13 @@ if exists('g:plugs["skim.vim"]')
     let g:skim_history_dir = "~/.skim-history"
 
     let $SKIM_DEFAULT_COMMAND = '(fd --type f || git ls-files -c -o --exclude-standard || rg -l "" || ag -l -g "" || find . -type f)'
-    let $SKIM_DEFAULT_OPTIONS = '--bind ctrl-f:toggle,ctrl-p:up,ctrl-n:down,up:previous-history,down:next-history'
+    let $SKIM_DEFAULT_OPTIONS = '--bind ctrl-f:toggle,ctrl-p:up,ctrl-n:down,up:previous-history,down:next-history,alt-h:scroll-left(5),alt-l:scroll-right(5)'
 
     " replace Ctrl-p
     nmap <C-p> :Files<CR>
 
-    command! -bang -nargs=* Ag call fzf#vim#ag_interactive(<q-args>, fzf#vim#with_preview('down:50%', 'alt-h'))
-    command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('down:50%', 'alt-h'))
+    command! -bang -nargs=* Ag call fzf#vim#ag_interactive(<q-args>, fzf#vim#with_preview('down:50%', 'alt-p'))
+    command! -bang -nargs=* Rg call fzf#vim#rg_interactive(<q-args>, fzf#vim#with_preview('down:50%', 'alt-p'))
 
     " Customized binding for Rg
     nnoremap <leader>/ :Rg<CR>
@@ -939,10 +937,28 @@ endif
 " coc.nvim
 
 if exists('g:plugs["coc.nvim"]')
+
     nmap <silent> gd <Plug>(coc-definition)
     nmap <silent> gy <Plug>(coc-type-definition)
     nmap <silent> gi <Plug>(coc-implementation)
     nmap <silent> gr <Plug>(coc-references)
+
+    " Use K to show documentation in preview window.
+    nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+    function! s:show_documentation()
+        if (index(['vim','help'], &filetype) >= 0)
+            execute 'h '.expand('<cword>')
+        else
+            call CocAction('doHover')
+        endif
+    endfunction
+endif
+
+"----------------------------------------------------------------------
+" vim-fugitive
+if exists('g:plugs["fugitive-gitlab.vim"]')
+    let g:fugitive_gitlab_domains = ['https://gitlab.4pd.io']
 endif
 
 "----------------------------------------------------------------------
