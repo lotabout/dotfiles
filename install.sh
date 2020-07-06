@@ -12,7 +12,7 @@ fi
 #==============================================================================
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-BACKUP_FILES=(".vim" ".vimrc" ".config/nvim" ".profile" ".bash_profile" ".bashrc" ".zshrc" ".tmux.conf" ".ideavimrc" ".Xresources" "bin" ".config/ranger" ".tigrc" ".alacritty.yml")
+BACKUP_FILES=(".vim" ".vimrc" ".config/nvim" ".profile" ".bash_profile" ".bashrc" ".zshrc" ".tmux.conf" ".ideavimrc" ".Xresources" "bin" ".config/ranger" ".tigrc" ".alacritty.yml" ".config/kitty")
 
 # remove old links or backup old files/dirs
 for FILE in "${BACKUP_FILES[@]}"
@@ -25,7 +25,7 @@ do
 done
 
 
-AUTO_LINK_FILES=(".config/nvim" ".profile" ".bash_profile" ".zshrc" ".tmux.conf" ".ideavimrc" ".Xresources" "bin" ".config/ranger" ".tigrc")
+AUTO_LINK_FILES=(".config/nvim" ".profile" ".bash_profile" ".zshrc" ".tmux.conf" ".ideavimrc" ".Xresources" "bin" ".config/ranger" ".tigrc" ".alacritty.yml" ".config/kitty")
 
 # add symlinks
 for FILE in "${AUTO_LINK_FILES[@]}"
