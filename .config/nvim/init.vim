@@ -98,7 +98,7 @@ set laststatus=2
 "set stl=%F%y%m\ [%l,%c,%p%%]\ [%n/%{len(filter(range(1,bufnr('$')),'buflisted(v:val)'))}]
 
 " disable syntax highlighting for lone lines
-set synmaxcol=200
+set synmaxcol=4096
 
 " set showtabline=2
 set completeopt=longest,menuone,preview
@@ -230,7 +230,7 @@ if package_manager == "vim-plug"
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
     Plug 'Xuyuanp/nerdtree-git-plugin'
 
-    Plug 'mhinz/vim-startify'
+    " Plug 'mhinz/vim-startify'
 
     Plug 'kshenoy/vim-signature' " show sign for native marks
 
@@ -261,6 +261,7 @@ if package_manager == "vim-plug"
     Plug 'sjl/gundo.vim', {'on': 'GundoToggle'}
 
     Plug 'schickling/vim-bufonly' " close all buffers except current one
+    Plug 'reedes/vim-pencil'
 
     " work with git
     Plug 'tpope/vim-fugitive'
@@ -269,6 +270,7 @@ if package_manager == "vim-plug"
     Plug 'airblade/vim-gitgutter'
 
     Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
+    Plug 'rootkiter/vim-hexedit'
 
     "------------------------------------------------------------------
     " Better defaults
@@ -996,6 +998,16 @@ if exists('g:plugs["ywvim"]')
     let g:ywvim_intelligent_punc = 1
 endif
 
+"----------------------------------------------------------------------
+" : input method for chinese
+if exists('g:plugs["vim-pencil"]')
+    augroup pencil
+      autocmd!
+      autocmd FileType markdown,mkd call pencil#init()
+      autocmd FileType text         call pencil#init()
+    augroup END
+endif
+
 "===============================================================================
 " self-added plugins && settigns
 
@@ -1020,13 +1032,14 @@ let g:enable_my_python_config = 1
 
 if exists('g:plugs["vim-markdown"]')
     let g:vim_markdown_folding_disabled = 1
-    let g:vim_markdown_frontmatter=1
+    let g:vim_markdown_frontmatter = 1
     let g:vim_markdown_follow_anchor = 1
     let g:vim_markdown_conceal = 0
     let g:tex_conceal = ""
     let g:vim_markdown_math = 1
     let g:vim_markdown_frontmatter = 1
     let g:vim_markdown_no_extensions_in_markdown = 1
+    au FileType markdown,text,gitcommit setlocal spell spelllang=en,cjk
 endif
 
 "----------------------------------------------------------------------
