@@ -230,9 +230,9 @@ if package_manager == "vim-plug"
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
     Plug 'Xuyuanp/nerdtree-git-plugin'
 
-    " Plug 'mhinz/vim-startify'
+    Plug 'mhinz/vim-startify'
 
-    Plug 'kshenoy/vim-signature' " show sign for native marks
+    Plug 'lotabout/vim-signature' " show sign for native marks
 
     Plug 'nathanaelkane/vim-indent-guides'
 
@@ -276,6 +276,7 @@ if package_manager == "vim-plug"
     " Better defaults
 
     Plug 'vim-scripts/LargeFile' " disable some features for faster opening large files.
+    Plug 'dbakker/vim-projectroot'
 
     "------------------------------------------------------------------
     " Integration with Linux environment
@@ -313,7 +314,8 @@ if package_manager == "vim-plug"
     Plug 'pangloss/vim-javascript'
     Plug 'mxw/vim-jsx', {'for': 'javascript.jsx'} " for react.js
     Plug 'othree/javascript-libraries-syntax.vim', {'for': 'javascript'}
-    Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript.jsx', 'typescript']}
+    "Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript.jsx', 'typescript']}
+    Plug 'adriaanzon/vim-emmet-ultisnips', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript.jsx', 'typescript']}
 
     " for clojure
     Plug 'guns/vim-clojure-static', {'for': 'clojure'}
@@ -758,6 +760,23 @@ if exists("g:plugs['LargeFile']")
 endif
 
 "---------------------------------------------------------------------
+" vim-projectroot
+
+if exists("g:plugs['vim-projectroot']")
+    function! <SID>AutoProjectRootCD()
+      try
+        if &ft != 'help'
+          ProjectRootCD
+        endif
+      catch
+        " Silently ignore invalid buffers
+      endtry
+    endfunction
+
+    autocmd BufEnter * call <SID>AutoProjectRootCD()
+endif
+
+"---------------------------------------------------------------------
 " fakeclip
 if exists("g:plugs['vim-fakeclip']")
     let g:fakeclip_terminal_multiplexer_type = "tmux"
@@ -996,16 +1015,6 @@ if exists('g:plugs["ywvim"]')
     let g:ywvim_lockb = 1
     let g:ywvim_theme = 'dark'
     let g:ywvim_intelligent_punc = 1
-endif
-
-"----------------------------------------------------------------------
-" : input method for chinese
-if exists('g:plugs["vim-pencil"]')
-    augroup pencil
-      autocmd!
-      autocmd FileType markdown,mkd call pencil#init()
-      autocmd FileType text         call pencil#init()
-    augroup END
 endif
 
 "===============================================================================
