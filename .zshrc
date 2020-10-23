@@ -135,9 +135,9 @@ export LESS="-MRg"
 #==============================================================================
 # Aliases
 
-if command -v gvim &> /dev/null;then
-    alias vim='gvim -v'
-fi
+# if command -v gvim &> /dev/null;then
+#     alias vim='gvim -v'
+# fi
 
 # prefer neovim over vim
 if command -v nvim &> /dev/null ;then
@@ -488,6 +488,12 @@ if [[ -r $AUTO_SUGGESTIONS && $TERM =~ ".*256" ]]; then
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=030'
     ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20 # do not trigger completion for large buffer
 fi
+
+
+#==============================================================================
+# Other alias with higher priority
+
+alias s='ssh-manager.sh'
 
 #==============================================================================
 # load other settings
