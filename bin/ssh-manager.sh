@@ -4,13 +4,13 @@ FILE=~/Dropbox/Dump/ssh-hosts.txt
 
 set -o pipefail
 
-eval $(cat $FILE |\
-    sk --header-lines=1 \
+eval $(sk --header-lines=1 \
+    -c "cat $FILE" \
     --layout=reverse \
     --height=30% \
     --delimiter '\|' \
     --with-nth='..-2' \
-    --bind "ctrl-e:execute(vi $FILE < /dev/tty > /dev/tty)" |\
+    --bind "ctrl-e:execute(vi $FILE < /dev/tty > /dev/tty)+refresh-cmd" |\
     awk -F ' *\\| *' '{printf("USERNAME=%s;HOST=%s;PASS=%s",$1,$2,$NF)}')
 
 if [ -z $HOST ]; then
