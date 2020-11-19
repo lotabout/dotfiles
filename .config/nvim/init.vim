@@ -318,9 +318,11 @@ if package_manager == "vim-plug"
     Plug 'adriaanzon/vim-emmet-ultisnips', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript.jsx', 'typescript']}
 
     " for clojure
-    Plug 'guns/vim-clojure-static', {'for': 'clojure'}
-    Plug 'tpope/vim-fireplace', {'for': 'clojure'}
-    Plug 'guns/vim-clojure-highlight', {'for': 'clojure'}
+    " Plug 'guns/vim-clojure-static', {'for': 'clojure'}
+    " Plug 'tpope/vim-fireplace', {'for': 'clojure'}
+    " Plug 'guns/vim-clojure-highlight', {'for': 'clojure'}
+    Plug 'liquidz/vim-iced', {'for': 'clojure'}
+    Plug 'liquidz/vim-iced-coc-source', {'for': 'clojure'}
 
     " for rust
     Plug 'rust-lang/rust.vim', {'for': 'rust'}
@@ -1056,6 +1058,10 @@ au BufNewFile,BufRead *.js,*.jsx,*.ts,*.tsx,*.html,*.css
     \ set softtabstop=2 |
     \ set shiftwidth=2 |
     \ set smarttab
+
+if exists('g:plugs["vim-iced"]')
+    "let g:iced_enable_default_key_mappings = v:true
+endif
 
 "===============================================================================
 " client specified settings
