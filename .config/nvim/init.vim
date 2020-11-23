@@ -1060,7 +1060,17 @@ au BufNewFile,BufRead *.js,*.jsx,*.ts,*.tsx,*.html,*.css
     \ set smarttab
 
 if exists('g:plugs["vim-iced"]')
-    "let g:iced_enable_default_key_mappings = v:true
+    augroup my_iced_mapping
+        au!
+        au FileType clojure nmap <Leader>ei <Plug>(iced_eval)<Plug>(sexp_inner_element)``
+        au FileType clojure nmap <Leader>ee <Plug>(iced_eval)<Plug>(sexp_outer_list)``
+        au FileType clojure nmap <Leader>et <Plug>(iced_eval_outer_top_list)
+        au FileType clojure nmap K <Plug>(iced_document_popup_open)
+        au FileType clojure nmap <C-]> <Plug>(iced_def_jump)
+        au FileType clojure nmap == <Plug>(iced_format)
+        au FileType clojure nmap =G <Plug>(iced_format_all)
+        au FileType clojure nmap <Leader>' <Plug>(iced_connect)
+    augroup end
 endif
 
 "===============================================================================
