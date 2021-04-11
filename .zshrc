@@ -57,11 +57,24 @@ setopt complete_in_word
 
 # only initialize once a day
 autoload -Uz compinit
-if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
-  compinit
-else
-  compinit -C
-fi
+
+case $OS in
+    Mac)
+        if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
+          compinit
+        else
+          compinit -C
+        fi
+        ;;
+    Linux)
+        if [ $(date +'%Y-%m-%d') != $(/usr/bin/stat -c '%.10y' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
+          compinit
+        else
+          compinit -C
+        fi
+        ;;
+esac
+
 
 # enable extended glob
 setopt extendedglob
