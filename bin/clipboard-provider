@@ -33,12 +33,12 @@ main() {
     exit $status
 }
 
-isnt-copy() {
-    if [[ "$1" == "copy" ]]; then return 1; else return 0; fi
+is-copy() {
+    if [[ "$1" == "copy" ]]; then return 0; else return 1; fi
 }
 
 tmux-provider() {
-    [[ -n $TMUX ]] || return isnt-copy
+    [[ -n $TMUX ]] || return is-copy
     case $1 in
         copy) internal | tmux load-buffer - ;;
         paste) tmux save-buffer - ;;
@@ -46,7 +46,7 @@ tmux-provider() {
 }
 
 pb-provider() {
-    if ! command -v pbcopy &>/dev/null;then return $(isnt-copy $1); fi
+    if ! command -v pbcopy &>/dev/null;then return $(is-copy $1); fi
     case $1 in
         copy) internal | pbcopy ;;
         paste) pbpaste ;;
@@ -69,7 +69,7 @@ local-provider() {
 }
 
 xclip-provider() {
-    if ! command -v xclip &>/dev/null;then return $(isnt-copy $1); fi
+    if ! command -v xclip &>/dev/null;then return $(is-copy $1); fi
     case $1 in
         copy) internal | xclip -i -selection clipboard;;
         paste) xclip -o -selection clipboard;;
