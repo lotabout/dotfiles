@@ -50,13 +50,19 @@ fi
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Rust
-if [ -d $HOME/.cargo/bin ]; then
-    path_prepend $HOME/.cargo/bin
-fi
 
 # rustup
 export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
 export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+
+if [ -d $HOME/.cargo/bin ]; then
+    path_prepend $HOME/.cargo/bin
+fi
+
+
+if [ -f "$HOME/.cargo/env" ]; then
+    source "$HOME/.cargo/env" 
+fi
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Anaconda
@@ -87,6 +93,9 @@ case $OS in
 
         export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
         export COPYFILE_DISABLE=true
+        ;;
+    Linux)
+        export LC_ALL="en_US.UTF-8"
         ;;
     *)
         export LC_CTYPE="zh_CN.utf8"
