@@ -32,5 +32,5 @@ else:
 
     date = datetime.strptime(arg, date_format)
 
-print(date.strftime('%Y-%m-%d %H:%M:%S'))
+print(date)
 print(int(date.timestamp()))
