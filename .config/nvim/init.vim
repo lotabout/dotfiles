@@ -59,9 +59,13 @@ set mouse=a
 set wildmenu
 set wildmode=longest,list,full
 
-" Ignore compiled files
-set wildignore+=*.o,*~,*.pyc
-"set wildignore+=*/.git/*,*/.hg/*,*/.svn/*
+" Ignore certain files and folders when globbing
+set wildignore+=*~
+set wildignore+=*.o,*.obj,*.bin,*.dll,*.exe
+set wildignore+=*/.git/*,*/.svn/*,*/__pycache__/*,*/build/**
+set wildignore+=*.pyc
+set wildignore+=*.DS_Store
+set wildignore+=*.aux,*.bbl,*.blg,*.brf,*.fls,*.fdb_latexmk,*.synctex.gz,*.pdf
 
 " Always show current position
 set ruler
@@ -97,11 +101,18 @@ set cursorline
 set laststatus=2
 "set stl=%F%y%m\ [%l,%c,%p%%]\ [%n/%{len(filter(range(1,bufnr('$')),'buflisted(v:val)'))}]
 
+" Do not add two spaces after a period when joining lines or formatting texts,
+" see https://stackoverflow.com/q/4760428/6064933
+set nojoinspaces
+
 " disable syntax highlighting for lone lines
 set synmaxcol=4096
 
 " set showtabline=2
 set completeopt=longest,menuone,preview
+
+" Virtual edit is useful for visual block edit
+set virtualedit=block
 
 " neovim >= 0.17, preview the substitution like :%s/foo/bar/g
 if exists('&inccommand')
@@ -184,6 +195,11 @@ noremap gk k
 " swap these too because ' is easier to type and ` is what I want
 noremap ' `
 noremap ` '
+
+" Continuous visual shifting, don't quit visual selection
+xnoremap < <gv
+xnoremap > >gv
+
 
 " Close current buffer
 " need vim-bbye
@@ -301,7 +317,6 @@ if package_manager == "vim-plug"
     Plug 'tomtom/tcomment_vim'
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
-
     Plug 'lotabout/vim-ultisnippet-private' " private snippets
 
     Plug 'w0rp/ale' " async version of Syntastic
@@ -321,13 +336,6 @@ if package_manager == "vim-plug"
     Plug 'othree/javascript-libraries-syntax.vim', {'for': 'javascript'}
     "Plug 'mattn/emmet-vim', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript.jsx', 'typescript']}
     Plug 'adriaanzon/vim-emmet-ultisnips', {'for': ['html', 'xml', 'css', 'nhtml', 'javascript', 'javascript.jsx', 'typescript']}
-
-    " for clojure
-    " Plug 'guns/vim-clojure-static', {'for': 'clojure'}
-    " Plug 'tpope/vim-fireplace', {'for': 'clojure'}
-    " Plug 'guns/vim-clojure-highlight', {'for': 'clojure'}
-    Plug 'liquidz/vim-iced', {'for': 'clojure'}
-    Plug 'liquidz/vim-iced-coc-source', {'for': 'clojure'}
 
     " for rust
     Plug 'rust-lang/rust.vim', {'for': 'rust'}
@@ -1119,20 +1127,6 @@ au BufNewFile,BufRead *.js,*.jsx,*.ts,*.tsx,*.html,*.css
     \ set softtabstop=2 |
     \ set shiftwidth=2 |
     \ set smarttab
-
-if exists('g:plugs["vim-iced"]')
-    augroup my_iced_mapping
-        au!
-        au FileType clojure nmap <Leader>ei <Plug>(iced_eval)<Plug>(sexp_inner_element)``
-        au FileType clojure nmap <Leader>ee <Plug>(iced_eval)<Plug>(sexp_outer_list)``
-        au FileType clojure nmap <Leader>et <Plug>(iced_eval_outer_top_list)
-        au FileType clojure nmap K <Plug>(iced_document_popup_open)
-        au FileType clojure nmap <C-]> <Plug>(iced_def_jump)
-        au FileType clojure nmap == <Plug>(iced_format)
-        au FileType clojure nmap =G <Plug>(iced_format_all)
-        au FileType clojure nmap <Leader>' <Plug>(iced_connect)
-    augroup end
-endif
 
 "===============================================================================
 " client specified settings
