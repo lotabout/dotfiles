@@ -196,11 +196,6 @@ noremap gk k
 noremap ' `
 noremap ` '
 
-" Continuous visual shifting, don't quit visual selection
-xnoremap < <gv
-xnoremap > >gv
-
-
 " Close current buffer
 " need vim-bbye
 nmap <leader>q :Bdelete<cr>
@@ -262,6 +257,10 @@ if package_manager == "vim-plug"
     Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
 
     Plug 'tpope/vim-abolish' " Enhance `s` command
+    Plug 'vimwiki/vimwiki'
+
+    Plug 'kana/vim-textobj-user'
+    Plug 'kana/vim-textobj-indent'
 
     "------------------------------------------------------------------
     " Completion Framework
@@ -341,8 +340,8 @@ if package_manager == "vim-plug"
     Plug 'rust-lang/rust.vim', {'for': 'rust'}
 
     " for markdown
-    Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
-    Plug 'dkarter/bullets.vim', {'for': ['markdown', 'text', 'gitcommit']}
+    " Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
+    " Plug 'dkarter/bullets.vim', {'for': ['markdown', 'text', 'gitcommit']}
 
     " for typescript
     Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
@@ -874,13 +873,57 @@ au FileType startify call CreateMappingForPersonalWiki()
 
 command! OpenInBrowser :silent !open -a Google\ Chrome %
 
+if exists('g:plugs["vimwiki"]')
+    let g:vimwiki_use_calendar = 0
+    let g:vimwiki_conceallevel = 0
+
+    " turn off insert mode mappings
+    let g:vimwiki_global_ext = 0
+    let g:vimwiki_table_mappings = 0
+    let g:vimwiki_ext2syntax = {'.md': 'markdown',
+                \ '.mkd': 'markdown',
+                \ '.wiki': 'media'}
+
+    let wiki_1 = {}
+    let wiki_1.path = g:wiki_directory
+    let wiki_1.nested_syntaxes = {'python': 'python',
+        \ 'js': 'javascript',
+        \ 'bash': 'sh',
+        \ 'sh': 'sh',
+        \ 'c': 'c',
+        \ 'java': 'java',
+        \ 'sql': 'sql',
+        \ 'rust': 'rust',
+        \ 'scheme': 'scheme',
+        \ 'racket': 'racket'}
+    let wiki_1.syntax = 'markdown'
+    let wiki_1.ext = '.md'
+
+    let g:vimwiki_list = [wiki_1]
+
+    " Disable vimwiki mappings (to remove bindings begins with <leader>w)
+    nmap <Plug>NoVimwikiIndex <Plug>VimwikiIndex
+    nmap <Plug>NoVimwikiTabIndex <Plug>VimwikiTabIndex
+    nmap <Plug>NoVimwikiUISelect <Plug>VimwikiUISelect
+    nmap <Plug>NoVimwikiDiaryIndex <Plug>VimwikiDiaryIndex
+    nmap <Plug>NoVimwikiMakeDiaryNote <Plug>VimwikiMakeDiaryNote
+    nmap <Plug>NoVimwikiTabMakeDiaryNote <Plug>VimwikiTabMakeDiaryNote
+    nmap <Plug>NoVimwikiDiaryGenerateLinks <Plug>VimwikiDiaryGenerateLinks
+    nmap <Plug>NoVimwikiMakeYesterdayDiaryNote <Plug>VimwikiMakeYesterdayDiaryNote
+    nmap <Plug>NoVimwikiRenameLink <Plug>VimwikiRenameLink
+    nmap <Plug>NoVimwikiDeleteLink <Plug>VimwikiDeleteLink
+    nmap <Plug>NoVimwiki2HTMLBrowse <Plug>Vimwiki2HTMLBrowse
+    nmap <Plug>NoVimwiki2HTML <Plug>Vimwiki2HTML
+    nmap <Plug>NoVimwikiNormalizeLinkVisual <Plug>VimwikiNormalizeLinkVisual
+    nmap <Plug>NoVimwikiNormalizeLink <Plug>VimwikiNormalizeLink
+endif
+
 "---------------------------------------------------------------------
 " calendar-vim
 
 if exists('g:plugs["calendar-vim"]')
     let g:calendar_filetype = 'markdown'
     let g:calendar_diary= g:wiki_directory . '/diary'
-
 endif
 
 "---------------------------------------------------------------------
