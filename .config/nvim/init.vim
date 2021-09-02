@@ -232,8 +232,7 @@ if package_manager == "vim-plug"
     Plug 'lifepillar/vim-solarized8'
 
     " powerline alternative; for better status line
-    Plug 'bling/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
+    Plug 'itchyny/lightline.vim'
 
     Plug 'majutsushi/tagbar'
     Plug 'lvht/tagbar-markdown', {'for': 'markdown'}
@@ -285,6 +284,7 @@ if package_manager == "vim-plug"
 
     Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
     Plug 'rootkiter/vim-hexedit'
+    Plug 'lotabout/orgmark'
 
     "------------------------------------------------------------------
     " Better defaults
@@ -935,17 +935,19 @@ if exists('g:plugs["calendar-vim"]')
 endif
 
 "---------------------------------------------------------------------
-" vim-airline
-if exists('g:plugs["vim-airline"]')
-    let g:airline_solarized_bg = 'dark'
-    let g:airline_theme='solarized'
-    let g:airline#extensions#tabline#enabled = 1
-    let g:airline#extensions#tabline#show_buffers = 0
-    let g:airline#extensions#tabline#show_splits = 0
-    let g:airline#extensions#tabline#show_tab_nr = 0
-    let g:airline#extensions#tabline#tab_min_count = 2
-
-    let g:airline_section_z = ''
+" vim-lightline
+if exists('g:plugs["lightline.vim"]')
+    set noshowmode
+    let g:lightline = {
+          \ 'colorscheme': 'solarized',
+          \ 'active': {
+          \   'left': [ [ 'mode', 'paste' ],
+          \             [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ]
+          \ },
+          \ 'component_function': {
+          \   'gitbranch': 'FugitiveHead'
+          \ },
+          \ }
 endif
 
 "---------------------------------------------------------------------
