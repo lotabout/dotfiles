@@ -6,8 +6,10 @@ set encoding=utf-8
 scriptencoding utf-8
 
 if has('nvim')
+    let s:vimvariant = "nvim"
     let $VIMHOME = expand('~/.config/nvim/')
 else
+    let s:vimvariant = "vim"
     let $VIMHOME = expand('~/.vim/')
 endif
 
@@ -131,33 +133,38 @@ set ffs=unix,dos,mac
 
 " Change backup directory to a less annoying place under linux.
 if has("unix")
-    if isdirectory($HOME.'/.vim-backup') == 0
-        :silent !mkdir -p ~/.vim-backup > /dev/null 2>&1
+    let s:backupdir = '.' . s:vimvariant . '-backup'
+    let s:backuppath = $HOME . '/' . s:backupdir
+    if isdirectory(s:backuppath) == 0
+        execute ':silent !mkdir -p ' . s:backuppath . ' > /dev/null 2>&1'
     endif
 
     set backupdir-=.
     set backupdir+=.
     set backupdir-=~/
-    set backupdir^=~/.vim-backup
-    set backupdir^=./.vim-backup
+    execute 'set backupdir^=' . s:backuppath
+    execute 'set backupdir^=./' . s:backupdir
 
-    if isdirectory($HOME.'/.vim-swap') == 0
-        :silent !mkdir -p ~/.vim-swap > /dev/null 2>&1
+    let s:swapdir = '.' . s:vimvariant . '-swap'
+    let s:swappath = $HOME . '/' . s:swapdir
+    if isdirectory(s:swappath) == 0
+        execute ':silent !mkdir -p ' . s:swappath . ' > /dev/null 2>&1'
     endif
-    set directory=./.vim-swap//
-    set directory+=~/.vim-swap//
+    execute 'set directory=./' . s:swapdir
+    execute 'set directory+=' . s:swappath
     set directory+=~/tmp//
     set directory+=.
 
     if exists('+undofile')
-        if isdirectory($HOME.'/.vim-undo') == 0
-            :silent !mkdir -p ~/.vim-undo > /dev/null 2>&1
+        let s:undopath = $HOME.'/.' . s:vimvariant . '-undo'
+        if isdirectory(s:undopath) == 0
+            execute ':silent !mkdir -p ' . s:undopath . ' > /dev/null 2>&1'
         endif
 
-        set undodir=./.vim-undo//
-        set undodir+=~/.vim-undo//
+        execute 'set undodir=' . s:undopath
         set undofile
     endif
+
 endif
 
 "----------------------------------------------------------------------
@@ -1254,8 +1261,8 @@ if has("gui_macvim")
     " check this https://github.com/macvim-dev/macvim/issues/562
     if has('python3')
         command! -nargs=1 Py py3 <args>
-        set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/3.7/Python
-        set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.7
+        set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/Current/Python
+        set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/Current
     else
         command! -nargs=1 Py py <args>
         set pythondll=/usr/local/Frameworks/Python.framework/Versions/2.7/Python
