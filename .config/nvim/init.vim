@@ -1053,7 +1053,7 @@ endif
 " ywvim: input method for chinese
 if exists('g:plugs["ywvim"]')
     let g:ywvim_ims=[
-                \['wb', '五笔', 'wubi.ywvim'],
+                \['wb', '五笔', 'wubi86_jidian.ywvim'],
                 \['py', '拼音', 'pinyin.ywvim'],
                 \]
 
