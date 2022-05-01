@@ -495,6 +495,23 @@ endfunction
 
 command! QuickFixOpenAll call QuickFixOpenAll()
 
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" toggle wrap
+
+function! ToggleWrap()
+    if &wrap
+        echo "Wrap Off"
+        setlocal nowrap
+        set virtualedit=all
+    else
+        echo "Wrap On"
+        setlocal wrap
+        set virtualedit=block
+    endif
+endfunction
+
+command! ToggleWrap call ToggleWrap()
+
 "===============================================================================
 " Settings for Programming
 
@@ -569,8 +586,8 @@ xnoremap & :&&<CR>
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
 " Search in a Region
-vnoremap / <Esc>/\%><C-R>=line("'<")-1<CR>l\%<<C-R>=line("'>")+1<CR>l
-vnoremap ? <Esc>?\%><C-R>=line("'<")-1<CR>l\%<<C-R>=line("'>")+1<CR>l
+" vnoremap / <Esc>/\%><C-R>=line("'<")-1<CR>l\%<<C-R>=line("'>")+1<CR>l
+" vnoremap ? <Esc>?\%><C-R>=line("'<")-1<CR>l\%<<C-R>=line("'>")+1<CR>l
 
 " Scroll without moving cursor screen line
 nnoremap <C-J> <C-E>j
@@ -989,7 +1006,9 @@ endif
 " easymotion
 if exists('g:plugs["vim-easymotion"]')
     nmap <Leader>l <Plug>(easymotion-bd-jk)
+    vmap <Leader>l <Plug>(easymotion-bd-jk)
     nmap <Leader>L <Plug>(easymotion-overwin-line)
+    vmap <Leader>L <Plug>(easymotion-overwin-line)
 endif
 
 
