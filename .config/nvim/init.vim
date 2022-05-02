@@ -296,12 +296,12 @@ if package_manager == "vim-plug"
 
     Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
     Plug 'rootkiter/vim-hexedit'
+    Plug 'voldikss/vim-translator'
 
     "------------------------------------------------------------------
     " Better defaults
 
     Plug 'vim-scripts/LargeFile' " disable some features for faster opening large files.
-    Plug 'dbakker/vim-projectroot'
 
     "------------------------------------------------------------------
     " Integration with Linux environment
@@ -353,7 +353,7 @@ if package_manager == "vim-plug"
     " for markdown
     Plug 'lotabout/vim-markdown', {'for': 'markdown'}
     Plug 'dkarter/bullets.vim', {'for': ['markdown', 'text', 'gitcommit']}
-    Plug 'lotabout/orgmark.vim', {'for': ['markdown']}
+    Plug 'lotabout/orgmark.vim', {'branch': 'main', 'for': ['markdown']}
 
     " for typescript
     Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
@@ -1147,6 +1147,14 @@ require'nvim-treesitter.configs'.setup {
 }
 EOF
 
+endif
+
+"---------------------------------------------------------------------
+" vim-translator
+"
+if exists('g:plugs["vim-translator"]')
+    nmap <silent> <Leader>t <Plug>TranslateW
+    vmap <silent> <Leader>t <Plug>TranslateWV
 endif
 
 "===============================================================================
