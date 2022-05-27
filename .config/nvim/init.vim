@@ -365,8 +365,9 @@ if package_manager == "vim-plug"
     " Others
 
     Plug 'christoomey/vim-tmux-navigator'
-    Plug 'mattn/calendar-vim'
+    Plug 'lotabout/calendar-vim'
     Plug 'lotabout/ywvim' " Chinese input method
+    Plug 'wakatime/vim-wakatime' " time tracking
 
     call plug#end()
 elseif package_manager == "pathogen"
@@ -961,6 +962,7 @@ endif
 " calendar-vim
 
 if exists('g:plugs["calendar-vim"]')
+    let g:calendar_diary_filename_pat = '%04d-%02d-%02d'
     let g:calendar_filetype = 'markdown'
     let g:calendar_diary= g:wiki_directory . '/diary'
 endif
