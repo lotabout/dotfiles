@@ -256,14 +256,18 @@ if package_manager == "vim-plug"
 
     Plug 'lotabout/vim-signature' " show sign for native marks
 
-    Plug 'nathanaelkane/vim-indent-guides'
+    if has('nvim')
+        Plug 'lukas-reineke/indent-blankline.nvim' " neovim 0.5
+    endif
 
     "------------------------------------------------------------------
     " Basic feature enhancement
 
     Plug 'moll/vim-bbye'
     Plug 'ervandew/supertab'    " you'll need it
-    Plug 'easymotion/vim-easymotion'
+
+    " Plug 'easymotion/vim-easymotion'
+    Plug 'ggandor/lightspeed.nvim', {'branch': 'main'}
 
     Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
 
@@ -740,14 +744,20 @@ if exists('g:plugs["tagbar"]')
 endif
 
 "---------------------------------------------------------------------
-" Indent Guide
-if exists("g:plugs['vim-indent-guides']")")
-    let g:indent_guides_guide_size = 1
-    let g:indent_guides_start_level = 2
-    let g:indent_guides_auto_colors = 0
-    autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#063738 ctermbg=3
-    autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#073642 ctermbg=4
+" indent-blankline.nvim
+
+if exists("g:plugs['indent-blankline.nvim']")
+    let g:indent_blankline_show_first_indent_level = v:false
+    let g:indent_blankline_show_trailing_blankline_indent = v:false
+
+    if exists('g:plugs["nvim-treesitter"]')
+        let g:indent_blankline_use_treesitter = v:true
+        let g:indent_blankline_show_current_context = v:true
+        let g:indent_blankline_show_current_context_start = v:true
+    endif
+    highlight IndentBlanklineChar guifg=#063738 gui=nocombine
 endif
+
 
 "---------------------------------------------------------------------
 " Gutentags & Gutentags-plus
@@ -1104,8 +1114,7 @@ lua <<EOF
         ensure_installed = { "c", "cpp", "java", "python", "bash", "css", "go", "lua", "javascript", "yaml", "tsx", "json" }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
         ignore_install = {}, -- List of parsers to ignore installing
         highlight = { enable = true },
-        textobjects = { enable = true },
-        indent = { enable = true }
+        textobjects = { enable = true }
     }
 EOF
 
@@ -1204,7 +1213,7 @@ if exists('g:plugs["vim-markdown"]')
     let g:vim_markdown_folding_disabled = 1
     let g:vim_markdown_frontmatter = 1
     let g:vim_markdown_follow_anchor = 1
-    let g:vim_markdown_conceal = 0
+    let g:vim_markdown_conceal = 1
     let g:tex_conceal = ""
     let g:vim_markdown_math = 1
     let g:vim_markdown_frontmatter = 1
