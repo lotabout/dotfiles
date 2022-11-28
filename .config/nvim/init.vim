@@ -267,7 +267,6 @@ if package_manager == "vim-plug"
     Plug 'ervandew/supertab'    " you'll need it
 
     " Plug 'easymotion/vim-easymotion'
-    Plug 'ggandor/lightspeed.nvim', {'branch': 'main'}
 
     Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
 
@@ -603,6 +602,9 @@ vnoremap <C-K> <C-Y>k
 " https://dev.to/jovica/the-vim-trick-which-will-save-your-time-and-nerves-45pg
 cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 
+" neovim makes Y = y$, why?
+nmap Y yy
+
 "----------------------------------------------------------------------
 " Show tabs (indent lines)
 
@@ -704,6 +706,8 @@ endif
 
 if exists('g:plugs["tagbar"]')
 
+    au FileType markdown let g:tagbar_sort = 0
+
     " nmap <silent> <leader>tl :TlistToggle<cr>
     nmap <silent> <leader>tl :TagbarToggle<cr>
     nmap <silent> <F8> :call  ToggleNERDTreeAndTagbar()<cr>
@@ -753,7 +757,6 @@ if exists("g:plugs['indent-blankline.nvim']")
     if exists('g:plugs["nvim-treesitter"]')
         let g:indent_blankline_use_treesitter = v:true
         let g:indent_blankline_show_current_context = v:true
-        let g:indent_blankline_show_current_context_start = v:true
     endif
     highlight IndentBlanklineChar guifg=#063738 gui=nocombine
 endif
@@ -1032,7 +1035,7 @@ if exists('g:plugs["ale"]')
 
     let g:syntastic_mode_map = {
                 \ "mode": "active",
-                \ "passive_filetypes": ["java", "racket"] }
+                \ "passive_filetypes": ["java", "racket", "go"] }
 endif
 
 
@@ -1111,7 +1114,7 @@ endif
 if exists('g:plugs["nvim-treesitter"]')
 lua <<EOF
     require'nvim-treesitter.configs'.setup {
-        ensure_installed = { "c", "cpp", "java", "python", "bash", "css", "go", "lua", "javascript", "yaml", "tsx", "json" }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+        ensure_installed = { "c", "cpp", "java", "python", "bash", "css", "go", "lua", "javascript", "yaml", "tsx", "json", "rust"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
         ignore_install = {}, -- List of parsers to ignore installing
         highlight = { enable = true },
         textobjects = { enable = true }
@@ -1298,7 +1301,6 @@ else
     " Fast editing or sourcing vimrc file
     nmap <silent> <leader>ee :tabnew<cr>:edit ~/.vimrc<cr>
 endif
-
 
 if has("gui_macvim")
     set macligatures " Enable ligatures for font 'Fira Code'
