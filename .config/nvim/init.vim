@@ -266,10 +266,6 @@ if package_manager == "vim-plug"
     Plug 'moll/vim-bbye'
     Plug 'ervandew/supertab'    " you'll need it
 
-    " Plug 'easymotion/vim-easymotion'
-
-    Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
-
     Plug 'tpope/vim-abolish' " Enhance `s` command
     Plug 'lambdalisue/suda.vim', {'on': ['SudaRead', 'SudaWrite']} " for vim's sudo tee trick
 
@@ -280,6 +276,7 @@ if package_manager == "vim-plug"
     " Completion Framework
 
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'github/copilot.vim'
 
     "------------------------------------------------------------------
     " Handy commands
@@ -339,9 +336,6 @@ if package_manager == "vim-plug"
     Plug 'tpope/vim-sexp-mappings-for-regular-people', {'for': ['clojure', 'scheme', 'racket']}
 
     Plug 'https://github.com/wlangstroth/vim-racket', {'for': 'racket'}
-
-    " for python
-    Plug 'jeetsukumaran/vim-pythonsense', {'for': 'python'}
 
     " for javascript
     Plug 'pangloss/vim-javascript'
@@ -605,22 +599,6 @@ cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 " neovim makes Y = y$, why?
 nmap Y yy
 
-"----------------------------------------------------------------------
-" Show tabs (indent lines)
-
-" | ¦ ┆ ┊ │
-let show_tabs=0
-if show_tabs == 1
-    if &encoding ==? "utf-8"
-        set list
-        set listchars=tab:\│\ ,trail:~
-    else
-        set list
-        set listchars=tab:>-,trail:~
-    endif
-endif
-
-
 "===============================================================================
 " settings for bundle plugins
 
@@ -657,8 +635,6 @@ if has("gui_running")
     set guioptions+=e
     set guitablabel=%M\ %t
 endif
-
-
 
 "----------------------------------------------------------------------
 " supertab
@@ -708,43 +684,7 @@ if exists('g:plugs["tagbar"]')
 
     au FileType markdown let g:tagbar_sort = 0
 
-    " nmap <silent> <leader>tl :TlistToggle<cr>
     nmap <silent> <leader>tl :TagbarToggle<cr>
-    nmap <silent> <F8> :call  ToggleNERDTreeAndTagbar()<cr>
-
-    function! ToggleNERDTreeAndTagbar()
-        let w:jumpbacktohere = 1
-
-        " Detect which plugins are open
-        if exists('t:NERDTreeBufName')
-            let nerdtree_open = bufwinnr(t:NERDTreeBufName) != -1
-        else
-            let nerdtree_open = 0
-        endif
-        let tagbar_open = bufwinnr('__Tagbar__') != -1
-
-        " Perform the appropriate action
-        if nerdtree_open && tagbar_open
-            NERDTreeClose
-            TagbarClose
-        elseif nerdtree_open
-            TagbarOpen
-        elseif tagbar_open
-            NERDTree
-        else
-            NERDTree
-            TagbarOpen
-        endif
-
-        " Jump back to the original window
-        for window in range(1, winnr('$'))
-            execute window . 'wincmd w'
-            if exists('w:jumpbacktohere')
-                unlet w:jumpbacktohere
-                break
-            endif
-        endfor
-    endfunction
 endif
 
 "---------------------------------------------------------------------
@@ -761,59 +701,11 @@ if exists("g:plugs['indent-blankline.nvim']")
     highlight IndentBlanklineChar guifg=#063738 gui=nocombine
 endif
 
-
-"---------------------------------------------------------------------
-" Gutentags & Gutentags-plus
-
-if exists("g:plugs['vim-gutentags']")
-    " config project root markers.
-    let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
-
-    let g:gutentags_ctags_tagfile = '.tags'
-
-    " enable ctags and gtags
-    let g:gutentags_modules = []
-    if executable('ctags')
-        let g:gutentags_modules += ['ctags']
-    endif
-    if executable('gtags-cscope') && executable('gtags')
-        let g:gutentags_modules += ['gtags_cscope']
-    endif
-
-    " generate datebases in my cache directory, prevent gtags files polluting my project
-    let s:vim_tags = expand('~/.cache/tags')
-    if !isdirectory(s:vim_tags)
-        silent! call mkdir(s:vim_tags, 'p')
-    endif
-
-    let g:gutentags_cache_dir = s:vim_tags
-
-    " forbid gutentags adding gtags databases
-    let g:gutentags_auto_add_gtags_cscope = 0
-endif
-
 "---------------------------------------------------------------------
 " LargeFile
 
 if exists("g:plugs['LargeFile']")
     let g:LargeFile = 10
-endif
-
-"---------------------------------------------------------------------
-" vim-projectroot
-
-if exists("g:plugs['vim-projectroot']")
-    function! <SID>AutoProjectRootCD()
-      try
-        if &ft != 'help'
-          ProjectRootCD
-        endif
-      catch
-        " Silently ignore invalid buffers
-      endtry
-    endfunction
-
-    autocmd BufEnter * call <SID>AutoProjectRootCD()
 endif
 
 "---------------------------------------------------------------------
@@ -887,17 +779,6 @@ endif
 if exists('g:plugs["gundo.vim"]')
     let g:gundo_prefer_python3 = 1
     nnoremap <F5> :GundoToggle<CR>
-endif
-
-"---------------------------------------------------------------------
-" DelimitMate
-
-if exists('g:plugs["delimitMate"]')
-    " not used
-    au FileType racket,clojure let b:delimitMate_quotes = "\""
-
-    " fix three backtick for markdown
-    au FileType markdown let b:delimitMate_nesting_quotes = ['`']
 endif
 
 "---------------------------------------------------------------------
@@ -1114,10 +995,17 @@ endif
 if exists('g:plugs["nvim-treesitter"]')
 lua <<EOF
     require'nvim-treesitter.configs'.setup {
-        ensure_installed = { "c", "cpp", "java", "python", "bash", "css", "go", "lua", "javascript", "yaml", "tsx", "json", "rust"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+        ensure_installed = { "vim", "c", "cpp", "java", "python", "bash", "css", "go", "lua", "javascript", "yaml", "tsx", "json", "rust"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
         ignore_install = {}, -- List of parsers to ignore installing
         highlight = { enable = true },
-        textobjects = { enable = true }
+        textobjects = { enable = true },
+        disable = function(lang, buf)
+            local max_filesize = 100 * 1024 -- 100 KB
+            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+            if ok and stats and stats.size > max_filesize then
+                return true
+            end
+        end,
     }
 EOF
 
@@ -1191,7 +1079,7 @@ if exists('g:plugs["vim-translator"]')
 endif
 
 "===============================================================================
-" self-added plugins && settigns
+" self-added plugins && settings
 
 "---------------------------------------------------------------------
 " i_emacs
