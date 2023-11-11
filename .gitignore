@@ -61,3 +61,5 @@ bin/
 # ranger local files
 .config/ranger
 tags
+
+.config/nvim/lazy*
