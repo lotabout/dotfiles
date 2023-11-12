@@ -460,6 +460,11 @@ require('lazy').setup({
         'wellle/targets.vim',
     },
 
+    -- auto pair
+    {
+        'cohama/lexima.vim',
+    },
+
     --------------------------------------------------
     -- completion framework
 
@@ -519,7 +524,7 @@ require('lazy').setup({
                     end,
                 },
                 mapping = cmp.mapping.preset.insert({
-                    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+                    ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
                     -- supertab like
                     ["<Tab>"] = cmp.mapping(function(fallback)
                         luasnip = require('luasnip')
@@ -575,7 +580,7 @@ require('lazy').setup({
     -- format
     {
         'sbdchd/neoformat',
-        keys = {{'<Leader>f', ':Neoformat<CR>', silent=true}},
+        keys = {{'<Leader><Leader>f', ':Neoformat<CR>', silent=true}},
     },
 
     -- gundo
