@@ -21,7 +21,14 @@ fi
 #==============================================================================
 # Bash toolbox.
 
-path_remove ()  { export PATH=`echo -n $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`; }
+function path_remove {
+  # ref: https://unix.stackexchange.com/a/291611
+  # Delete path by parts so we can never accidentally remove sub paths
+  if [ "$PATH" == "$1" ] ; then PATH="" ; fi
+  PATH=${PATH//":$1:"/":"} # delete any instances in the middle
+  PATH=${PATH/#"$1:"/} # delete any instance at the beginning
+  PATH=${PATH/%":$1"/} # delete any instance in the at the end
+}
 path_append ()  { path_remove $1; export PATH="$PATH:$1"; }
 path_prepend () { export PATH="$1:$PATH"; }
 
@@ -39,14 +46,14 @@ fi
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Ruby
-if hash ruby &> /dev/null && hash gem &> /dev/null; then
-    path_prepend "$(ruby -rubygems -e 'puts Gem.user_dir')/bin"
-fi
-
-if [ -d $HOME/.rvm/bin ]; then
-    path_prepend $HOME/.rvm/bin
-    [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-fi
+#if hash ruby &> /dev/null && hash gem &> /dev/null; then
+#    path_prepend "$(ruby -rubygems -e 'puts Gem.user_dir')/bin"
+#fi
+#
+#if [ -d $HOME/.rvm/bin ]; then
+#    path_prepend $HOME/.rvm/bin
+#    [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+#fi
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Rust
@@ -74,7 +81,7 @@ fi
 # Go
 export GOPATH=${GOPATH:-$HOME/go}
 if [ -d $GOPATH/bin ]; then
-    path_append $GOPATH/bin;
+    path_prepend $GOPATH/bin;
 fi
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
