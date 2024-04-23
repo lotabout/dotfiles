@@ -295,6 +295,7 @@ if package_manager == "vim-plug"
     if has('nvim')
         " neovim 0.5
         Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+        Plug 'nvim-treesitter/nvim-treesitter-textobjects'
     endif
 
     Plug 'tomtom/tcomment_vim'
@@ -993,6 +994,65 @@ lua <<EOF
         textobjects = { enable = true },
         indent = { enable = true }
     }
+EOF
+
+endif
+
+"----------------------------------------------------------------------
+" treesitter-textobjects
+if exists('g:plugs["nvim-treesitter-textobjects"]')
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  textobjects = {
+    select = {
+      enable = true,
+
+      -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,
+
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        ["ic"] = "@class.inner",
+        ["ia"] = "@parameter.inner",
+        ["aa"] = "@parameter.outer",
+        ["is"] = "@statement.outer",
+      },
+    },
+  },
+}
+
+require'nvim-treesitter.configs'.setup {
+  textobjects = {
+    move = {
+      enable = true,
+      set_jumps = true, -- whether to set jumps in the jumplist
+      goto_next_start = {
+        ["]f"] = "@function.outer",
+        ["]c"] = "@class.outer",
+        ["]a"] = "@parameter.inner",
+      },
+      goto_next_end = {
+        ["]F"] = "@function.outer",
+        ["]C"] = "@class.outer",
+        ["]A"] = "@parameter.inner",
+      },
+      goto_previous_start = {
+        ["[f"] = "@function.outer",
+        ["[c"] = "@class.outer",
+        ["[a"] = "@parameter.inner",
+      },
+      goto_previous_end = {
+        ["[F"] = "@function.outer",
+        ["[C"] = "@class.outer",
+        ["[A"] = "@parameter.inner",
+      },
+    },
+  },
+}
 EOF
 
 endif
