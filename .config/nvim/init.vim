@@ -959,10 +959,17 @@ if exists('g:plugs["lightline.vim"]')
           \             [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ]
           \ },
           \ 'component_function': {
-          \   'gitbranch': 'FugitiveHead'
+          \   'gitbranch': 'FugitiveHead',
+          \   'mode': 'ModeWithKeymap',
           \ },
           \ }
 endif
+
+function! ModeWithKeymap()
+  let l:keymap = &iminsert == 1 && exists("b:keymap_name") ? " <" . b:keymap_name . ">" : ""
+  return lightline#mode() . l:keymap
+endfunction
+
 
 "---------------------------------------------------------------------
 " vim-tmux-navigator
@@ -1053,7 +1060,7 @@ if exists('g:plugs["ywvim"]')
     let g:ywvim_py = { 'helpim':'wb', 'gb':0 }
 
     let g:ywvim_zhpunc = 1
-    let g:ywvim_listmax = 10
+    let g:ywvim_listmax = 5
     let g:ywvim_esc_autoff = 0
     let g:ywvim_autoinput = 0
     let g:ywvim_circlecandidates = 1
@@ -1184,6 +1191,7 @@ if exists('g:plugs["bullets.vim"]')
     au FileType markdown,text,gitcommit nmap <silent> <C-Space> :ToggleCheckbox<CR>
     au FileType markdown,text,gitcommit nmap <silent> <C-@> :ToggleCheckbox<CR>
 endif
+
 
 "----------------------------------------------------------------------
 " javascript
