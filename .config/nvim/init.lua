@@ -224,8 +224,8 @@ vim.keymap.set('v', '<C-K>',  '<C-Y>k')
 -- neovim makes Y = y$
 vim.keymap.set('n', 'Y', 'yy')
 
-----------------------------------------------------
--- keys for wiki markdown files
+------------------------------------------------------
+---- keys for wiki markdown files
 
 function create_mapping_for_personal_wiki()
     vim.keymap.set('n', '<C-p>', ':Files ' .. wiki_directory .. '<CR>', {buffer=true})
@@ -257,7 +257,10 @@ vim.keymap.set('n', '<leader><Space><Space>', ':%s/\\s\\+$//<cr>:<C-u>nohlsearch
 vim.keymap.set('n', '<leader><cr>', ':%s/\\(^[[:blank:]]*\\n\\)\\{2,}/\\r/<cr>')
 
 -- quick save
-vim.keymap.set('n', '<Leader>w', ':<C-u>nohlsearch<CR>:w<CR>')
+-- vim.keymap.set('n', '<Leader>w', ':<C-u>nohlsearch<CR>:w<CR>')
+vim.keymap.set('n', '<M-s>', ':<C-u>nohlsearch<CR>:w<CR>')
+vim.keymap.set('i', '<M-s>', '<C-\\><C-o>:w<CR>')
+vim.keymap.set('v', '<M-s>', ':<C-u>nohlsearch<CR>:w<CR>gv')
 
 -- shortcuts for editing init
 vim.keymap.set('n', '<Leader>ee', ':tabnew<cr>:edit ~/.config/nvim/init.lua<cr>', {silent = true})
@@ -364,14 +367,21 @@ require('lazy').setup({
 
     --------------------------------------------------
     -- UI enhancement
+    'dstein64/vim-startuptime',
 
     -- solarized color theme
+    -- {
+    --     'lifepillar/vim-solarized8',
+    --     branch = 'neovim',
+    --     config = function()
+    --         vim.g.solarized_extra_hi_groups = true
+    --         vim.cmd [[ colorscheme solarized8 ]]
+    --     end
+    -- },
     {
-        'lifepillar/vim-solarized8',
-        branch = 'neovim',
+        'morhetz/gruvbox',
         config = function()
-            vim.g.solarized_extra_hi_groups = true
-            vim.cmd [[ colorscheme solarized8 ]]
+            vim.cmd [[ colorscheme gruvbox]]
         end
     },
 
@@ -380,7 +390,8 @@ require('lazy').setup({
         'itchyny/lightline.vim',
         config = function()
             vim.g.lightline = {
-                colorscheme = 'solarized',
+                -- colorscheme = 'solarized',
+                colorscheme = 'gruvbox',
                 active = {
                     left = {
                         { 'mode', 'paste' },
@@ -466,6 +477,9 @@ require('lazy').setup({
     -- auto pair
     {
         'cohama/lexima.vim',
+        config = function()
+            vim.g.lexima_enable_space_rules = false
+        end
     },
 
     --------------------------------------------------
@@ -492,6 +506,22 @@ require('lazy').setup({
             require('lspconfig').texlab.setup{}
             require('lspconfig').vimls.setup{}
             require('lspconfig').yamlls.setup{}
+            vim.api.nvim_create_autocmd('LspAttach', {
+              group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+              callback = function(ev)
+                -- Enable completion triggered by <c-x><c-o>
+                vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+                -- Buffer local mappings.
+                -- See `:help vim.lsp.*` for documentation on any of the below functions
+                local opts = { buffer = ev.buf }
+                vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+                vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+                vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+                vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+                vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+              end,
+            })
         end
     },
 
@@ -527,7 +557,7 @@ require('lazy').setup({
                     end,
                 },
                 mapping = cmp.mapping.preset.insert({
-                    ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+                    -- ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
                     -- supertab like
                     ["<Tab>"] = cmp.mapping(function(fallback)
                         luasnip = require('luasnip')
@@ -583,7 +613,7 @@ require('lazy').setup({
     -- format
     {
         'sbdchd/neoformat',
-        keys = {{'<Leader><Leader>f', ':Neoformat<CR>', silent=true}},
+        keys = {{'<Leader>f', ':Neoformat<CR>', silent=true}},
     },
 
     -- gundo
@@ -639,7 +669,7 @@ require('lazy').setup({
         'phaazon/hop.nvim',
         keys = {
             {"<Leader>l", ":HopLine<CR>"},
-            {"<Leader>f", ":HopWord<CR>"},
+            {"<Leader>w", ":HopWord<CR>"},
         },
         config = function()
             require('hop').setup()
