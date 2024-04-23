@@ -211,6 +211,11 @@ au FileType crontab setlocal backupcopy=yes
 "===============================================================================
 " settings for manually installed plugins
 
+
+"----------------------------------------------------------------------
+" vim-solarized8
+let g:solarized_extra_hi_groups = 1
+
 "----------------------------------------------------------------------
 " vimim
 
@@ -251,7 +256,7 @@ if package_manager == "vim-plug"
 
     Plug 'moll/vim-bbye'
     Plug 'ervandew/supertab'    " you'll need it
-    Plug 'justinmk/vim-sneak'
+    Plug 'easymotion/vim-easymotion'
 
     Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
 
@@ -284,7 +289,6 @@ if package_manager == "vim-plug"
 
     Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
     Plug 'rootkiter/vim-hexedit'
-    Plug 'lotabout/orgmark'
 
     "------------------------------------------------------------------
     " Better defaults
@@ -340,8 +344,9 @@ if package_manager == "vim-plug"
     Plug 'rust-lang/rust.vim', {'for': 'rust'}
 
     " for markdown
-    Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
+    Plug 'lotabout/vim-markdown', {'for': 'markdown'}
     Plug 'dkarter/bullets.vim', {'for': ['markdown', 'text', 'gitcommit']}
+    Plug 'lotabout/orgmark.vim', {'for': ['markdown']}
 
     " for typescript
     Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
@@ -621,6 +626,8 @@ if has("gui_running")
     set guioptions+=e
     set guitablabel=%M\ %t
 endif
+
+
 
 "----------------------------------------------------------------------
 " supertab
@@ -965,6 +972,14 @@ if exists('g:plugs["vim-tmux-navigator"]')
 endif
 
 "----------------------------------------------------------------------
+" easymotion
+if exists('g:plugs["vim-easymotion"]')
+    nmap <Leader>l <Plug>(easymotion-bd-jk)
+    nmap <Leader>L <Plug>(easymotion-overwin-line)
+endif
+
+
+"----------------------------------------------------------------------
 " ale/syntastic
 if exists('g:plugs["ale"]')
     nmap <silent> [e <Plug>(ale_previous_wrap)
@@ -1151,6 +1166,7 @@ if exists('g:plugs["vim-markdown"]')
     let g:vim_markdown_math = 1
     let g:vim_markdown_frontmatter = 1
     let g:vim_markdown_no_extensions_in_markdown = 1
+    let g:vim_markdown_highlight_with_sed = 1
 endif
 
 "----------------------------------------------------------------------
