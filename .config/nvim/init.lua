@@ -230,7 +230,7 @@ vim.keymap.set('n', 'Y', 'yy')
 function create_mapping_for_personal_wiki()
     vim.keymap.set('n', '<C-p>', ':Files ' .. wiki_directory .. '<CR>', {buffer=true})
     vim.keymap.set('n', '<Leader>/', ':Rg ' .. wiki_directory .. '<CR>', {buffer=true})
-    vim.keymap.set('n', '<C-n>', ':e ' .. wiki_directory .. '/', {buffer=true})
+    vim.keymap.set('n', '<C-n>', ':ObsidianNew ', {buffer=true})
 end
 
 function bind_for_wiki_files()
@@ -360,12 +360,15 @@ vim.keymap.set('v', '<Leader>j', ':Interleave ')
 
 require('lazy').setup({
 
+    checker = {enabled = false},
+
     --------------------------------------------------
     -- UI enhancement
 
     -- solarized color theme
     {
         'lifepillar/vim-solarized8',
+        branch = 'neovim',
         config = function()
             vim.g.solarized_extra_hi_groups = true
             vim.cmd [[ colorscheme solarized8 ]]
@@ -832,8 +835,8 @@ require('lazy').setup({
     {
         'lotabout/calendar-vim',
         keys = {
-            {'<Leader>cal', ':Calendar<CR>', silent=true},
-            {'<Leader>caL', ':CalendarH<CR>', silent=true},
+            {'<Leader>cal', '<Plug>CalendarV', silent=true},
+            {'<Leader>caL', '<Plug>CalendarH', silent=true},
         },
         config = function()
             vim.g.calendar_no_mappings = 1
@@ -852,6 +855,7 @@ require('lazy').setup({
             "BufReadPre " .. wiki_directory .. "/**.md",
             "BufNewFile " .. wiki_directory .. "/**.md",
         },
+        cmd = {'ObsidianNew', 'ObsidianToday'},
         opts = {
             workspaces = {
                 {
@@ -859,6 +863,8 @@ require('lazy').setup({
                     path = wiki_directory,
                 }
             },
+
+            notes_subdir = 'Z94-slipbox',
 
             -- Optional, set to true if you don't want obsidian.nvim to manage frontmatter.
             disable_frontmatter = true,
@@ -871,10 +877,26 @@ require('lazy').setup({
                 substitutions = {}
             },
             daily_notes = {
-                folder = "/Z91-diary",
+                folder = "Z91-diary",
                 date_format = "%Y-%m-%d",
-                template = '/Z92-templates/Z92.01-Diary.md',
+                template = 'Z92.01-Diary.md',
             },
+            note_id_func = function(title)
+                -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
+                -- In this case a note with the title 'My new note' will given an ID that looks
+                -- like '202311141112-my-new-note', and therefore the file name '202311141112-my-new-note.md'
+                local suffix = ""
+                if title ~= nil then
+                    -- If title is given, transform it into valid file name.
+                    suffix = title:gsub("[ 　]", "-")
+                else
+                    -- If title is nil, just add 4 random uppercase letters to the suffix.
+                    for _ = 1, 4 do
+                        suffix = suffix .. string.char(math.random(65, 90))
+                    end
+                end
+                return os.date('%Y%m%d%H%M', os.time()) .. "-" .. suffix
+            end,
             mappings = {
                 -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
                 ["gf"] = {
@@ -888,5 +910,25 @@ require('lazy').setup({
                 new_notes_location = "Z94-slipbox",
             },
         },
+        config = function(plugin, opts)
+            local client = require('obsidian').setup(opts);
+
+            -- integrate with calendar.vim
+            open_daily_note = function(day, month, year, week, dir)
+                local date = os.time{year=year, month=month, day=day}
+                local note = client:_daily(date)
+                vim.api.nvim_command('wincmd w')
+                vim.api.nvim_command('edit ' .. tostring(note.path))
+            end
+
+            -- vim do not support functionref, implement a wrapper, note that
+            -- v:lua's functions should be global
+            vim.api.nvim_exec([[
+                function! ObsidianOpenDate(day, month, year, week, dir)
+                    call v:lua.open_daily_note(a:day, a:month, a:year, a:week, a:dir)
+                endfunc
+            ]], false)
+            vim.g.calendar_action = 'ObsidianOpenDate'
+        end
     }
 })
