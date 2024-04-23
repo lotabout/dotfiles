@@ -257,7 +257,7 @@ if package_manager == "vim-plug"
     Plug 'Raimondi/delimitMate' " insert closing quotes, parenthesis, etc. automatically
 
     Plug 'tpope/vim-abolish' " Enhance `s` command
-    Plug 'vimwiki/vimwiki'
+    Plug 'lambdalisue/suda.vim', {'on': ['SudaRead', 'SudaWrite']} " for vim's sudo tee trick
 
     Plug 'kana/vim-textobj-user'
     Plug 'kana/vim-textobj-indent'
@@ -340,8 +340,8 @@ if package_manager == "vim-plug"
     Plug 'rust-lang/rust.vim', {'for': 'rust'}
 
     " for markdown
-    " Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
-    " Plug 'dkarter/bullets.vim', {'for': ['markdown', 'text', 'gitcommit']}
+    Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
+    Plug 'dkarter/bullets.vim', {'for': ['markdown', 'text', 'gitcommit']}
 
     " for typescript
     Plug 'HerringtonDarkholme/yats.vim', {'for': 'typescript'}
@@ -850,6 +850,9 @@ endif
 if exists('g:plugs["delimitMate"]')
     " not used
     au FileType racket,clojure let b:delimitMate_quotes = "\""
+
+    " fix three backtick for markdown
+    au FileType markdown let b:delimitMate_nesting_quotes = ['`']
 endif
 
 "---------------------------------------------------------------------
@@ -916,6 +919,11 @@ if exists('g:plugs["vimwiki"]')
     nmap <Plug>NoVimwiki2HTML <Plug>Vimwiki2HTML
     nmap <Plug>NoVimwikiNormalizeLinkVisual <Plug>VimwikiNormalizeLinkVisual
     nmap <Plug>NoVimwikiNormalizeLink <Plug>VimwikiNormalizeLink
+    nmap <Plug>NoVimwikiRenameFile <Plug>VimwikiRenameFile
+    nmap <Plug>NoVimwikiDeleteFile <Plug>VimwikiDeleteFile
+    nmap <Plug>NoVimwikiGoto <Plug>VimwikiGoto
+    nmap <Plug>NoVimwikiMakeTomorrowDiaryNote <Plug>VimwikiMakeTomorrowDiaryNote
+
 endif
 
 "---------------------------------------------------------------------
@@ -1141,7 +1149,6 @@ if exists('g:plugs["vim-markdown"]')
     let g:vim_markdown_math = 1
     let g:vim_markdown_frontmatter = 1
     let g:vim_markdown_no_extensions_in_markdown = 1
-    au FileType markdown,text,gitcommit setlocal spell spelllang=en,cjk
 endif
 
 "----------------------------------------------------------------------
