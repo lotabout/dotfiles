@@ -307,11 +307,24 @@ source ~/.bookmarks
 case $OS in
     Mac)
         function ppp() {
-            export http_proxy=http://localhost:1087
-            export https_proxy=http://localhost:1087
-            export socks_proxy=socks://localhost:8123
-            echo 'proxy = http://localhost:1087' > ~/.curlrc
-            echo "exporting proxy settings for SS done."
+            emulate -L zsh -o extended_glob
+            local scutil_output=$(scutil --proxy)
+
+            # ${(f)scutil_output} 将按行分割字符串为数组
+            # ${(M)name:#pattern} 在数组中匹配 pattern 的元素，丢弃不匹配的元素（行）
+            # `  [A-Za-z]# : [^ ]#` 是匹配 scutil_output 中 KV 对的表达式，使用了 extended glob 语法 (# 代表 0~N 次)
+            # `${name/pat/repl}` 是去掉每个元素中的冒号
+            # `${=spec}` 对结果进行 shell word split 并存到 associated array里
+            local -A info=(${=${(M)${(f)scutil_output}:#  [A-Za-z]# : [^ ]#}/:})
+            if (( $info[HTTPEnable] )); then
+                export http_proxy=http://$info[HTTPProxy]:$info[HTTPPort]
+            fi
+            if (( $info[HTTPSEnable] )); then
+                export https_proxy=https://$info[HTTPSProxy]:$info[HTTPSPort]
+            fi
+            if (( $info[SOCKSEnable] )); then
+                export socks_proxy=socks5h://$info[SOCKSProxy]:$info[SOCKSPort]
+            fi
         }
         ;;
     Linux)
