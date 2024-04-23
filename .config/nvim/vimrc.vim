@@ -264,7 +264,7 @@ if package_manager == "vim-plug"
     " Basic feature enhancement
 
     Plug 'moll/vim-bbye'
-    Plug 'ervandew/supertab'    " you'll need it
+    " Plug 'ervandew/supertab'    " you'll need it
 
     Plug 'tpope/vim-abolish' " Enhance `s` command
     Plug 'lambdalisue/suda.vim', {'on': ['SudaRead', 'SudaWrite']} " for vim's sudo tee trick
@@ -272,11 +272,21 @@ if package_manager == "vim-plug"
     Plug 'kana/vim-textobj-user'
     Plug 'kana/vim-textobj-indent'
 
+    Plug 'wellle/targets.vim'
+
     "------------------------------------------------------------------
     " Completion Framework
 
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    " Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'github/copilot.vim'
+
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/cmp-path'
+    Plug 'hrsh7th/cmp-cmdline'
+    Plug 'hrsh7th/nvim-cmp' " deps of obsidian.nvim
+    Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 
     "------------------------------------------------------------------
     " Handy commands
@@ -296,7 +306,8 @@ if package_manager == "vim-plug"
 
     Plug 'will133/vim-dirdiff', {'on': 'DirDiff'}
     Plug 'rootkiter/vim-hexedit'
-    Plug 'voldikss/vim-translator'
+
+    Plug 'ggandor/leap.nvim'
 
     "------------------------------------------------------------------
     " Better defaults
@@ -358,13 +369,19 @@ if package_manager == "vim-plug"
     " for Julia
     Plug 'JuliaEditorSupport/julia-vim', {'for': 'julia'}
 
+    " for zig
+    Plug 'ziglang/zig.vim', {'for': 'zig'}
+
     "------------------------------------------------------------------
     " Others
 
     Plug 'christoomey/vim-tmux-navigator'
     Plug 'lotabout/calendar-vim'
-    Plug 'lotabout/ywvim' " Chinese input method
+    " Plug 'lotabout/ywvim' " Chinese input method
     Plug 'wakatime/vim-wakatime' " time tracking
+
+    Plug 'epwalsh/obsidian.nvim', {'branch': 'main'}
+    Plug 'nvim-lua/plenary.nvim' " deps of obsidian.nvim
 
     call plug#end()
 elseif package_manager == "pathogen"
@@ -609,9 +626,9 @@ nmap Y yy
 syntax enable
 
 " Colorscheme
-if has("gui_running")
-    set guifont=Fira\ Code:h16,Monaco:h16,Dejavu\ Sans\ Mono\ for\ Powerline:h16,Dejavu\ Sans\ Mono:h16
-endif
+" if has("gui_running")
+"     set guifont=Fira\ Code:h16,Monaco:h16,Dejavu\ Sans\ Mono\ for\ Powerline:h16,Dejavu\ Sans\ Mono:h16
+" endif
 
 set background=dark
 if &t_Co >= 256 || has("gui_running")
@@ -783,7 +800,7 @@ endif
 
 "---------------------------------------------------------------------
 " Personal wiki
-let g:wiki_directory = $HOME . '/Dropbox/wiki'
+let g:wiki_directory = $HOME . '/Nextcloud/Vault'
 
 function! CreateMappingForPersonalWiki()
     execute("nmap <buffer> <C-p> :Files ".g:wiki_directory."<CR>")
@@ -858,7 +875,7 @@ endif
 if exists('g:plugs["calendar-vim"]')
     let g:calendar_diary_filename_pat = '%04d-%02d-%02d'
     let g:calendar_filetype = 'markdown'
-    let g:calendar_diary= g:wiki_directory . '/diary'
+    let g:calendar_diary= g:wiki_directory . '/Z91-diary'
 endif
 
 "---------------------------------------------------------------------
@@ -907,6 +924,16 @@ if exists('g:plugs["vim-easymotion"]')
     vmap <Leader>L <Plug>(easymotion-overwin-line)
 endif
 
+"----------------------------------------------------------------------
+" leap.nvim
+if exists('g:plugs["leap.nvim"]')
+    lua << EOF
+    require('leap').add_default_mappings()
+    vim.keymap.del({'x', 'o'}, 'x')
+    vim.keymap.del({'x', 'o'}, 'X')
+EOF
+endif
+
 
 "----------------------------------------------------------------------
 " ale/syntastic
@@ -925,6 +952,25 @@ endif
 
 if exists('g:plugs["neoformat"]')
   nmap <silent> <leader>f :Neoformat<CR>
+endif
+
+
+"----------------------------------------------------------------------
+" copilot.vim
+
+if exists('g:plugs["copilot.vim"]')
+    let g:copilot_no_tab_map = v:true
+    imap <expr> <Plug>(vimrc:copilot-dummy-map) copilot#Accept("\<Tab>")
+endif
+
+"----------------------------------------------------------------------
+" nvim-lspconfig
+
+if exists('g:plugs["nvim-lspconfig"]')
+lua << EOF
+    local lspconfig = require('lspconfig')
+    lspconfig.pyright.setup{}
+EOF
 endif
 
 "----------------------------------------------------------------------
@@ -947,6 +993,40 @@ if exists('g:plugs["coc.nvim"]')
             call CocAction('doHover')
         endif
     endfunction
+endif
+
+"----------------------------------------------------------------------
+" nvim-cmp
+
+if exists('g:plugs["nvim-cmp"]')
+lua <<EOF
+    local cmp = require'cmp'
+    cmp.setup({
+        snippet = {
+            -- REQUIRED - you must specify a snippet engine
+            expand = function(args)
+                vim.fn["UltiSnips#Anon"](args.body)
+            end,
+        },
+        mapping = cmp.mapping.preset.insert({
+            ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+            ['<Tab>'] = cmp.mapping(function(fallback)
+                vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
+            end),
+        }),
+
+        experimental = {
+            ghost_text = false -- this feature conflict with copilot.vim's preview.
+        },
+
+        sources = cmp.config.sources({
+            { name = 'nvim_lsp' },
+            { name = 'ultisnips' },
+        }, {
+            { name = 'buffer' },
+        }),
+    })
+EOF
 endif
 
 "----------------------------------------------------------------------
@@ -997,7 +1077,10 @@ lua <<EOF
     require'nvim-treesitter.configs'.setup {
         ensure_installed = { "vim", "c", "cpp", "java", "python", "bash", "css", "go", "lua", "javascript", "yaml", "tsx", "json", "rust"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
         ignore_install = {}, -- List of parsers to ignore installing
-        highlight = { enable = true },
+        highlight = {
+            enable = true,
+            additional_vim_regex_highlighting = { "markdown" },
+        },
         textobjects = { enable = true },
         disable = function(lang, buf)
             local max_filesize = 100 * 1024 -- 100 KB
@@ -1077,6 +1160,42 @@ if exists('g:plugs["vim-translator"]')
     nmap <silent> <Leader>t <Plug>TranslateW
     vmap <silent> <Leader>t <Plug>TranslateWV
 endif
+
+"---------------------------------------------------------------------
+" vim obsidian
+"
+if exists('g:plugs["obsidian.nvim"]')
+lua << EOF
+    require("obsidian").setup({
+        workspaces = {
+            {
+                name = "Personal",
+                path = "~/Nextcloud/Vault",
+            }
+        },
+
+      -- Optional, set to true if you don't want obsidian.nvim to manage frontmatter.
+      disable_frontmatter = true,
+
+      templates = {
+        subdir = "Z92-templates",
+        date_format = "%Y-%m-%d",
+        time_format = "%H:%M",
+        -- A map for custom variables, the key should be the variable and the value a function
+        substitutions = {}
+      },
+    })
+
+    vim.keymap.set("n", "<C-]>", function()
+      if require("obsidian").util.cursor_on_markdown_link() then
+        return "<cmd>ObsidianFollowLink<CR>"
+      else
+        return "<C-]>"
+      end
+    end, { noremap = false, expr = true })
+EOF
+endif
+
 
 "===============================================================================
 " self-added plugins && settings
