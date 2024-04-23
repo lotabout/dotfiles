@@ -204,7 +204,7 @@ au FileType crontab setlocal backupcopy=yes
 " vimim
 
 if has ("win32")
-    set guifont=Courier_New:h12:w7
+    set guifont=Courier_New:h16:w7
     set guifontwide=NSimSun-18030,NSimSun
 endif
 
@@ -261,7 +261,6 @@ if package_manager == "vim-plug"
     Plug 'sjl/gundo.vim', {'on': 'GundoToggle'}
 
     Plug 'schickling/vim-bufonly' " close all buffers except current one
-    Plug 'reedes/vim-pencil'
 
     " work with git
     Plug 'tpope/vim-fugitive'
@@ -293,7 +292,12 @@ if package_manager == "vim-plug"
     "------------------------------------------------------------------
     " Support more filetype specific feature
 
-    Plug 'tpope/vim-commentary'
+    if has('nvim')
+        " neovim 0.5
+        Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+    endif
+
+    Plug 'tomtom/tcomment_vim'
     Plug 'SirVer/ultisnips'
     Plug 'honza/vim-snippets'
 
@@ -584,7 +588,7 @@ syntax enable
 
 " Colorscheme
 if has("gui_running")
-    set guifont=Fira\ Code:h16,Dejavu\ Sans\ Mono\ for\ Powerline:h16,Dejavu\ Sans\ Mono:h16
+    set guifont=Fira\ Code:h16,Monaco:h16,Dejavu\ Sans\ Mono\ for\ Powerline:h16,Dejavu\ Sans\ Mono:h16
 endif
 
 set background=dark
@@ -623,25 +627,6 @@ endif
 " vim-easy-align
 if exists('g:plugs["vim-easy-align"]')
     xmap ga <Plug>(EasyAlign)
-endif
-
-"----------------------------------------------------------------------
-" easymotion
-
-if exists('g:plugs["vim-easymotion"]')
-    let g:EasyMotion_do_mapping = 0 " Disable default mappings
-    let g:EasyMotion_enter_jump_first = 1
-
-    " Turn on case insensitive feature
-    "let g:EasyMotion_smartcase = 1
-
-    nmap f <Plug>(easymotion-s)
-    vmap f <Plug>(easymotion-s)
-    nmap F <Plug>(easymotion-F)
-    vmap F <Plug>(easymotion-F)
-    nmap <Leader>l <Plug>(easymotion-bd-jk)
-    vmap <Leader>l <Plug>(easymotion-bd-jk)
-    nmap <Space>. <Plug>(easymotion-repeat)
 endif
 
 "----------------------------------------------------------------------
@@ -847,6 +832,7 @@ endif
 "---------------------------------------------------------------------
 " Gundo
 if exists('g:plugs["gundo.vim"]')
+    let g:gundo_prefer_python3 = 1
     nnoremap <F5> :GundoToggle<CR>
 endif
 
@@ -994,6 +980,21 @@ if exists('g:plugs["ywvim"]')
     let g:ywvim_lockb = 1
     let g:ywvim_theme = 'dark'
     let g:ywvim_intelligent_punc = 1
+endif
+
+"----------------------------------------------------------------------
+" treesitter
+if exists('g:plugs["nvim-treesitter"]')
+lua <<EOF
+    require'nvim-treesitter.configs'.setup {
+        ensure_installed = { "c", "cpp", "java", "python", "bash", "css", "go", "lua", "javascript", "yaml", "tsx", "json" }, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+        ignore_install = {}, -- List of parsers to ignore installing
+        highlight = { enable = true },
+        textobjects = { enable = true },
+        indent = { enable = true }
+    }
+EOF
+
 endif
 
 "===============================================================================
