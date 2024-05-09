@@ -443,6 +443,14 @@ require('lazy').setup({
         end
     },
 
+    -- indent lines
+    {
+        'lukas-reineke/indent-blankline.nvim',
+        enabled = false,
+        main = 'ibl',
+        opts = {},
+    },
+
     --------------------------------------------------
     -- Basic feature enhancement
     
@@ -476,10 +484,9 @@ require('lazy').setup({
 
     -- auto pair
     {
-        'cohama/lexima.vim',
-        config = function()
-            vim.g.lexima_enable_space_rules = false
-        end
+        'windwp/nvim-autopairs',
+        event = {'InsertEnter'},
+        config = true,
     },
 
     --------------------------------------------------
@@ -531,7 +538,19 @@ require('lazy').setup({
         opts = {},
     },
 
+    -- snippets for various snippet engines such as UltiSnips, vim-snippets, etc.
+    {
+        'honza/vim-snippets',
+        dependencies = {
+            {"L3MON4D3/LuaSnip", version = "v2.*"},
+        },
+        config = function()
+            require("luasnip.loaders.from_snipmate").lazy_load()
+        end
+    },
+
     -- nvim-cmp
+    -- ref conf: https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion
     {
         'hrsh7th/nvim-cmp',
         dependencies = {
@@ -557,18 +576,21 @@ require('lazy').setup({
                     end,
                 },
                 mapping = cmp.mapping.preset.insert({
-                    -- ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+                    ['<CR>'] = cmp.mapping.confirm {
+                        behavior = cmp.ConfirmBehavior.Replace,
+                        select = true, -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+                    }, 
                     -- supertab like
                     ["<Tab>"] = cmp.mapping(function(fallback)
                         luasnip = require('luasnip')
                         if vim.fn.exists('*copilot#GetDisplayedSuggestion') ~= 0 and vim.fn['copilot#GetDisplayedSuggestion']()['text'] ~= '' then
                             vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
-                        elseif cmp.visible() then
-                            cmp.select_next_item()
-                            -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable() 
-                            -- that way you will only jump inside the snippet region
+                        -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable() 
+                        -- that way you will only jump inside the snippet region
                         elseif luasnip.expand_or_jumpable() then
                             luasnip.expand_or_jump()
+                        elseif cmp.visible() then
+                            cmp.select_next_item()
                         elseif has_words_before() then
                             cmp.complete()
                         else
@@ -749,6 +771,7 @@ require('lazy').setup({
                 ensure_installed = { "vim", "c", "cpp", "java", "python", "bash", "css", "go", "lua", "javascript", "yaml", "tsx", "json", "rust", 'markdown', 'markdown_inline'}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
                 ignore_install = {}, -- List of parsers to ignore installing
                 highlight = {
+                    additional_vim_regex_highlighting = false,
                     enable = true,
                 },
                 textobjects = { enable = true },
