@@ -44,29 +44,30 @@ ln -s $DIR/.config/nvim $HOME/.vim
 # auto suggestion
 mkdir -p $HOME/.zsh
 if [[ ! -d ~/.zsh/zsh-autosuggestions ]];then
-    git clone git://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git ~/.zsh/zsh-autosuggestions
 fi
 
 #==============================================================================
 # install dependencies
 
-# translate-shell
-if [[ ! -f $DIR/bin/trans ]]; then
-    wget git.io/trans -O $DIR/bin/trans
-    chmod +x $DIR/bin/trans
-fi
-
 # fasd
 if [[ ! -f $DIR/bin/fasd ]]; then
-    wget https://raw.githubusercontent.com/clvv/fasd/master/fasd -O $DIR/bin/fasd
+    curl https://raw.githubusercontent.com/clvv/fasd/master/fasd -o $DIR/bin/fasd
     chmod +x $DIR/bin/fasd
 fi
 
-# diff-so-fancy
-if [[ ! -f $DIR/bin/diff-so-fancy ]]; then
-    wget https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy -O $DIR/bin/diff-so-fancy
-    chmod +x $DIR/bin/diff-so-fancy
-fi
+case $OS in
+    Mac)
+        if hash diff-so-fancy &> /dev/null; then
+            brew install diff-so-fancy
+        fi
+        ;;
+    Linux)
+        ;;
+esac
+
+git config --global core.pager "diff-so-fancy | less --tabs=4 -RF"
+git config --global interactive.diffFilter "diff-so-fancy --patch"
 
 #==============================================================================
 # Post install
