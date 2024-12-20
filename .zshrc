@@ -459,6 +459,18 @@ if [ -d $HOME/.skim ]; then
     unset -f bind-git-helper
 fi
 
+if command -v fzf &> /dev/null; then
+    function j() {
+      local dir
+      dir="$(fasd -Rdl "$1" | fzf -m)" && cd "${dir}" || return 1
+    }
+
+    function v() {
+      local file
+      file="$(fasd -Rfl "$1" | fzf -m)" && vi "${file}" || return 1
+    }
+fi
+
 #------------------------------------------------------------------------------
 # fasd settings
 
