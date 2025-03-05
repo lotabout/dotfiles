@@ -9,6 +9,9 @@
 .vim/plugged
 .config/nvim/plugged
 .config/nvim/.netrwhist
+.config/nvim/.undo
+.config/nvim/.backup
+.config/nvim/.swp
 
 # ignore .emacs.d/* except emacs.d/elisp
 .emacs.d/*

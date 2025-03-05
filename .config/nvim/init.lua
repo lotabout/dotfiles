@@ -99,6 +99,12 @@ vim.opt.fileencodings = {"ucs-bom", "utf-8", "cp932", "cp936", "gb18030", "big5"
 -- use unix as the standard file type
 vim.opt.fileformats = {"unix", "dos", "mac"}
 
+local prefix = vim.env.XDG_CONFIG_HOME or vim.fn.expand("~/.config")
+vim.opt.undodir = { prefix .. "/nvim/.undo//"}
+vim.opt.backupdir = {prefix .. "/nvim/.backup//"}
+vim.opt.directory = { prefix .. "/nvim/.swp//"}
+vim.opt.undofile = true
+
 ----------------------------------------------------
 -- text, tab, and indent related
 
