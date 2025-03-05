@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- Global imports
 local HOME = os.getenv("HOME")
-local wiki_directory = HOME .. '/Nextcloud/Vault'
+local wiki_directory = HOME .. '/Self/Vault'
 
 --------------------------------------------------------------------------------
 -- install lazy.vim
@@ -228,8 +228,8 @@ vim.keymap.set('n', 'Y', 'yy')
 ---- keys for wiki markdown files
 
 function create_mapping_for_personal_wiki()
-    vim.keymap.set('n', '<C-p>', ':Files ' .. wiki_directory .. '<CR>', {buffer=true})
-    vim.keymap.set('n', '<Leader>/', ':Rg ' .. wiki_directory .. '<CR>', {buffer=true})
+    vim.keymap.set('n', '<C-p>', ':FzfLua files cwd=' .. wiki_directory .. '<CR>', {buffer=true})
+    vim.keymap.set('n', '<Leader>/', ':FzfLua live_grep cwd=' .. wiki_directory .. '<CR>', {buffer=true})
     vim.keymap.set('n', '<C-n>', ':ObsidianNew ', {buffer=true})
 end
 
@@ -624,7 +624,7 @@ require('lazy').setup({
     },
 
     --------------------------------------------------
-    -- Handy commans
+    -- Handy commands
 
     -- alignment
     {
@@ -730,28 +730,43 @@ require('lazy').setup({
     },
 
     -- Find file & Search
+    -- {
+    --     'lotabout/skim.vim',
+    --     dependencies = {
+    --         {
+    --             'lotabout/skim',
+    --             dir = '~/.skim',
+    --             run = './install'
+    --         }
+    --     },
+    --     keys = {
+    --         {"<C-p>", ":Files<CR>"},
+    --         {"<Leader>/", ":Rg<CR>", {remap=false}},
+    --         {"<Leader>i", ":BTags<CR>", {remap=false}},
+    --         {"<Leader>I", ":Tags<CR>", {remap=false}},
+    --         {"<C-e>", ":Buffers<CR>", {remap=false}},
+    --     },
+    --     cmd = {'Files', 'Rg', 'BTags', 'Tags', 'Buffers'},
+    --     config = function()
+    --         vim.g.skim_history_dir = "~/.skim-history"
+    --         vim.g.fzf_preview_window = 'down:50%'
+    --         vim.fn.setenv('SKIM_DEFAULT_COMMAND', '(fd --type f || git ls-files -c -o --exclude-standard || rg -l "" || ag -l -g "" || find . -type f)')
+    --         vim.fn.setenv('SKIM_DEFAULT_OPTIONS', '--bind ctrl-f:toggle,ctrl-p:up,ctrl-n:down,up:previous-history,down:next-history,alt-h:scroll-left(5),alt-l:scroll-right(5),alt-p:toggle-preview --layout=reverse')
+    --     end
+    -- },
     {
-        'lotabout/skim.vim',
-        dependencies = {
-            {
-                'lotabout/skim',
-                dir = '~/.skim',
-                run = './install'
-            }
-        },
+        "ibhagwan/fzf-lua",
+        -- optional for icon support
+        dependencies = { "nvim-tree/nvim-web-devicons" },
         keys = {
-            {"<C-p>", ":Files<CR>"},
-            {"<Leader>/", ":Rg<CR>", {remap=false}},
-            {"<Leader>i", ":BTags<CR>", {remap=false}},
-            {"<Leader>I", ":Tags<CR>", {remap=false}},
-            {"<C-e>", ":Buffers<CR>", {remap=false}},
+            {"<C-p>", ":FzfLua files<CR>"},
+            {"<Leader>/", ":FzfLua live_grep<CR>", {remap=false}},
+            {"<C-e>", ":FzfLua buffers<CR>", {remap=false}},
         },
-        cmd = {'Files', 'Rg', 'BTags', 'Tags', 'Buffers'},
+        cmd = {'FzfLua'},
         config = function()
-            vim.g.skim_history_dir = "~/.skim-history"
-            vim.g.fzf_preview_window = 'down:50%'
-            vim.fn.setenv('SKIM_DEFAULT_COMMAND', '(fd --type f || git ls-files -c -o --exclude-standard || rg -l "" || ag -l -g "" || find . -type f)')
-            vim.fn.setenv('SKIM_DEFAULT_OPTIONS', '--bind ctrl-f:toggle,ctrl-p:up,ctrl-n:down,up:previous-history,down:next-history,alt-h:scroll-left(5),alt-l:scroll-right(5),alt-p:toggle-preview --layout=reverse')
+            -- calling `setup` is optional for customization
+            require("fzf-lua").setup({})
         end
     },
 
@@ -854,6 +869,7 @@ require('lazy').setup({
             vim.g.vim_markdown_math = 1
             vim.g.vim_markdown_no_extensions_in_markdown = 1
             vim.g.vim_markdown_highlight_with_sed = 1
+            vim.opt_local.conceallevel = 2
         end
     },
 
