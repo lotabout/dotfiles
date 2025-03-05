@@ -546,6 +546,17 @@ require('lazy').setup({
         },
         config = function()
             require("luasnip.loaders.from_snipmate").lazy_load()
+            vim.api.nvim_create_autocmd('ModeChanged', {
+              pattern = '*',
+              callback = function()
+                if ((vim.v.event.old_mode == 's' and vim.v.event.new_mode == 'n') or vim.v.event.old_mode == 'i')
+                    and require('luasnip').session.current_nodes[vim.api.nvim_get_current_buf()]
+                    and not require('luasnip').session.jump_active
+                then
+                  require('luasnip').unlink_current()
+                end
+              end
+            })
         end
     },
 
@@ -578,7 +589,7 @@ require('lazy').setup({
                 mapping = cmp.mapping.preset.insert({
                     ['<CR>'] = cmp.mapping.confirm {
                         behavior = cmp.ConfirmBehavior.Replace,
-                        select = true, -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+                        select = false, -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
                     }, 
                     -- supertab like
                     ["<Tab>"] = cmp.mapping(function(fallback)
