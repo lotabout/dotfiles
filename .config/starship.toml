@@ -1,0 +1,41 @@
+format = '''
+$jobs$time\[$username$hostname$directory\]$git_branch$git_status$cmd_duration
+$character'''
+
+[jobs]
+format = '[\[$number\]](white)'
+symbol = ''
+number_threshold = 0
+symbol_threshold = 0
+
+[time]
+disabled = false
+format = '[\[$time\]](green)'
+time_format = '%T'
+
+[username]
+disabled = false
+format = '[$user]($style)'
+
+[hostname]
+disabled = false
+format = '[@$ssh_symbol$hostname ](bold green)'
+
+[directory]
+format = '[$path]($style)[$read_only]($read_only_style)'
+truncation_symbol = '…/'
+
+[git_branch]
+format = '[\(](white)[$branch]($style)'
+
+[git_status]
+format = '[$all_status$ahead_behind]($style)[\) ](white)'
+
+[cmd_duration]
+format = '➜ [$duration]($style) '
+show_milliseconds = true
+
+# Character (prompt symbol)
+[character]
+success_symbol = "[\\$](green)"
+error_symbol = "[\\$](red)"

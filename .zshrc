@@ -41,7 +41,11 @@ function color_my_prompt {
 
 # so that PS1 is replaced
 setopt prompt_subst
-color_my_prompt
+if hash starship 2> /dev/null; then
+    eval "$(starship init zsh)"
+else
+    color_my_prompt
+fi
 
 #============================================================
 # zsh options
