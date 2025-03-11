@@ -464,22 +464,42 @@ if [ -d $HOME/.skim ]; then
 fi
 
 if command -v fzf &> /dev/null; then
-    function j() {
-      local dir
-      dir="$(fasd -Rdl "$1" | fzf -m)" && cd "${dir}" || return 1
-    }
+    if command -v go-fasd &> /dev/null; then
+        function j() {
+          local dir
+          dir="$(go-fasd list -R -d -l "$1" | fzf -m)" && cd "${dir}" || return 1
+        }
 
-    function v() {
-      local file
-      file="$(fasd -Rfl "$1" | fzf -m)" && vi "${file}" || return 1
-    }
+        function v() {
+          local file
+          file="$(go-fasd list -R -f -l "$1" | fzf -m)" && vi "${file}" || return 1
+        }
+    elif command -v fasd &> /dev/null; then
+        function j() {
+          local dir
+          dir="$(fasd -Rdl "$1" | fzf -m)" && cd "${dir}" || return 1
+        }
+
+        function v() {
+          local file
+          file="$(fasd -Rfl "$1" | fzf -m)" && vi "${file}" || return 1
+        }
+    fi
 fi
 
 #------------------------------------------------------------------------------
 # fasd settings
 
 # enable fasd
-if command -v fasd &> /dev/null; then
+if command -v go-fasd &> /dev/null; then
+    go_fasd_cache="$HOME/.go-fasd-init-zsh"
+    if [ "$(command -v go-fasd)" -nt "$go_fasd_cache" -o ! -s "$go_fasd_cache" ]; then
+        go-fasd zsh-hook >| "$go_fasd_cache"
+    fi
+
+    source "$go_fasd_cache"
+    unset go_fasd_cache
+elif command -v fasd &> /dev/null; then
     fasd_cache="$HOME/.fasd-init-zsh"
     if [ "$(command -v fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache" ]; then
         fasd --init posix-alias zsh-hook >| "$fasd_cache"
