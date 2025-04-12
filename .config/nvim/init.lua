@@ -800,7 +800,7 @@ require('lazy').setup({
         run = ':TSUpdate',
         config = function()
             require('nvim-treesitter.configs').setup({
-                ensure_installed = { "vim", "c", "cpp", "java", "python", "bash", "css", "go", "lua", "javascript", "yaml", "tsx", "json", "rust", 'markdown', 'markdown_inline'}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+                ensure_installed = { "vim", "c", "cpp", "java", "python", "bash", "css", "go", "lua", "javascript", "yaml", "tsx", "json", "rust", "markdown", "markdown_inline", "latex"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
                 ignore_install = {}, -- List of parsers to ignore installing
                 highlight = {
                     additional_vim_regex_highlighting = false,
@@ -902,6 +902,26 @@ require('lazy').setup({
     },
 
     'lotabout/orgmark.vim',
+
+    -- to enable image in CLI
+    -- https://github.com/3rd/image.nvim
+    {
+        "3rd/image.nvim",
+        build = false, -- so that it doesn't build the rock https://github.com/3rd/image.nvim/issues/91#issuecomment-2453430239
+        opts = {
+            processor = "magick_cli",
+        }
+    },
+
+    -- rendering latex equation in markdown to CLI
+    -- https://github.com/Prometheus1400/markdown-latex-render.nvim/tree/main
+    {
+        "Prometheus1400/markdown-latex-render.nvim",
+        dependencies = { "3rd/image.nvim", "nvim-lua/plenary.nvim" },
+        build = "make install",
+        version = "*",
+        opts = {}
+    },
     
     --------------------------------------------------
     -- Others
