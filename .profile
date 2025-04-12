@@ -99,6 +99,7 @@ case $OS in
         export LANG="en_US.UTF-8"
 
         export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
+        export PATH=/opt/homebrew/bin:$PATH
         export COPYFILE_DISABLE=true
         ;;
     Linux)
