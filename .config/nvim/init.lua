@@ -365,6 +365,116 @@ vim.api.nvim_create_user_command('Interleave', interleave, { nargs = 1, range = 
 vim.keymap.set('v', '<Leader>j', ':Interleave ')
 
 --------------------------------------------------------------------------------
+-- Auto Save unnamed buffer
+
+-- Auto-save all unnamed, modified buffers to timestamped files on exit
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  callback = function()
+    local time = os.date("%Y-%m-%d_%H-%M-%S")
+    local save_dir = vim.fn.expand("~/.cache/nvim/unnamed_buffers/")
+    vim.fn.mkdir(save_dir, "p")
+
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      local name = vim.api.nvim_buf_get_name(buf)
+      local modified = vim.api.nvim_buf_get_option(buf, "modified")
+      local listed = vim.api.nvim_buf_get_option(buf, "buflisted")
+
+      if name == "" and modified and listed then
+        local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+        local file_path = save_dir .. "/" .. time .. "_buf_" .. buf .. ".txt"
+        local ok = pcall(vim.fn.writefile, lines, file_path)
+        if not ok then
+          vim.api.nvim_err_writeln("Failed to save unnamed buffer " .. buf)
+        end
+      end
+    end
+  end
+})
+
+----------------------------------------------------
+--- extract LLM SSE delta content
+-- Usage:
+-- - 90,100 ExtractSSE
+-- - '<,'> ExtractSSE
+
+local function extract_sse_command(opts)
+    local bufnr = 0
+    local start_line = opts.line1 - 1
+    local end_line = opts.line2
+
+    local lines = vim.api.nvim_buf_get_lines(bufnr, start_line, end_line, false)
+
+    local reasoning_acc = ""
+    local content_acc = ""
+    local tool_acc = ""
+
+    for _, line in ipairs(lines) do
+        local json_str = line:gsub("^data:%s*", ""):gsub("%s*$", "")
+
+        if json_str ~= "" and json_str ~= "[DONE]" then
+            local ok, data = pcall(vim.json.decode, json_str)
+
+            if ok and type(data) == "table" and data.choices and data.choices[1] then
+                local delta = data.choices[1].delta or {}
+
+                -- 1. 累积推理内容
+                if type(delta.reasoning_content) == "string" then
+                    reasoning_acc = reasoning_acc .. delta.reasoning_content
+                end
+
+                -- 2. 累积正文内容
+                if type(delta.content) == "string" then
+                    content_acc = content_acc .. delta.content
+                end
+
+                -- 3. 累积工具调用
+                if delta.tool_calls and type(delta.tool_calls) == "table" then
+                    for _, tool in ipairs(delta.tool_calls) do
+                        local func_data = tool["function"]
+                        if type(func_data) == "table" then
+                            if type(func_data.name) == "string" and func_data.name ~= "" then
+                                tool_acc = tool_acc .. "\n\n[Tool Call: " .. func_data.name .. "]\n"
+                            end
+                            if type(func_data.arguments) == "string" then
+                                tool_acc = tool_acc .. func_data.arguments
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    -- 组装最终文本
+    local final_output = ""
+
+    if reasoning_acc ~= "" then
+        final_output = final_output .. "[Reasoning]\n" .. reasoning_acc .. "\n\n"
+    end
+
+    if content_acc ~= "" then
+        final_output = final_output .. "[Content]\n" .. content_acc .. "\n\n"
+    end
+
+    if tool_acc ~= "" then
+        final_output = final_output .. "[Tool]\n" .. tool_acc .. "\n\n"
+    end
+
+    -- 替换缓冲区内容
+    if final_output ~= "" then
+        local result_lines = vim.split(final_output, "\n")
+        vim.api.nvim_buf_set_lines(bufnr, start_line, end_line, false, result_lines)
+    else
+        vim.notify("未找到可抽取的 LLM 内容", vim.log.levels.WARN)
+    end
+end
+
+vim.api.nvim_create_user_command("SSEExtract", extract_sse_command, {
+    range = "%",
+    desc = "提取 SSE 中的推理、正文和工具调用",
+})
+
+--------------------------------------------------------------------------------
 -- Package Manager
 
 require('lazy').setup({
@@ -452,14 +562,14 @@ require('lazy').setup({
     -- indent lines
     {
         'lukas-reineke/indent-blankline.nvim',
-        enabled = false,
+        enabled = true,
         main = 'ibl',
         opts = {},
     },
 
     --------------------------------------------------
     -- Basic feature enhancement
-    
+
     {
         'moll/vim-bbye',
         keys = {
@@ -502,6 +612,7 @@ require('lazy').setup({
         'github/copilot.vim',
         config = function()
             vim.g.copilot_no_tab_map = true
+            vim.g.copilot_proxy = os.getenv("COPILOT_PROXY_URL")
             vim.keymap.set('i', '<Plug>(vimrc:copilot-dummy-map)', 'copilot#Accept("<Tab>")', {expr = true})
         end
     },
@@ -510,15 +621,16 @@ require('lazy').setup({
     {
         'neovim/nvim-lspconfig',
         config = function()
-            require('lspconfig').bashls.setup{}
-            require('lspconfig').clangd.setup{}
-            require('lspconfig').cmake.setup{}
-            require('lspconfig').gopls.setup{}
-            require('lspconfig').pyright.setup{}
-            require('lspconfig').rust_analyzer.setup{}
-            require('lspconfig').texlab.setup{}
-            require('lspconfig').vimls.setup{}
-            require('lspconfig').yamlls.setup{}
+            vim.lsp.enable('bashls')
+            vim.lsp.enable('clangd')
+            vim.lsp.enable('cmake')
+            vim.lsp.enable('gopls')
+            vim.lsp.enable('pyright')
+            vim.lsp.enable('rust_analyzer')
+            vim.lsp.enable('texlab')
+            vim.lsp.enable('vimls')
+            vim.lsp.enable('yamlls')
+            vim.lsp.enable('ts_ls')
             vim.api.nvim_create_autocmd('LspAttach', {
               group = vim.api.nvim_create_augroup('UserLspConfig', {}),
               callback = function(ev)
@@ -533,6 +645,7 @@ require('lazy').setup({
                 vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
                 vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
                 vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+                vim.keymap.set('n', 'gl', function() vim.diagnostic.open_float(0, { scope = "cursor" }) end)
               end,
             })
         end
@@ -596,13 +709,13 @@ require('lazy').setup({
                     ['<CR>'] = cmp.mapping.confirm {
                         behavior = cmp.ConfirmBehavior.Replace,
                         select = false, -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-                    }, 
+                    },
                     -- supertab like
                     ["<Tab>"] = cmp.mapping(function(fallback)
                         luasnip = require('luasnip')
                         if vim.fn.exists('*copilot#GetDisplayedSuggestion') ~= 0 and vim.fn['copilot#GetDisplayedSuggestion']()['text'] ~= '' then
                             vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
-                        -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable() 
+                        -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
                         -- that way you will only jump inside the snippet region
                         elseif luasnip.expand_or_jumpable() then
                             luasnip.expand_or_jump()
@@ -680,7 +793,8 @@ require('lazy').setup({
             'shumphrey/fugitive-gitlab.vim'
         },
         config = function()
-            vim.g.fugitive_gitlab_domains = { 'https://gitlab.4pd.io' }
+            vim.g.fugitive_gitlab_domains = { 'https://code.byted.org' }
+            vim.g.fugitive_gitlab_oldstyle_urls = 1
         end
     },
 
@@ -787,6 +901,10 @@ require('lazy').setup({
         end
     },
 
+
+    -- distraction free writing
+    'junegunn/goyo.vim',
+
     --------------------------------------------------
     -- support more filetypes
 
@@ -796,11 +914,28 @@ require('lazy').setup({
         dependencies = {
             'nvim-treesitter/nvim-treesitter-textobjects',
             'andymass/vim-matchup',
+            "AJamesyD/tree-sitter-jsonl",
         },
+        opts = function(_, opts)
+            local ts_parser_configs = require("nvim-treesitter.parsers").get_parser_configs()
+
+            ---@diagnostic disable-next-line: inject-field
+            ts_parser_configs.jsonl = {
+                install_info = {
+                    url = "https://github.com/AJamesyD/tree-sitter-jsonl",
+                    files = { "src/parser.c" },
+                    branch = "mainline",
+                },
+            }
+
+            if type(opts.ensure_installed) == "table" then
+                vim.list_extend(opts.ensure_installed, { "jsonl" })
+            end
+        end,
         run = ':TSUpdate',
         config = function()
             require('nvim-treesitter.configs').setup({
-                ensure_installed = { "vim", "c", "cpp", "java", "python", "bash", "css", "go", "lua", "javascript", "yaml", "tsx", "json", "rust", "markdown", "markdown_inline", "latex"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+                ensure_installed = { "vim", "c", "cpp", "java", "python", "bash", "css", "go", "lua", "javascript", "yaml", "tsx", "json", "jsonl", "rust", "markdown", "markdown_inline", "latex"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
                 ignore_install = {}, -- List of parsers to ignore installing
                 highlight = {
                     additional_vim_regex_highlighting = false,
@@ -922,7 +1057,7 @@ require('lazy').setup({
         version = "*",
         opts = {}
     },
-    
+
     --------------------------------------------------
     -- Others
 
@@ -952,7 +1087,7 @@ require('lazy').setup({
         end
     },
 
-    'wakatime/vim-wakatime',
+    -- 'wakatime/vim-wakatime',
 
     {
         'epwalsh/obsidian.nvim',
