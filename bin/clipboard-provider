@@ -38,7 +38,7 @@ is-copy() {
 }
 
 tmux-provider() {
-    [[ -n $TMUX ]] || return is-copy
+    [[ -n $TMUX ]] || return $(is-copy $1)
     case $1 in
         copy) internal | tmux load-buffer - ;;
         paste) tmux save-buffer - ;;
